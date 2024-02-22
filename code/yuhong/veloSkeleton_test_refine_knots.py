@@ -189,16 +189,6 @@ for i in range(len(knots)):
     df = pd.Series(adata2000.obs['clusters'][X_nn[:,0] == i])
     knotClusbyCell[i] = df.value_counts()
 
-# knots to further split and refine. Picked the cells where the second major cell type 
-# has counts more than half of the most common cell type and larger than 10 in counts.
-# the refine indices are manually picked for now
-# but can be automated with the rules 
-refineId = [17,24,35,38,55,78,81,88,99]
-for id in refineId:
-    knots[id,:] = np.mean( X[np.logical_and( X_nn[:,0] == id , adata2000.obs['clusters'] == knotClusbyCell[id].index[0]),:], axis= 0)
-    knots = np.vstack((knots, 
-                       np.mean( X[np.logical_and( X_nn[:,0] == id , adata2000.obs['clusters'] != knotClusbyCell[id].index[0]),:], axis= 0)))
-
 ## plot
 # Use closest observation X for each knot for UMAP plotting. Save time for UMAP calculation
 nbrs = NearestNeighbors(n_neighbors=1).fit(X)
@@ -213,6 +203,15 @@ for i in range(len(knots)):
     ax.annotate(str(i), (adata2000.obsm["X_umap"][:,0][nnx[i,0]], adata2000.obsm["X_umap"][:,1][nnx[i,0]]))
 plt.savefig("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup1/test_refine_knots_0.png")
 
+# knots to further split and refine. Picked the cells where the second major cell type 
+# has counts more than half of the most common cell type and larger than 10 in counts.
+# the refine indices are manually picked for now
+# but can be automated with the rules 
+refineId = [17,24,35,38,55,78,81,88,99]
+for id in refineId:
+    knots[id,:] = np.mean( X[np.logical_and( X_nn[:,0] == id , adata2000.obs['clusters'] == knotClusbyCell[id].index[0]),:], axis= 0)
+    knots = np.vstack((knots, 
+                       np.mean( X[np.logical_and( X_nn[:,0] == id , adata2000.obs['clusters'] != knotClusbyCell[id].index[0]),:], axis= 0)))
 
 ### 
 # recalculate skeleton quantities based on refined knots
