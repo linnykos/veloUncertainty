@@ -10,8 +10,11 @@
 #SBATCH --error=/home/users/%u/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup1/slurm/slurm_%j.err
 #SBATCH --output=/home/users/%u/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup1/slurm/slurm_%j.out
 
-conda init
+source ~/miniconda3/etc/profile.d/conda.sh
+
 conda activate scVelo
+conda env list
+
 python --version
 conda list
 python preprocess.py > /home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup1/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
