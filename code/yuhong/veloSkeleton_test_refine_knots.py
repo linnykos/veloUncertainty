@@ -199,6 +199,10 @@ for id in refineId:
     knots = np.vstack((knots, 
                        np.mean( X[np.logical_and( X_nn[:,0] == id , adata2000.obs['clusters'] != knotClusbyCell[id].index[0]),:], axis= 0)))
 
+## plot
+# Use closest observation X for each knot for UMAP plotting. Save time for UMAP calculation
+nbrs = NearestNeighbors(n_neighbors=1).fit(X)
+nnx = nbrs.kneighbors(skeleton["centers"], return_distance=False) 
 # make knots larger sizes for plotting
 sizes = np.array([1]*X.shape[0])
 sizes[nnx[:,0]] = 10
@@ -230,6 +234,9 @@ voron_weights_r = VoronSimilarity(knots, X_nn, kkdists)
 skeleton_r.update( {"voron_weights": voron_weights_r + np.transpose((voron_weights_r))})
 ###
 
+# Use closest observation X for each knot for UMAP plotting. Save time for UMAP calculation
+nbrs = NearestNeighbors(n_neighbors=1).fit(X)
+nnx = nbrs.kneighbors(skeleton_r["centers"], return_distance=False) 
 # make knots larger sizes for plotting
 sizes = np.array([1]*X.shape[0])
 sizes[nnx[:,0]] = 10
