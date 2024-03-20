@@ -39,6 +39,6 @@ unspliced_subset = unspliced[:,positions]
 adata.layers['spliced_original'] = spliced_subset
 adata.layers['unspliced_original'] = unspliced_subset
 
-adata.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid/adata_erythroid_v0.h5ad")
+adata.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/adata_erythroid_v0.h5ad")
 
 
