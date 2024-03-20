@@ -55,6 +55,7 @@ View(scvelo_seurat_split1)
 ###### 
 
 ## Convert object ####
+### on Bayes
 convert_object_erythroid <- function(s_mat,u_mat,fname) {
   mat <- s_mat+u_mat
   seurat_res <- Seurat::CreateSeuratObject(counts = mat)
@@ -62,17 +63,18 @@ convert_object_erythroid <- function(s_mat,u_mat,fname) {
   seurat_res[["spliced"]] <- Seurat::CreateAssayObject(counts = s_mat, Class = "Assay")
   seurat_res[["unspliced"]] <- Seurat::CreateAssayObject(counts = u_mat, Class = "Assay")
   seurat_res@meta.data <- data.frame("celltype"=as.character(scvelo_seurat@meta.data$celltype))
-  path <- paste0("/Users/wakeup/Downloads/UW_23-25/proj_RNA/data/erythroid/",fname,".h5Seurat")
+  path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/",fname,".h5Seurat")
   print(path)
   SeuratDisk::SaveH5Seurat(seurat_res, filename=path, overwrite = TRUE)
   SeuratDisk::Convert(path, dest = "h5ad", overwrite = TRUE)
 }
 
-convert_object_erythroid(spliced_split1,unspliced_split1, "scvelo_erythroid_split1_seurat")
-convert_object_erythroid(spliced_split2, unspliced_split2, "scvelo_erythroid_split2_seurat")
-convert_object_erythroid(spliced_mat, unspliced_mat, "scvelo_erythroid_total_seurat")
+convert_object_erythroid(spliced_split1,unspliced_split1, "scvelo_erythroid_split1_seurat_seed317")
+convert_object_erythroid(spliced_split2, unspliced_split2, "scvelo_erythroid_split2_seurat_seed317")
+convert_object_erythroid(spliced_mat, unspliced_mat, "scvelo_erythroid_total_seurat_seed317")
 
 
+## Take a look at count splits - no new objects created ####
 ## Spliced splits
 ### both non-zero
 sum(spliced_split1@x>0 & spliced_split2@x>0)/length(spliced_split1@x)
