@@ -38,7 +38,15 @@ for(i in which(name_vec != "X")){
 }
 
 # replace the counts assay in RNA with the sum of spliced_original and unspliced_original
-mat <- SeuratObject::LayerData(scvelo_seurat, assay = "spliced_original", layer = "data") + SeuratObject::LayerData(scvelo_seurat, assay = "unspliced_original", layer = "data")
+mat <- SeuratObject::LayerData(scvelo_seurat, assay = "spliced_original", layer = "data")
+SeuratObject::LayerData(scvelo_seurat, assay = "spliced", layer = "counts") <- mat
+scvelo_seurat[["spliced_original"]] <- NULL
+
+mat <- SeuratObject::LayerData(scvelo_seurat, assay = "unspliced_original", layer = "data")
+SeuratObject::LayerData(scvelo_seurat, assay = "unspliced", layer = "counts") <- mat
+scvelo_seurat[["unspliced_original"]] <- NULL
+
+mat <- SeuratObject::LayerData(scvelo_seurat, assay = "spliced", layer = "counts") + SeuratObject::LayerData(scvelo_seurat, assay = "unspliced", layer = "counts")
 SeuratObject::LayerData(scvelo_seurat, assay = "RNA", layer = "counts") <- mat
 
 mat <- SeuratObject::LayerData(scvelo_seurat, assay = "spliced", layer = "data") + SeuratObject::LayerData(scvelo_seurat, assay = "unspliced", layer = "data")
