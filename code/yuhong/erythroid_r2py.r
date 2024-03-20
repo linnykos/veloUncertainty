@@ -93,61 +93,61 @@ nb_res <- apply(total_mat, MARGIN=2, function(u) { MASS::glm.nb(x ~ 1, data=data
 
 ## Run countsplit on spliced and unspliced matriced ####
 ### helper functions
-seed <- NULL
+seed_split <- NULL
 # spliced_split <- countsplit(spliced_mat, folds=2, epsilon=c(.5,.5), overdisps=nb_res)
-get_splits <- function(mat, seed=seed, overdisps=nb_res) {
-  set.seed(seed)
+get_splits <- function(mat, seed_arg, overdisps=nb_res) {
+  set.seed(seed_arg)
   countsplit(mat, folds=2, epsilon=c(.5,.5), overdisps=overdisps)
 }
 ### on Bayes
-convert_object_erythroid <- function(s_mat,u_mat,fname,seed) {
+convert_object_erythroid <- function(s_mat,u_mat,fname,seed_arg) {
   mat <- s_mat+u_mat
   seurat_res <- Seurat::CreateSeuratObject(counts = mat)
   seurat_res[["RNA"]] <- as(object = seurat_res[["RNA"]], Class = "Assay")
   seurat_res[["spliced"]] <- Seurat::CreateAssayObject(counts = s_mat, Class = "Assay")
   seurat_res[["unspliced"]] <- Seurat::CreateAssayObject(counts = u_mat, Class = "Assay")
   seurat_res@meta.data <- data.frame("celltype"=as.character(scvelo_seurat@meta.data$celltype))
-  path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/",fname,"_seed",seed,".h5Seurat")
+  path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/",fname,"_seed",seed_arg,".h5Seurat")
   print(path)
   SeuratDisk::SaveH5Seurat(seurat_res, filename=path, overwrite = TRUE)
   SeuratDisk::Convert(path, dest = "h5ad", overwrite = TRUE)
 }
 
 ### seed=317 ####
-seed <- 317
+seed_split <- 317
 print("Set seed = 317!")
 
 ## countsplit
-spliced_split <- get_splits(spliced_mat)
+spliced_split <- get_splits(spliced_mat,seed_split)
 spliced_split1 <- spliced_split[[1]]
 spliced_split2 <- spliced_split[[2]]
 
-unspliced_split <- get_splits(unspliced_mat)
+unspliced_split <- get_splits(unspliced_mat,seed_split)
 unspliced_split1 <- unspliced_split[[1]]
 unspliced_split2 <- unspliced_split[[2]]
 
 ## Convert object 
-convert_object_erythroid(spliced_split1,unspliced_split1, "scvelo_erythroid_split1_seurat")
-convert_object_erythroid(spliced_split2, unspliced_split2, "scvelo_erythroid_split2_seurat")
-convert_object_erythroid(spliced_mat, unspliced_mat, "scvelo_erythroid_total_seurat")
+convert_object_erythroid(spliced_split1,unspliced_split1, "scvelo_erythroid_split1_seurat",seed_split)
+convert_object_erythroid(spliced_split2, unspliced_split2, "scvelo_erythroid_split2_seurat",seed_split)
+convert_object_erythroid(spliced_mat, unspliced_mat, "scvelo_erythroid_total_seurat",seed_split)
 
 ### seed=320 ####
-seed <- 320
+seed_split <- 320
 print("Set seed = 320!")
 
 ## countsplit
-spliced_split <- get_splits(spliced_mat)
+spliced_split <- get_splits(spliced_mat,seed_split)
 spliced_split1 <- spliced_split[[1]]
 spliced_split2 <- spliced_split[[2]]
 
-unspliced_split <- get_splits(unspliced_mat)
+unspliced_split <- get_splits(unspliced_mat,seed_split)
 unspliced_split1 <- unspliced_split[[1]]
 unspliced_split2 <- unspliced_split[[2]]
 
 ## Convert object 
-convert_object_erythroid(spliced_split1,unspliced_split1, "scvelo_erythroid_split1_seurat")
-convert_object_erythroid(spliced_split2, unspliced_split2, "scvelo_erythroid_split2_seurat")
-convert_object_erythroid(spliced_mat, unspliced_mat, "scvelo_erythroid_total_seurat")
+convert_object_erythroid(spliced_split1,unspliced_split1, "scvelo_erythroid_split1_seurat",seed_split)
+convert_object_erythroid(spliced_split2, unspliced_split2, "scvelo_erythroid_split2_seurat",seed_split)
+convert_object_erythroid(spliced_mat, unspliced_mat, "scvelo_erythroid_total_seurat",seed_split)
 
 
 
