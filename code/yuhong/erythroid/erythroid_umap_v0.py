@@ -11,8 +11,8 @@ scv.pp.moments(adata_total, n_pcs=30, n_neighbors=30)
 sc.tl.pca(adata_total)
 sc.pp.neighbors(adata_total, n_neighbors=10, n_pcs=40)
 sc.tl.umap(adata_total)
-scv.tl.velocity(adata_total)
-scv.tl.velocity_graph(adata_total, mode="dynamical")
+scv.tl.velocity(adata_total, mode="dynamical")
+scv.tl.velocity_graph(adata_total)
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_total_uncorrected.png")
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="sequencing.batch",
