@@ -80,6 +80,9 @@ for(name_val in names(graph_list)){
   print(paste0("Putting in graph ", name_val))
 
   scvelo_seurat@graphs[[name_val]] <- graph_list[[name_val]]
+  rownames(scvelo_seurat@graphs[[name_val]]) <- SeuratObject::Cells(scvelo_seurat)
+  colnames(scvelo_seurat@graphs[[name_val]]) <- SeuratObject::Cells(scvelo_seurat)
+
 }
 
 Seurat::DefaultAssay(scvelo_seurat) <- "RNA"
