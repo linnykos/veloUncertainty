@@ -1,4 +1,7 @@
 import scvelo as scv
+import scanpy as sc
+import bbknn
+from scipy.sparse import csr_matrix
 
 scv.settings.verbosity = 3  # show errors(0), warnings(1), info(2), hints(3)
 scv.settings.presenter_view = True  # set max width size for presenter view
@@ -19,16 +22,26 @@ scv.pp.filter_genes_dispersion(adata, n_top_genes=2000)
 scv.pp.log1p(adata)
 scv.pp.filter_and_normalize(adata, min_shared_counts=20, n_top_genes=2000)
 scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
+### batch correction
+bbknn.bbknn(adata, batch_key='sequencing.batch')
+adata.X = adata.X.toarray()
+bbknn.ridge_regression(adata, batch_key='sample', confounder_key='celltype')
+sc.tl.pca(adata)
+bbknn.bbknn(adata, batch_key='sequencing.batch')
+print("Batch correction done!")
+
 scv.tl.velocity(adata)
 scv.tl.velocity_graph(adata)
-scv.pl.velocity_embedding_stream(adata, basis='umap', color='celltype',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup1/scvelo_erythroid_v0.png")
+scv.pl.velocity_embedding_stream(adata, basis='umap', color='celltype',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_v0_celltype.png")
+scv.pl.velocity_embedding_stream(adata, basis='umap', color='sequencing.batch',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_v0_seqbatch.png")
+print("UMAPs plotted!")
 
 scv.tl.rank_velocity_genes(adata, groupby='celltype', min_corr=.3)
 scv.tl.score_genes_cell_cycle(adata)
 scv.tl.velocity_confidence(adata)
 scv.tl.velocity_pseudotime(adata)
 
-from scipy.sparse import csr_matrix
+
 adata.X = csr_matrix(adata.X)
 positions_dict = {gene: pos for pos, gene in enumerate(gene_names.index)}
 
@@ -39,6 +52,7 @@ unspliced_subset = unspliced[:,positions]
 adata.layers['spliced_original'] = spliced_subset
 adata.layers['unspliced_original'] = unspliced_subset
 
+print("Writing h5ad file!")
 adata.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/adata_erythroid_v0.h5ad")
 
 
