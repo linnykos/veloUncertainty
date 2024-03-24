@@ -107,7 +107,8 @@ convert_object_erythroid <- function(s_mat,u_mat,fname,seed_arg) {
   seurat_res[["spliced"]] <- Seurat::CreateAssayObject(counts = s_mat, Class = "Assay")
   seurat_res[["unspliced"]] <- Seurat::CreateAssayObject(counts = u_mat, Class = "Assay")
   seurat_res@meta.data <- data.frame("celltype"=as.character(scvelo_seurat@meta.data$celltype),
-                                     "sequencing.batch"=scvelo_seurat@meta.data$sequencing.batch)
+                                     "sequencing.batch"=scvelo_seurat@meta.data$sequencing.batch,
+                                     "sample"=scvelo_seurat@meta.data$sample)
   path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/",fname,"_seed",seed_arg,".h5Seurat")
   print(path)
   SeuratDisk::SaveH5Seurat(seurat_res, filename=path, overwrite = TRUE)
