@@ -49,6 +49,22 @@ dev.copy(png,filename="/Users/wakeup/Downloads/UW_23-25/proj_RNA/git/veloUncerta
 dev.off()
 
 
+#### take a look at the gene with greatest correlation between splits
+c(min(cor_spliced_seed317),which.min(cor_spliced_seed317)) # (-0.8444428, 70)
+i = which.min(cor_spliced_seed317)
+plot(log10(spliced_seed317[[1]][i,]+1),log10(spliced_seed317[[2]][i,]+1),pch=16,asp=T,col=rgb(0.5,0.5,0.5,0.5))
+## jittered plots
+x = log10(spliced_seed317[[1]][i,]+1)
+y = log10(spliced_seed317[[2]][i,]+1)
+n = length(x)
+x = x + runif(n, min = -0.1, max = 0.1)
+y = y + runif(n, min = -0.1, max = 0.1)
+plot(x, y,pch=16,asp=T, col = rgb(0.5,0.5,0.5,0.1))
+## histogram
+hist(cor_spliced_seed317)
+
+length(which(abs(cor_spliced_seed317)>=0.3))/n  # 
+
 #### NA's in correlations between unspliced splits - due to (at least) one split matrix contains all zero counts for a particular gene
 which(is.na(cor_unspliced_seed317))
 ## 541 1377 1559 1612
@@ -63,4 +79,13 @@ summary(cor_spliced_seed317)
 summary(cor_unspliced_seed317)
 summary(cor_spliced_seed320)
 summary(cor_unspliced_seed320)
+
+
+
+
+
+
+
+
+
 
