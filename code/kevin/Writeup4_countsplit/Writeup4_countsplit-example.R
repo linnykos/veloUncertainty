@@ -25,4 +25,14 @@ hist(cor_vec)
 cor_vec[1]
 x <- Xtrain[,1] + stats::runif(n, min = -.25, max = .25)
 y <- Xtest[,1] + stats::runif(n, min = -.25, max = .25)
-plot(x, y, asp = T, pch = 16, col = rgb(0.5,0.5,0.5,0.1))
+
+png(file = "/Users/kevinlin/Library/CloudStorage/Dropbox/Collaboration-and-People/yenchi-jerry_yuhong/git/veloUncertainty/fig/kevin/Writeup4/Writeup4_countsplit.png",
+    height = 800, width = 800, units = "px", res = 300)
+par(mar = c(4, 4, 0.5, 0.5))
+plot(x, y, 
+     asp = T, 
+     col = rgb(0.5,0.5,0.5,0.1),
+     pch = 16, 
+     xlab = "Training",
+     ylab = "Testing")
+graphics.off()
