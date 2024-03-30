@@ -33,8 +33,8 @@ print("Batch correction done!")
 scv.tl.recover_dynamics(adata)
 scv.tl.velocity(adata, mode="dynamical")
 scv.tl.velocity_graph(adata)
-scv.pl.velocity_embedding_stream(adata, basis='umap', color='celltype',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_v0_celltype.png")
-scv.pl.velocity_embedding_stream(adata, basis='umap', color='sequencing.batch',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_v0_seqbatch.png")
+scv.pl.velocity_embedding_stream(adata, basis='umap', color='celltype',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_preprocess_bbknn_celltype.png")
+scv.pl.velocity_embedding_stream(adata, basis='umap', color='sequencing.batch',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_preprocess_bbknn_seqbatch.png")
 print("UMAPs plotted!")
 
 scv.tl.rank_velocity_genes(adata, groupby='celltype', min_corr=.3)
@@ -54,6 +54,6 @@ adata.layers['spliced_original'] = spliced_subset
 adata.layers['unspliced_original'] = unspliced_subset
 
 print("Writing h5ad file!")
-adata.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/adata_erythroid_v0.h5ad")
+adata.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/adata_erythroid_preprocess_bbknn.h5ad")
 
 
