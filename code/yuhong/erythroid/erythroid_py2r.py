@@ -30,6 +30,7 @@ sc.tl.pca(adata)
 bbknn.bbknn(adata, batch_key='sequencing.batch')
 print("Batch correction done!")
 
+scv.tl.recover_dynamics(adata)
 scv.tl.velocity(adata, mode="dynamical")
 scv.tl.velocity_graph(adata)
 scv.pl.velocity_embedding_stream(adata, basis='umap', color='celltype',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_v0_celltype.png")
