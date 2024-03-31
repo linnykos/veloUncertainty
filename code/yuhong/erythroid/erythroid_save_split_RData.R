@@ -20,6 +20,6 @@ unspliced_seed320 <- list(SeuratObject::LayerData(split1_seed320,assay="unsplice
                           SeuratObject::LayerData(split2_seed320,assay="unspliced"))
 
 save(spliced_seed317,unspliced_seed317,spliced_seed320,unspliced_seed320,
-     file="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/adata_erythroid.RData")
+     file="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_countsplit_mat.RData")
 
 
