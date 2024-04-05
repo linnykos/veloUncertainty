@@ -5,7 +5,7 @@ library(zellkonverter)
 library(SingleCellExperiment)
 options(Seurat.object.assay.version = "v5")
 
-scvelo_sc <- zellkonverter::readH5AD(file="~/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/adata_pancreas_preprocess.h5ad")
+scvelo_sc <- zellkonverter::readH5AD(file="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/adata_pancreas_preprocess.h5ad")
 print("Dataset of pancreas loaded!")
 
 tmp <- Seurat::as.Seurat(scvelo_sc, counts = "X", data = "X")
@@ -74,8 +74,8 @@ print("Object ready!")
 ##################################################
 
 ## get spliced and unspliced matrices, and a matrix of total counts
-spliced_mat <- SeuratObject::LayerData(scvelo_seurat, layer = "counts", assay = "spliced")
-unspliced_mat <- SeuratObject::LayerData(scvelo_seurat, layer = "counts", assay = "unspliced")
+spliced_mat <- SeuratObject::LayerData(scvelo_seurat, assay = "spliced")
+unspliced_mat <- SeuratObject::LayerData(scvelo_seurat, assay = "unspliced")
 total_mat <- spliced_mat + unspliced_mat
 
 ## glm.nb(u~1) to compute the p overdispersion parameters (1 for each gene)
