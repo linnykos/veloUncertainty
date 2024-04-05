@@ -2,7 +2,7 @@ import scvelo as scv
 import scanpy as sc
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
-import bbknn
+from matplotlib import colormaps
 
 # process split counts data
 adata_split1_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split1_seurat_seed317.h5ad')
@@ -14,6 +14,7 @@ scv.pp.moments(adata_split1_seed317, n_pcs=30, n_neighbors=30)
 sc.tl.pca(adata_split1_seed317, svd_solver="arpack")
 sc.pp.neighbors(adata_split1_seed317, n_neighbors=10, n_pcs=40)
 sc.tl.umap(adata_split1_seed317)
+scv.tl.recover_dynamics(adata_split1_seed317)
 scv.tl.velocity(adata_split1_seed317, mode="dynamical")
 scv.tl.velocity_graph(adata_split1_seed317)
 
@@ -23,6 +24,7 @@ scv.pp.moments(adata_split2_seed317, n_pcs=30, n_neighbors=30)
 sc.tl.pca(adata_split2_seed317, svd_solver="arpack")
 sc.pp.neighbors(adata_split2_seed317, n_neighbors=10, n_pcs=40)
 sc.tl.umap(adata_split2_seed317)
+scv.tl.recover_dynamics(adata_split2_seed317)
 scv.tl.velocity(adata_split2_seed317, mode="dynamical")
 scv.tl.velocity_graph(adata_split2_seed317)
 
@@ -34,6 +36,7 @@ scv.pp.moments(adata_total, n_pcs=30, n_neighbors=30)
 sc.tl.pca(adata_total, svd_solver="arpack")
 sc.pp.neighbors(adata_total, n_neighbors=10, n_pcs=40)
 sc.tl.umap(adata_total)
+scv.tl.recover_dynamics(adata_total)
 scv.tl.velocity(adata_total, mode="dynamical")
 scv.tl.velocity_graph(adata_total)
 
