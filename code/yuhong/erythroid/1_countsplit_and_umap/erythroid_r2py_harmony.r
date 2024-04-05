@@ -84,6 +84,11 @@ print("Object ready!")
 ## get spliced and unspliced matrices, and a matrix of total counts
 spliced_mat <- SeuratObject::LayerData(scvelo_seurat, assay = "spliced_original") 
 unspliced_mat <- SeuratObject::LayerData(scvelo_seurat, assay = "unspliced_original")
+
+print(paste0("dimension of spliced matrix is ",dim(spliced_mat)," - transpose then!"))
+spliced_mat <- Matrix::t(spliced_mat)
+unspliced_mat <- Matrix::t(unspliced_mat)
+
 # compute the total counts
 total_mat <- spliced_mat + unspliced_mat
 
@@ -97,18 +102,24 @@ seed_split <- NULL
 # spliced_split <- countsplit(spliced_mat, folds=2, epsilon=c(.5,.5), overdisps=nb_res)
 get_splits <- function(mat, seed_arg, overdisps=nb_res) {
   set.seed(seed_arg)
-  countsplit(mat, folds=2, epsilon=c(.5,.5), overdisps=overdisps)
+  countsplit::countsplit(mat, folds=2, epsilon=c(.5,.5), overdisps=overdisps)
 }
 ### on Bayes
 convert_object_erythroid <- function(s_mat,u_mat,fname,seed_arg) {
+  print(paste0("Converting object, will transpose count matrices again!"))
+  
+  s_mat <- Matrix::t(s_mat)
+  u_mat <- Matrix::t(u_mat)
   mat <- s_mat+u_mat
+  print(paste0("dimension of the matrix stored in h5seurat and h5ad: ",dim(mat)))
+  
   seurat_res <- Seurat::CreateSeuratObject(counts = mat)
   seurat_res[["RNA"]] <- as(object = seurat_res[["RNA"]], Class = "Assay")
   seurat_res[["spliced"]] <- Seurat::CreateAssayObject(counts = s_mat, Class = "Assay")
   seurat_res[["unspliced"]] <- Seurat::CreateAssayObject(counts = u_mat, Class = "Assay")
   seurat_res@meta.data <- data.frame("celltype"=as.character(scvelo_seurat@meta.data$celltype),
-                                     "sequencing.batch"=scvelo_seurat@meta.data$sequencing.batch,
-                                     "sample"=scvelo_seurat@meta.data$sample)
+                                     "sequencing.batch"=1+scvelo_seurat@meta.data$sequencing.batch, ## original 1,2,3
+                                     "sample"=2+scvelo_seurat@meta.data$sample) ## original 2,...,37
   path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/",fname,"_seed",seed_arg,".h5Seurat")
   print(path)
   SeuratDisk::SaveH5Seurat(seurat_res, filename=path, overwrite = TRUE)
