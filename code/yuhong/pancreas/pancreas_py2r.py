@@ -41,9 +41,9 @@ adata.layers['spliced_original'] = spliced_subset
 adata.layers['unspliced_original'] = unspliced_subset
 
 
-adata.write_h5ad(filename = "~/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/adata_pancreas_preprocess.h5ad")
+adata.write_h5ad(filename = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/adata_pancreas_preprocess.h5ad")
 
-scv.pl.velocity_embedding_stream(adata, basis='umap', color='clusters',save="~/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/pancreas_umap_preprocess_clusters.png")
+scv.pl.velocity_embedding_stream(adata, basis='umap', color='clusters',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/pancreas_umap_preprocess_clusters.png")
 print("####### UMAPs plotted #######")
 
 
