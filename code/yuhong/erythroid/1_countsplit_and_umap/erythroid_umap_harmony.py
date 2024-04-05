@@ -27,6 +27,7 @@ scv.pp.moments(adata_total, n_pcs=30, n_neighbors=30)
 
 ### batch correction
 sc.tl.pca(adata_total)
+adata_total.obs['sequencing.batch'] = adata_total.obs['sequencing.batch'].astype('category')
 sce.pp.harmony_integrate(adata_total, 'sequencing.batch')
 print("Batch correction done for total counts!")
 
@@ -49,6 +50,7 @@ scv.pp.moments(adata_split1, n_pcs=30, n_neighbors=30)
 
 ### batch correction
 sc.tl.pca(adata_split1)
+adata_split1.obs['sequencing.batch'] = adata_split1.obs['sequencing.batch'].astype('category')
 sce.pp.harmony_integrate(adata_split1, 'sequencing.batch')
 print("Batch correction done for seed317 split1 counts!")
 
@@ -69,6 +71,7 @@ scv.pp.log1p(adata_split1)
 scv.pp.moments(adata_split1, n_pcs=30, n_neighbors=30)
 ### batch correction
 sc.tl.pca(adata_split1)
+adata_split1.obs['sequencing.batch'] = adata_split1.obs['sequencing.batch'].astype('category')
 sce.pp.harmony_integrate(adata_split1, 'sequencing.batch')
 print("Batch correction done for seed320 split1 counts!")
 
@@ -90,8 +93,9 @@ scv.pp.normalize_per_cell(adata_split2)
 scv.pp.log1p(adata_split2)
 scv.pp.moments(adata_split2, n_pcs=30, n_neighbors=30)
 ### batch correction
-sc.tl.pca(adata_split1)
-sce.pp.harmony_integrate(adata_split1, 'sequencing.batch')
+sc.tl.pca(adata_split2)
+adata_split2.obs['sequencing.batch'] = adata_split2.obs['sequencing.batch'].astype('category')
+sce.pp.harmony_integrate(adata_split2, 'sequencing.batch')
 print("Batch correction done for seed317 split2 counts!")
 
 sc.pp.neighbors(adata_split2, n_neighbors=10, n_pcs=40)
@@ -110,8 +114,9 @@ scv.pp.normalize_per_cell(adata_split2)
 scv.pp.log1p(adata_split2)
 scv.pp.moments(adata_split2, n_pcs=30, n_neighbors=30)
 ### batch correction
-sc.tl.pca(adata_split1)
-sce.pp.harmony_integrate(adata_split1, 'sequencing.batch')
+sc.tl.pca(adata_split2)
+adata_split2.obs['sequencing.batch'] = adata_split2.obs['sequencing.batch'].astype('category')
+sce.pp.harmony_integrate(adata_split2, 'sequencing.batch')
 print("Batch correction done for seed320 split2 counts!")
 
 sc.pp.neighbors(adata_split2, n_neighbors=10, n_pcs=40)
