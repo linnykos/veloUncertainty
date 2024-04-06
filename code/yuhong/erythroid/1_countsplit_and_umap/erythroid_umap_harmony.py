@@ -18,114 +18,51 @@ scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_total_uncorrected_harmony_celltype.png")
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="sequencing.batch",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_total_uncorrected_harmony_seqbat.png")
+print("################### Uncorrected UMAP for total counts plotted! ###################")
 
 ### batch corrected
-adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_total_seurat_seed317.h5ad')
-scv.pp.normalize_per_cell(adata_total)
-scv.pp.log1p(adata_total)
-scv.pp.moments(adata_total, n_pcs=30, n_neighbors=30)
-
-### batch correction
-sc.tl.pca(adata_total)
-adata_total.obs['sequencing.batch'] = adata_total.obs['sequencing.batch'].astype('category')
-sce.pp.harmony_integrate(adata_total, 'sequencing.batch')
-print("Batch correction done for total counts!")
-
-sc.pp.neighbors(adata_total, n_neighbors=10, n_pcs=40)
-sc.tl.umap(adata_total)
-scv.tl.recover_dynamics(adata_total)
-scv.tl.velocity(adata_total, mode="dynamical")
-scv.tl.velocity_graph(adata_total)
+adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_total_seurat_seed317_harmony.h5ad')
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_total_harmony_celltype.png")
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="sequencing.batch",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_total_harmony_seqbat.png")
+print("################### Corrected UMAP for total counts plotted! ###################")
+
 
 ## split1
 ### seed317
-adata_split1 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split1_seurat_seed317.h5ad")
-scv.pp.normalize_per_cell(adata_split1)
-scv.pp.log1p(adata_split1)
-scv.pp.moments(adata_split1, n_pcs=30, n_neighbors=30)
-
-### batch correction
-sc.tl.pca(adata_split1)
-adata_split1.obs['sequencing.batch'] = adata_split1.obs['sequencing.batch'].astype('category')
-sce.pp.harmony_integrate(adata_split1, 'sequencing.batch')
-print("Batch correction done for seed317 split1 counts!")
-
-sc.pp.neighbors(adata_split1, n_neighbors=10, n_pcs=40)
-sc.tl.umap(adata_split1)
-scv.tl.recover_dynamics(adata_split1)
-scv.tl.velocity(adata_split1, mode="dynamical")
-scv.tl.velocity_graph(adata_split1)
+adata_split1 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split1_seurat_seed317_harmony.h5ad")
 scv.pl.velocity_embedding_stream(adata_split1, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split1_seed317_harmony_celltype.png")
 scv.pl.velocity_embedding_stream(adata_split1, basis='umap',color="sequencing.batch",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split1_seed317_harmony_seqbat.png")
+print("################### Corrected UMAP for seed317 split1 counts plotted! ###################")
+
 
 ### seed320
-adata_split1 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split1_seurat_seed320.h5ad")
-scv.pp.normalize_per_cell(adata_split1)
-scv.pp.log1p(adata_split1)
-scv.pp.moments(adata_split1, n_pcs=30, n_neighbors=30)
-### batch correction
-sc.tl.pca(adata_split1)
-adata_split1.obs['sequencing.batch'] = adata_split1.obs['sequencing.batch'].astype('category')
-sce.pp.harmony_integrate(adata_split1, 'sequencing.batch')
-print("Batch correction done for seed320 split1 counts!")
-
-sc.pp.neighbors(adata_split1, n_neighbors=10, n_pcs=40)
-sc.tl.umap(adata_split1)
-scv.tl.recover_dynamics(adata_split1)
-scv.tl.velocity(adata_split1, mode="dynamical")
-scv.tl.velocity_graph(adata_split1)
+adata_split1 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split1_seurat_seed320_harmony.h5ad")
 scv.pl.velocity_embedding_stream(adata_split1, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split1_seed320_harmony_celltype.png")
 scv.pl.velocity_embedding_stream(adata_split1, basis='umap',color="sequencing.batch",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split1_seed320_harmony_seqbat.png")
+print("################### Corrected UMAP for seed320 split1 counts plotted! ###################")
 
 
 ## split2
 ### seed317
-adata_split2 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split2_seurat_seed317.h5ad")
-scv.pp.normalize_per_cell(adata_split2)
-scv.pp.log1p(adata_split2)
-scv.pp.moments(adata_split2, n_pcs=30, n_neighbors=30)
-### batch correction
-sc.tl.pca(adata_split2)
-adata_split2.obs['sequencing.batch'] = adata_split2.obs['sequencing.batch'].astype('category')
-sce.pp.harmony_integrate(adata_split2, 'sequencing.batch')
-print("Batch correction done for seed317 split2 counts!")
-
-sc.pp.neighbors(adata_split2, n_neighbors=10, n_pcs=40)
-sc.tl.umap(adata_split2)
-scv.tl.recover_dynamics(adata_split2)
-scv.tl.velocity(adata_split2, mode="dynamical")
-scv.tl.velocity_graph(adata_split2)
+adata_split2 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split2_seurat_seed317_harmony.h5ad")
 scv.pl.velocity_embedding_stream(adata_split2, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split2_seed317_harmony_celltype.png")
 scv.pl.velocity_embedding_stream(adata_split2, basis='umap',color="sequencing.batch",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split2_seed317_harmony_seqbat.png")
+print("################### Corrected UMAP for seed317 split2 counts plotted! ###################")
+
 
 ### seed320
-adata_split2 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split2_seurat_seed320.h5ad")
-scv.pp.normalize_per_cell(adata_split2)
-scv.pp.log1p(adata_split2)
-scv.pp.moments(adata_split2, n_pcs=30, n_neighbors=30)
-### batch correction
-sc.tl.pca(adata_split2)
-adata_split2.obs['sequencing.batch'] = adata_split2.obs['sequencing.batch'].astype('category')
-sce.pp.harmony_integrate(adata_split2, 'sequencing.batch')
-print("Batch correction done for seed320 split2 counts!")
-
-sc.pp.neighbors(adata_split2, n_neighbors=10, n_pcs=40)
-sc.tl.umap(adata_split2)
-scv.tl.recover_dynamics(adata_split2)
-scv.tl.velocity(adata_split2, mode="dynamical")
-scv.tl.velocity_graph(adata_split2)
+adata_split2 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split2_seurat_seed320_harmony.h5ad")
 scv.pl.velocity_embedding_stream(adata_split2, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split2_seed320_harmony_celltype.png")
 scv.pl.velocity_embedding_stream(adata_split2, basis='umap',color="sequencing.batch",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split2_seed320_harmony_seqbat.png")
+print("################### Corrected UMAP for seed320 split2 counts plotted! ###################")
 
