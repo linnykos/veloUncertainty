@@ -84,6 +84,11 @@ print("Object ready!")
 ## get spliced and unspliced matrices, and a matrix of total counts
 spliced_mat <- SeuratObject::LayerData(scvelo_seurat, assay = "spliced_original") 
 unspliced_mat <- SeuratObject::LayerData(scvelo_seurat, assay = "unspliced_original")
+
+print(paste0("dimension of spliced matrix is ",dim(spliced_mat)[1],dim(spliced_mat)[2]," - transpose then!"))
+spliced_mat <- Matrix::t(spliced_mat)
+unspliced_mat <- Matrix::t(unspliced_mat)
+
 # compute the total counts
 total_mat <- spliced_mat + unspliced_mat
 
@@ -101,6 +106,13 @@ get_splits <- function(mat, seed_arg, overdisps=nb_res) {
 }
 ### on Bayes
 convert_object_erythroid <- function(s_mat,u_mat,fname,seed_arg) {
+  print(paste0("Converting object, will transpose count matrices again!"))
+  
+  s_mat <- Matrix::t(s_mat)
+  u_mat <- Matrix::t(u_mat)
+  mat <- s_mat+u_mat
+  print(paste0("dimension of the matrix stored in h5seurat and h5ad: ",dim(mat)[1],dim(mat)[2]))
+  
   mat <- s_mat+u_mat
   seurat_res <- Seurat::CreateSeuratObject(counts = mat)
   seurat_res[["RNA"]] <- as(object = seurat_res[["RNA"]], Class = "Assay")
@@ -109,7 +121,7 @@ convert_object_erythroid <- function(s_mat,u_mat,fname,seed_arg) {
   seurat_res@meta.data <- data.frame("celltype"=as.character(scvelo_seurat@meta.data$celltype),
                                      "sequencing.batch"=scvelo_seurat@meta.data$sequencing.batch,
                                      "sample"=scvelo_seurat@meta.data$sample)
-  path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/",fname,"_seed",seed_arg,".h5Seurat")
+  path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/",fname,"_seed",seed_arg,"Rbbknn.h5Seurat")
   print(path)
   SeuratDisk::SaveH5Seurat(seurat_res, filename=path, overwrite = TRUE)
   SeuratDisk::Convert(path, dest = "h5ad", overwrite = TRUE)
