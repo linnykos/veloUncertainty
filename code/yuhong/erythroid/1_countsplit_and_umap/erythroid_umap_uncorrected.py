@@ -22,8 +22,8 @@ scv.tl.recover_dynamics(adata)
 scv.tl.velocity(adata, mode="dynamical")
 scv.tl.velocity_graph(adata)
 
-scv.pl.velocity_embedding_stream(adata, basis='umap', color='celltype',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_preprocess_uncorrected_celltype.png")
-scv.pl.velocity_embedding_stream(adata, basis='umap', color='sequencing.batch',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_preprocess_uncorrected_seqbatch.png")
+scv.pl.velocity_embedding_stream(adata, basis='umap', color='celltype',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_preprocess_uncorrected_celltype.png")
+scv.pl.velocity_embedding_stream(adata, basis='umap', color='sequencing.batch',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_preprocess_uncorrected_seqbatch.png")
 print("####### Uncorrected UMAP for raw data (2000 genes filtered) plotted #######")
 
 ## total (the same for different seeds, so just use one of them)
@@ -37,8 +37,8 @@ sc.tl.umap(adata_total)
 scv.tl.recover_dynamics(adata_total)
 scv.tl.velocity(adata_total, mode="dynamical")
 scv.tl.velocity_graph(adata_total)
-scv.pl.velocity_embedding_stream(adata, basis='umap', color='celltype',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_preprocess_uncorrected_celltype.png")
-scv.pl.velocity_embedding_stream(adata, basis='umap', color='sequencing.batch',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_preprocess_uncorrected_seqbatch.png")
+scv.pl.velocity_embedding_stream(adata, basis='umap', color='celltype',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_erythroid_preprocess_uncorrected_celltype.png")
+scv.pl.velocity_embedding_stream(adata, basis='umap', color='sequencing.batch',save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_erythroid_preprocess_uncorrected_seqbatch.png")
 print("####### Uncorrected UMAP for total count data (converted through R) plotted #######")
 
 ## split1
@@ -54,9 +54,9 @@ scv.tl.recover_dynamics(adata_split1)
 scv.tl.velocity(adata_split1, mode="dynamical")
 scv.tl.velocity_graph(adata_split1)
 scv.pl.velocity_embedding_stream(adata_split1, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split1_seed317_uncorrected_celltype.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_erythroid_split1_seed317_uncorrected_celltype.png")
 scv.pl.velocity_embedding_stream(adata_split1, basis='umap',color="sequencing.batch",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split1_seed317_uncorrected_seqbat.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_erythroid_split1_seed317_uncorrected_seqbat.png")
 
 ### seed320
 adata_split1 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split1_seurat_seed320.h5ad")
@@ -70,9 +70,9 @@ scv.tl.recover_dynamics(adata_split1)
 scv.tl.velocity(adata_split1, mode="dynamical")
 scv.tl.velocity_graph(adata_split1)
 scv.pl.velocity_embedding_stream(adata_split1, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split1_seed320_uncorrected_celltype.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_erythroid_split1_seed320_uncorrected_celltype.png")
 scv.pl.velocity_embedding_stream(adata_split1, basis='umap',color="sequencing.batch",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split1_seed320_uncorrected_seqbat.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_erythroid_split1_seed320_uncorrected_seqbat.png")
 
 
 ## split2
@@ -88,9 +88,9 @@ scv.tl.recover_dynamics(adata_split2)
 scv.tl.velocity(adata_split2, mode="dynamical")
 scv.tl.velocity_graph(adata_split2)
 scv.pl.velocity_embedding_stream(adata_split2, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split2_seed317_uncorrected_celltype.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_erythroid_split2_seed317_uncorrected_celltype.png")
 scv.pl.velocity_embedding_stream(adata_split2, basis='umap',color="sequencing.batch",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split2_seed317_uncorrected_seqbat.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_erythroid_split2_seed317_uncorrected_seqbat.png")
 
 ### seed320
 adata_split2 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split2_seurat_seed320.h5ad")
@@ -104,9 +104,9 @@ scv.tl.recover_dynamics(adata_split2)
 scv.tl.velocity(adata_split2, mode="dynamical")
 scv.tl.velocity_graph(adata_split2)
 scv.pl.velocity_embedding_stream(adata_split2, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split2_seed320_uncorrected_celltype.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_erythroid_split2_seed320_uncorrected_celltype.png")
 scv.pl.velocity_embedding_stream(adata_split2, basis='umap',color="sequencing.batch",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_erythroid_split2_seed320_uncorrected_seqbat.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/uncorrected/scvelo_erythroid_split2_seed320_uncorrected_seqbat.png")
 
 
 
