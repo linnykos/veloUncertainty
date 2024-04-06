@@ -19,6 +19,10 @@ sc.tl.umap(adata_total)
 scv.tl.recover_dynamics(adata_total)
 scv.tl.velocity(adata_total, mode="dynamical")
 scv.tl.velocity_graph(adata_total)
+### write h5ad object
+adata_total.__dict__['_raw'].__dict__['_var'] = adata_total.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
+del(adata_total.raw)
+#del(adata_total.var['_index']) 
 adata_total.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_total_seurat_seed317_harmony.h5ad")
 
 ## seed317 - split1
@@ -37,6 +41,9 @@ sc.tl.umap(adata_split1_317)
 scv.tl.recover_dynamics(adata_split1_317)
 scv.tl.velocity(adata_split1_317, mode="dynamical")
 scv.tl.velocity_graph(adata_split1_317)
+### write h5ad object
+adata_split1_317.__dict__['_raw'].__dict__['_var'] = adata_split1_317.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
+del(adata_split1_317.raw)
 adata_split1_317.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split1_seurat_seed317_harmony.h5ad")
 
 ## seed320 - split1
@@ -55,6 +62,9 @@ sc.tl.umap(adata_split1_320)
 scv.tl.recover_dynamics(adata_split1_320)
 scv.tl.velocity(adata_split1_320, mode="dynamical")
 scv.tl.velocity_graph(adata_split1_320)
+### write h5ad object
+adata_split1_320.__dict__['_raw'].__dict__['_var'] = adata_split1_320.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
+del(adata_split1_320.raw)
 adata_split1_320.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split1_seurat_seed320_harmony.h5ad")
 
 ## seed317 - split2
@@ -73,6 +83,9 @@ sc.tl.umap(adata_split2_317)
 scv.tl.recover_dynamics(adata_split2_317)
 scv.tl.velocity(adata_split2_317, mode="dynamical")
 scv.tl.velocity_graph(adata_split2_317)
+### write h5ad object
+adata_split2_317.__dict__['_raw'].__dict__['_var'] = adata_split2_317.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
+del(adata_split2_317.raw)
 adata_split2_317.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split2_seurat_seed317_harmony.h5ad")
 
 ## seed320 - split2
@@ -91,6 +104,9 @@ sc.tl.umap(adata_split2_320)
 scv.tl.recover_dynamics(adata_split2_320)
 scv.tl.velocity(adata_split2_320, mode="dynamical")
 scv.tl.velocity_graph(adata_split2_320)
+### write h5ad object
+adata_split2_320.__dict__['_raw'].__dict__['_var'] = adata_split2_320.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
+del(adata_split2_320.raw)
 adata_split2_320.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/scvelo_erythroid_split2_seurat_seed320_harmony.h5ad")
 
 
