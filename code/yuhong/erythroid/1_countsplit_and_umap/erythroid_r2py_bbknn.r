@@ -76,7 +76,7 @@ scvelo_seurat <- Seurat::ScaleData(scvelo_seurat)
 scvelo_seurat <- Seurat::RunPCA(scvelo_seurat, features = Seurat::VariableFeatures(object = scvelo_seurat), verbose = F)
 scvelo_seurat <- Seurat::RunUMAP(scvelo_seurat, dims = 1:30)
 
-save(scvelo_seurat,file="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/adata_erythroid.RData")
+#save(scvelo_seurat,file="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/adata_erythroid.RData")
 
 print("Object ready!")
 
@@ -85,7 +85,7 @@ print("Object ready!")
 spliced_mat <- SeuratObject::LayerData(scvelo_seurat, assay = "spliced_original") 
 unspliced_mat <- SeuratObject::LayerData(scvelo_seurat, assay = "unspliced_original")
 
-print(paste0("dimension of spliced matrix is ",dim(spliced_mat)[1],dim(spliced_mat)[2]," - transpose then!"))
+print(paste0("dimension of spliced matrix is ",dim(spliced_mat)[1],"x",dim(spliced_mat)[2]," - transpose then!"))
 spliced_mat <- Matrix::t(spliced_mat)
 unspliced_mat <- Matrix::t(unspliced_mat)
 
@@ -111,7 +111,7 @@ convert_object_erythroid <- function(s_mat,u_mat,fname,seed_arg) {
   s_mat <- Matrix::t(s_mat)
   u_mat <- Matrix::t(u_mat)
   mat <- s_mat+u_mat
-  print(paste0("dimension of the matrix stored in h5seurat and h5ad: ",dim(mat)[1],dim(mat)[2]))
+  print(paste0("dimension of the matrix stored in h5seurat and h5ad: ",dim(mat)[1],"x",dim(mat)[2]))
   
   mat <- s_mat+u_mat
   seurat_res <- Seurat::CreateSeuratObject(counts = mat)
@@ -121,7 +121,7 @@ convert_object_erythroid <- function(s_mat,u_mat,fname,seed_arg) {
   seurat_res@meta.data <- data.frame("celltype"=as.character(scvelo_seurat@meta.data$celltype),
                                      "sequencing.batch"=as.character(scvelo_seurat@meta.data$sequencing.batch), ## original 1,2,3
                                      "sample"=as.character(scvelo_seurat@meta.data$sample)) ## original 2,...,37
-  path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/",fname,"_seed",seed_arg,"Rbbknn.h5Seurat")
+  path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/",fname,"_seed",seed_arg,"_Rbbknn.h5Seurat")
   print(path)
   SeuratDisk::SaveH5Seurat(seurat_res, filename=path, overwrite = TRUE)
   SeuratDisk::Convert(path, dest = "h5ad", overwrite = TRUE)
