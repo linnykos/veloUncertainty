@@ -5,10 +5,10 @@ library(SeuratObject)
 
 setwd("/Users/wakeup/Downloads/UW_23-25/proj_RNA/data/erythroid")
 
-split1_seed317 <- LoadH5Seurat("./split_data/scvelo_erythroid_split1_seurat_seed317.h5Seurat")
-split2_seed317 <- LoadH5Seurat("./split_data/scvelo_erythroid_split2_seurat_seed317.h5Seurat")
-split1_seed320 <- LoadH5Seurat("./split_data/scvelo_erythroid_split1_seurat_seed320.h5Seurat")
-split2_seed320 <- LoadH5Seurat("./split_data/scvelo_erythroid_split2_seurat_seed320.h5Seurat")
+split1_seed317 <- LoadH5Seurat("./split_data/scvelo_erythroid_split1_seurat_seed317_Rbbknn.h5Seurat")
+split2_seed317 <- LoadH5Seurat("./split_data/scvelo_erythroid_split2_seurat_seed317_Rbbknn.h5Seurat")
+split1_seed320 <- LoadH5Seurat("./split_data/scvelo_erythroid_split1_seurat_seed320_Rbbknn.h5Seurat")
+split2_seed320 <- LoadH5Seurat("./split_data/scvelo_erythroid_split2_seurat_seed320_Rbbknn.h5Seurat")
 
 spliced_seed317 <- list(SeuratObject::LayerData(split1_seed317,assay="spliced"),
                         SeuratObject::LayerData(split2_seed317,assay="spliced"))
@@ -20,72 +20,55 @@ unspliced_seed320 <- list(SeuratObject::LayerData(split1_seed320,assay="unsplice
                           SeuratObject::LayerData(split2_seed320,assay="unspliced"))
 
 ### produce scatterplots of correlations
+total = spliced_seed317[[1]] + spliced_seed317[[2]]
+p <- nrow(total)
 cor_spliced_seed317 <- sapply(1:nrow(spliced_seed317[[1]]),function(i){ 
+  if(i %% floor(p/10) == 0) cat('*')
   cor( log10(spliced_seed317[[1]][i,]+1), log10(spliced_seed317[[2]][i,]+1) ) } )
 
 cor_unspliced_seed317 <- sapply(1:nrow(unspliced_seed317[[1]]),function(i){
+  if(i %% floor(p/10) == 0) cat('*')
   cor( log10(unspliced_seed317[[1]][i,]+1), log10(unspliced_seed317[[2]][i,]+1) ) } )
 
 cor_spliced_seed320 <- sapply(1:nrow(spliced_seed320[[1]]),function(i){
+  if(i %% floor(p/10) == 0) cat('*')
   cor( log10(spliced_seed320[[1]][i,]+1), log10(spliced_seed320[[2]][i,]+1) ) } )
 
 cor_unspliced_seed320 <- sapply(1:nrow(unspliced_seed320[[1]]),function(i){
+  if(i %% floor(p/10) == 0) cat('*')
   cor( log10(unspliced_seed320[[1]][i,]+1), log10(unspliced_seed320[[2]][i,]+1) ) } )
 
-plot(cor_spliced_seed317, ylim=c(-1,1))
-dev.copy(png,filename="/Users/wakeup/Downloads/UW_23-25/proj_RNA/git/veloUncertainty/fig/yuhong/erythroid/cor_spliced_seed317.png")
-dev.off()
+nb_res <- apply(total, MARGIN=2, function(u) { MASS::glm.nb(x ~ 1, data=data.frame(x=as.numeric(u)))$theta })
+#[1564,8148]
+# cor_spliced_seed317[1564]
+# nb_res[1564]
 
-plot(cor_unspliced_seed317, ylim=c(-1,1))
-dev.copy(png,filename="/Users/wakeup/Downloads/UW_23-25/proj_RNA/git/veloUncertainty/fig/yuhong/erythroid/cor_unspliced_seed317.png")
-dev.off()
+zero_fraction = sapply(1:p, function(j){
+  if(j %% floor(p/10) == 0) cat('*')
+  
+  length(which(total[j,] == 0))/ncol(total)
+})
+break_values <- seq(0, 1, length.out = 20)
+color_palette <- grDevices::colorRampPalette(c("lightgray", "coral"))(20)
+color_values <- sapply(zero_fraction, function(val){
+  color_palette[which.min(abs(val - break_values))]
+})
 
-plot(cor_spliced_seed320, ylim=c(-1,1))
-dev.copy(png,filename="/Users/wakeup/Downloads/UW_23-25/proj_RNA/git/veloUncertainty/fig/yuhong/erythroid/cor_spliced_seed320.png")
-dev.off()
+png(file = paste0("./corr_seed317.png"), height = 1000, width = 1800, units = "px", res = 300)
+par(mfrow=c(1,2))
+plot(cor_spliced_seed317, ylim = c(-1,1), pch = 16, col = color_values, 
+     main="Spliced",ylab="corr",cex=.7,cex.main=.8) 
+plot(cor_unspliced_seed317, ylim = c(-1,1), pch = 16, col = color_values, 
+     main="Unspliced",ylab="corr",cex=.7,cex.main=.8)
+graphics.off()
 
-plot(cor_unspliced_seed320, ylim=c(-1,1))
-dev.copy(png,filename="/Users/wakeup/Downloads/UW_23-25/proj_RNA/git/veloUncertainty/fig/yuhong/erythroid/cor_unspliced_seed320.png")
-dev.off()
-
-
-#### take a look at the gene with greatest correlation between splits
-c(min(cor_spliced_seed317),which.min(cor_spliced_seed317)) # (-0.8444428, 70)
-i = which.min(cor_spliced_seed317)
-plot(log10(spliced_seed317[[1]][i,]+1),log10(spliced_seed317[[2]][i,]+1),pch=16,asp=T,col=rgb(0.5,0.5,0.5,0.5))
-## jittered plots
-x = log10(spliced_seed317[[1]][i,]+1)
-y = log10(spliced_seed317[[2]][i,]+1)
-n = length(x)
-x = x + runif(n, min = -0.1, max = 0.1)
-y = y + runif(n, min = -0.1, max = 0.1)
-plot(x, y,pch=16,asp=T, col = rgb(0.5,0.5,0.5,0.1))
-## histogram
-hist(cor_spliced_seed317)
-
-length(which(abs(cor_spliced_seed317)>=0.3))/n  # 
-
-#### NA's in correlations between unspliced splits - due to (at least) one split matrix contains all zero counts for a particular gene
-which(is.na(cor_unspliced_seed317))
-## 541 1377 1559 1612
-which(is.na(cor_unspliced_seed320))
-## 541 1377 1612
-check_nonzero_seed317 <- sapply(1:nrow(unspliced_seed317[[1]]),function(i){ (sum(unspliced_seed317[[1]][i,])>0 & sum(unspliced_seed317[[2]][i,])>0) })
-which(!check_nonzero_seed317) ### 541 1377 1559 1612
-check_nonzero_seed320 <- sapply(1:nrow(unspliced_seed320[[1]]),function(i){ (sum(unspliced_seed320[[1]][i,])>0 & sum(unspliced_seed320[[2]][i,])>0) })
-which(!check_nonzero_seed320) ### 541 1377 1612
-
-summary(cor_spliced_seed317)
-summary(cor_unspliced_seed317)
-summary(cor_spliced_seed320)
-summary(cor_unspliced_seed320)
-
-
-
-
-
-
-
+png(file = paste0("./corr_seed320.png"), height = 1000, width = 1800, units = "px", res = 300)
+par(mfrow=c(1,2))
+plot(cor_spliced_seed320, ylim = c(-1,1), pch = 16, col = color_values, 
+     main="Spliced",ylab="corr",cex=.7,cex.main=.8) 
+plot(cor_unspliced_seed320, ylim = c(-1,1), pch = 16, col = color_values, 
+     main="Unspliced",ylab="corr",cex=.7,cex.main=.8)
+graphics.off()
 
 
 
