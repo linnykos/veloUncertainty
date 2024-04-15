@@ -1,0 +1,70 @@
+import scvelo as scv
+import scanpy as sc
+from sklearn.metrics.pairwise import cosine_similarity
+import pandas as pd
+import numpy as np
+
+# read split counts data
+adata_split1_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_split1_seurat_seed317.h5ad')
+adata_split2_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_split2_seurat_seed317.h5ad')
+print("**************** read seed317 split counts! ****************")
+## process split1
+scv.pp.normalize_per_cell(adata_split1_seed317)
+scv.pp.log1p(adata_split1_seed317)
+scv.pp.moments(adata_split1_seed317, n_pcs=30, n_neighbors=30)
+sc.tl.pca(adata_split1_seed317, svd_solver="arpack")
+sc.pp.neighbors(adata_split1_seed317, n_neighbors=10, n_pcs=40)
+sc.tl.umap(adata_split1_seed317)
+scv.tl.recover_dynamics(adata_split1_seed317)
+scv.tl.velocity(adata_split1_seed317, mode="dynamical")
+scv.tl.velocity_graph(adata_split1_seed317)
+scv.pl.velocity_embedding_stream(adata_split1_seed317, basis='umap',color="clusters",
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed317_split1.png")
+print("**************** seed317 split1 processed! ****************")
+## process split2
+scv.pp.normalize_per_cell(adata_split2_seed317)
+scv.pp.log1p(adata_split2_seed317)
+scv.pp.moments(adata_split2_seed317, n_pcs=30, n_neighbors=30)
+sc.tl.pca(adata_split2_seed317, svd_solver="arpack")
+sc.pp.neighbors(adata_split2_seed317, n_neighbors=10, n_pcs=40)
+sc.tl.umap(adata_split2_seed317)
+scv.tl.recover_dynamics(adata_split2_seed317)
+scv.tl.velocity(adata_split2_seed317, mode="dynamical")
+scv.tl.velocity_graph(adata_split2_seed317)
+scv.pl.velocity_embedding_stream(adata_split2_seed317, basis='umap',color="clusters",
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed317_split2.png")
+print("**************** seed317 split2 processed! ****************")
+
+# replace nan's to 0's in layers['velocity']
+adata_split1_seed317.layers["velocity_rmNA"] = np.nan_to_num(adata_split1_seed317.layers['velocity'], nan=0)
+adata_split2_seed317.layers["velocity_rmNA"] = np.nan_to_num(adata_split2_seed317.layers['velocity'], nan=0)
+# cosine similarity
+cos_sim = cosine_similarity(adata_split1_seed317.layers["velocity_rmNA"],
+                            adata_split2_seed317.layers["velocity_rmNA"])
+print("**************** cosine similarity computed! ****************")
+
+# total counts data process
+adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_total_seurat_seed317.h5ad')
+print("**************** read total counts! ****************")
+scv.pp.normalize_per_cell(adata_total)
+scv.pp.log1p(adata_total)
+scv.pp.moments(adata_total, n_pcs=30, n_neighbors=30)
+sc.tl.pca(adata_total, svd_solver="arpack")
+sc.pp.neighbors(adata_total, n_neighbors=10, n_pcs=40)
+sc.tl.umap(adata_total)
+scv.tl.recover_dynamics(adata_total)
+scv.tl.velocity(adata_total, mode="dynamical")
+scv.tl.velocity_graph(adata_total)
+scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="clusters",
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed317_total.png")
+print("**************** seed317 total counts processed! ****************")
+
+# add cosine similarities to total counts object
+adata_total.obs["cos_sim_cell"] = [cos_sim[i,i] for i in range(0,3696)]
+adata_total.obs["cos_sim_cell"] = pd.DataFrame(adata_total.obs["cos_sim_cell"])
+scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_cell",cmap='coolwarm',
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed317_cos_similarity.png")
+print("**************** seed317 cosine similarity plotted! ****************")
+
+
+
