@@ -30,6 +30,8 @@ scv.pp.filter_genes(adata, min_shared_counts=20)
 scv.pp.normalize_per_cell(adata)
 scv.pp.filter_genes_dispersion(adata, n_top_genes=2000) 
 
+true_indices = adata.var['highly_variable_genes'][adata.var['highly_variable_genes'] == 'True'].index.tolist()
+velo_config.VGENES = true_indices
 
 adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_total_seurat_seed317.h5ad')
 adata_total.var['highly_variable'] = adata.var['highly_variable'].copy()
