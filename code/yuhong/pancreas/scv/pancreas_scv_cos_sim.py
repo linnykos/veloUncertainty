@@ -5,8 +5,8 @@ import pandas as pd
 import numpy as np
 
 # read split counts data
-adata_split1_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_split1_seurat_seed317.h5ad')
-adata_split2_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_split2_seurat_seed317.h5ad')
+adata_split1_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed317_split1_seurat.h5ad')
+adata_split2_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed317_split2_seurat.h5ad')
 print("**************** read seed317 split counts! ****************")
 ## process split1
 scv.pp.normalize_per_cell(adata_split1_seed317)
@@ -44,7 +44,7 @@ cos_sim = cosine_similarity(adata_split1_seed317.layers["velocity_rmNA"],
 print("**************** cosine similarity computed! ****************")
 
 # total counts data process
-adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_total_seurat_seed317.h5ad')
+adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed317_total_seurat.h5ad')
 print("**************** read total counts! ****************")
 scv.pp.normalize_per_cell(adata_total)
 scv.pp.log1p(adata_total)
@@ -60,7 +60,7 @@ scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="clusters",
 print("**************** seed317 total counts processed! ****************")
 
 # add cosine similarities to total counts object
-adata_total.obs["cos_sim_cell"] = [cos_sim[i,i] for i in range(0,3696)]
+adata_total.obs["cos_sim_cell"] = np.diag(cos_sim)
 adata_total.obs["cos_sim_cell"] = pd.DataFrame(adata_total.obs["cos_sim_cell"])
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_cell",cmap='coolwarm',
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed317_cos_similarity.png")
@@ -69,8 +69,8 @@ print("**************** seed317 cosine similarity plotted! ****************")
 ##################################
 ##################################
 # read split counts data
-adata_split1_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_split1_seurat_seed320.h5ad')
-adata_split2_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_split2_seurat_seed320.h5ad')
+adata_split1_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed320_split1_seurat.h5ad')
+adata_split2_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed320_split2_seurat.h5ad')
 print("**************** read seed320 split counts! ****************")
 ## process split1
 scv.pp.normalize_per_cell(adata_split1_seed320)
@@ -111,7 +111,7 @@ print("**************** cosine similarity computed! ****************")
 
 # add cosine similarities to total counts object
 del adata_total.obs["cos_sim_cell"]
-adata_total.obs["cos_sim_cell"] = [cos_sim[i,i] for i in range(0,3696)]
+adata_total.obs["cos_sim_cell"] = np.diag(cos_sim)
 adata_total.obs["cos_sim_cell"] = pd.DataFrame(adata_total.obs["cos_sim_cell"])
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_cell",cmap='coolwarm',
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed320_cos_similarity.png")

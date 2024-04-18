@@ -33,7 +33,7 @@ scv.pp.filter_genes_dispersion(adata, n_top_genes=2000)
 true_indices = adata.var['highly_variable_genes'][adata.var['highly_variable_genes'] == 'True'].index.tolist()
 velo_config.VGENES = true_indices
 
-adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_total_seurat_seed317.h5ad')
+adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed317_total_seurat.h5ad')
 adata_total.var['highly_variable'] = adata.var['highly_variable'].copy()
 adata_total.__dict__['_raw'].__dict__['_var'] = adata_total.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
 # To solve the error: ValueError: '_index' is a reserved name for dataframe columns.
@@ -46,7 +46,7 @@ scv.pl.velocity_embedding_stream(adata_total_res,basis="umap",color="clusters",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/unitvelo/unitvelo_total.png")
 print("total counts done!")
 
-split1_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_split1_seurat_seed317.h5ad')
+split1_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed317_split1_seurat.h5ad')
 split1_seed317.var['highly_variable'] = adata.var['highly_variable'].copy()
 split1_seed317.__dict__['_raw'].__dict__['_var'] = split1_seed317.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
 split1_seed317_path = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup2_utv/tmp/scvelo_pancreas_split1_seurat_seed317.h5ad'
@@ -57,7 +57,7 @@ scv.pl.velocity_embedding_stream(split1_seed317_res,basis="umap",color="clusters
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/unitvelo/unitvelo_seed317_split1.png")
 print("seed317 split1 done!")
 
-split2_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_split2_seurat_seed317.h5ad')
+split2_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed317_split2_seurat.h5ad')
 split2_seed317.var['highly_variable'] = adata.var['highly_variable'].copy()
 split2_seed317.__dict__['_raw'].__dict__['_var'] = split2_seed317.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
 split2_seed317_path = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup2_utv/tmp/scvelo_pancreas_split2_seurat_seed317.h5ad'
@@ -68,7 +68,7 @@ scv.pl.velocity_embedding_stream(split2_seed317_res,basis="umap",color="clusters
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/unitvelo/unitvelo_seed317_split2.png")
 print("seed317 split2 done!")
 
-split1_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_split1_seurat_seed320.h5ad')
+split1_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed320_split1_seurat.h5ad')
 split1_seed320.var['highly_variable'] = adata.var['highly_variable'].copy()
 split1_seed320.__dict__['_raw'].__dict__['_var'] = split1_seed320.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
 split1_seed320_path = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup2_utv/tmp/scvelo_pancreas_split1_seurat_seed320.h5ad'
@@ -79,7 +79,7 @@ scv.pl.velocity_embedding_stream(split1_seed320_res,basis="umap",color="clusters
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/unitvelo/unitvelo_seed320_split1.png")
 print("seed320 split1 done!")
 
-split2_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/scvelo_pancreas_split2_seurat_seed320.h5ad')
+split2_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed320_split2_seurat.h5ad')
 split2_seed320.var['highly_variable'] = adata.var['highly_variable'].copy()
 split2_seed320.__dict__['_raw'].__dict__['_var'] = split2_seed320.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
 split2_seed320_path = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup2_utv/tmp/scvelo_pancreas_split2_seurat_seed320.h5ad'
