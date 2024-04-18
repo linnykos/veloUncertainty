@@ -17,5 +17,5 @@ conda env list
 
 python --version
 conda list
-python pancreas_scv_cos_sim.py > /home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup1/slurm_scv/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
+python /home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/code/yuhong/pancreas/scv/pancreas_scv_cos_sim.py > /home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup1/slurm_scv/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
 
