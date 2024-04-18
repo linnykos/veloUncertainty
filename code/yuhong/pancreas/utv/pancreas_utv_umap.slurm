@@ -4,7 +4,7 @@
 #SBATCH --partition=all-12c128g
 #SBATCH --time=48:00:00
 
-#SBATCH --job-name=veloUncertaintyUniTVelo
+#SBATCH --job-name=utvumap
 #SBATCH --mem-per-cpu=50gb
 
 #SBATCH --error=/home/users/%u/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup2_utv/slurm/slurm_%j.err
@@ -17,4 +17,4 @@ conda env list
 
 python --version
 conda list
-python pancreas_utv_umap.py > /home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup2_utv/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
+python /home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/code/yuhong/pancreas/utv/pancreas_utv_umap.py > /home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup2_utv/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
