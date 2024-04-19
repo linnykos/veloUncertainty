@@ -96,35 +96,3 @@ split2_seed317_res.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncerta
 split1_seed320_res.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_utv/pancreas_utv_seed320_split1.h5ad')
 split2_seed320_res.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_utv/pancreas_utv_seed320_split2.h5ad')
 
-##### cosine similarity
-import numpy as np
-import pandas as pd
-
-split1_seed317_res.layers["velocity_rmNA"] = np.nan_to_num(split1_seed317_res.layers['velocity'], nan=0)
-split1_seed317_res.layers["velocity_rmNA"] = np.nan_to_num(split1_seed317_res.layers['velocity'], nan=0)
-
-cos_sim_seed317 = cosine_similarity(split1_seed317_res.layers['velocity_rmNA'],
-                                    split2_seed317_res.layers['velocity_rmNA'])
-
-adata_total_res.obs['cos_sim'] = [cos_sim_seed317[i,i] for i in range(0,3696)]
-adata_total_res.obs['cos_sim'] = pd.DataFrame(adata_total_res.obs['cos_sim'])
-
-scv.pl.velocity_embedding_stream(adata_total_res,basis="umap",color="cos_sim",cmap="coolwarm",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/unitvelo/unitvelo_seed317_cos_similarity.png")
-del adata_total_res.obs['cos_sim']
-print("seed317 cosine similarity done!")
-
-split1_seed320_res.layers["velocity_rmNA"] = np.nan_to_num(split1_seed320_res.layers['velocity'], nan=0)
-split1_seed320_res.layers["velocity_rmNA"] = np.nan_to_num(split1_seed320_res.layers['velocity'], nan=0)
-
-cos_sim_seed320 = cosine_similarity(split1_seed320_res.layers['velocity_rmNA'],
-                                    split2_seed320_res.layers['velocity_rmNA'])
-
-adata_total_res.obs['cos_sim'] = [cos_sim_seed320[i,i] for i in range(0,3696)]
-adata_total_res.obs['cos_sim'] = pd.DataFrame(adata_total_res.obs['cos_sim'])
-
-scv.pl.velocity_embedding_stream(adata_total_res,basis="umap",color="cos_sim",cmap="coolwarm",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/unitvelo/unitvelo_seed320_cos_similarity.png")
-print("seed320 cosine similarity done!")
-
-
