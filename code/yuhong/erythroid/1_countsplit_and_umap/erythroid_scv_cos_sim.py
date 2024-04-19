@@ -17,7 +17,7 @@ sc.tl.umap(adata_split1_seed317)
 scv.tl.recover_dynamics(adata_split1_seed317)
 scv.tl.velocity(adata_split1_seed317, mode="dynamical")
 scv.tl.velocity_graph(adata_split1_seed317)
-scv.pl.velocity_embedding_stream(adata_split1_seed317, basis='umap',color="clusters",
+scv.pl.velocity_embedding_stream(adata_split1_seed317, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed317_split1_2000.png")
 print("**************** seed317 split1 processed! ****************")
 
@@ -31,7 +31,7 @@ sc.tl.umap(adata_split2_seed317)
 scv.tl.recover_dynamics(adata_split2_seed317)
 scv.tl.velocity(adata_split2_seed317, mode="dynamical")
 scv.tl.velocity_graph(adata_split2_seed317)
-scv.pl.velocity_embedding_stream(adata_split2_seed317, basis='umap',color="clusters",
+scv.pl.velocity_embedding_stream(adata_split2_seed317, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed317_split2_2000.png")
 print("**************** seed317 split2 processed! ****************")
 
@@ -53,7 +53,7 @@ sc.tl.umap(adata_total)
 scv.tl.recover_dynamics(adata_total)
 scv.tl.velocity(adata_total, mode="dynamical")
 scv.tl.velocity_graph(adata_total)
-scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="clusters",
+scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed317_total_2000.png")
 print("**************** total counts processed! ****************")
 
@@ -79,7 +79,7 @@ sc.tl.umap(adata_split1_seed320)
 scv.tl.recover_dynamics(adata_split1_seed320)
 scv.tl.velocity(adata_split1_seed320, mode="dynamical")
 scv.tl.velocity_graph(adata_split1_seed320)
-scv.pl.velocity_embedding_stream(adata_split1_seed320, basis='umap',color="clusters",
+scv.pl.velocity_embedding_stream(adata_split1_seed320, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed320_split1_2000.png")
 print("**************** seed320 split1 processed! ****************")
 
@@ -93,7 +93,7 @@ sc.tl.umap(adata_split2_seed320)
 scv.tl.recover_dynamics(adata_split2_seed320)
 scv.tl.velocity(adata_split2_seed320, mode="dynamical")
 scv.tl.velocity_graph(adata_split2_seed320)
-scv.pl.velocity_embedding_stream(adata_split2_seed320, basis='umap',color="clusters",
+scv.pl.velocity_embedding_stream(adata_split2_seed320, basis='umap',color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed320_split2_2000.png")
 print("**************** seed320 split2 processed! ****************")
 
