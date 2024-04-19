@@ -3,6 +3,7 @@ import scanpy as sc
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 
 # read split counts data
 adata_split1_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed317_split1_seurat.h5ad')
@@ -38,10 +39,22 @@ print("**************** seed317 split2 processed! ****************")
 # replace nan's to 0's in layers['velocity']
 adata_split1_seed317.layers["velocity_rmNA"] = np.nan_to_num(adata_split1_seed317.layers['velocity'], nan=0)
 adata_split2_seed317.layers["velocity_rmNA"] = np.nan_to_num(adata_split2_seed317.layers['velocity'], nan=0)
+Ngenes_317s1 = np.sum(~np.isnan(adata_split1_seed317.layers['velocity'][0]))
+Ngenes_317s2 = np.sum(~np.isnan(adata_split2_seed317.layers['velocity'][0]))
+
+Ngenes_317common = np.sum(np.isnan(adata_split1_seed317.layers["velocity"][0] + adata_split2_seed317.layers["velocity"][0])==0)
+
 # cosine similarity
-cos_sim = cosine_similarity(adata_split1_seed317.layers["velocity_rmNA"],
-                            adata_split2_seed317.layers["velocity_rmNA"])
+cos_sim_seed317 = np.diag(cosine_similarity(adata_split1_seed317.layers["velocity_rmNA"], adata_split2_seed317.layers["velocity_rmNA"]))
 print("**************** cosine similarity computed! ****************")
+# Create histogram
+plt.clf()
+plt.hist(cos_sim_seed317, bins=30, edgecolor='black')  # Adjust bins and edgecolor as needed
+plt.xlabel('cosine similarity (seed317)')
+plt.ylabel('Frequency')
+plt.title('Histogram of cosine similarity, pan+scv, Ngenes='+str(Ngenes_317common))
+plt.savefig('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed317_cos_similarity_hist.png')
+plt.clf()
 
 # total counts data process
 adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/pancreas_seed317_total_seurat.h5ad')
@@ -60,8 +73,8 @@ scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="clusters",
 print("**************** seed317 total counts processed! ****************")
 
 # add cosine similarities to total counts object
-adata_total.obs["cos_sim_cell"] = np.diag(cos_sim)
-adata_total.obs["cos_sim_cell"] = pd.DataFrame(adata_total.obs["cos_sim_cell"])
+adata_total.obs["cos_sim_seed317"] = cos_sim_seed317
+adata_total.obs["cos_sim_seed317"] = pd.DataFrame(adata_total.obs["cos_sim_seed317"])
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_cell",cmap='coolwarm',
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed317_cos_similarity.png")
 print("**************** seed317 cosine similarity plotted! ****************")
@@ -102,18 +115,28 @@ print("**************** seed320 split2 processed! ****************")
 # replace nan's to 0's in layers['velocity']
 adata_split1_seed320.layers["velocity_rmNA"] = np.nan_to_num(adata_split1_seed320.layers['velocity'], nan=0)
 adata_split2_seed320.layers["velocity_rmNA"] = np.nan_to_num(adata_split2_seed320.layers['velocity'], nan=0)
+Ngenes_320s1 = np.sum(~np.isnan(adata_split1_seed320.layers['velocity'][0]))
+Ngenes_320s2 = np.sum(~np.isnan(adata_split2_seed320.layers['velocity'][0]))
+
+Ngenes_320common = np.sum(np.isnan(adata_split1_seed320.layers["velocity"][0] + adata_split2_seed320.layers["velocity"][0])==0)
+
 # cosine similarity
-cos_sim = 0
-cos_sim = cosine_similarity(adata_split1_seed320.layers["velocity_rmNA"],
-                            adata_split2_seed320.layers["velocity_rmNA"])
+cos_sim_seed320 = np.diag(cosine_similarity(adata_split1_seed320.layers["velocity_rmNA"], adata_split2_seed320.layers["velocity_rmNA"]))
 print("**************** cosine similarity computed! ****************")
 
+# Create histogram
+plt.clf()
+plt.hist(cos_sim_seed320, bins=30, edgecolor='black')  # Adjust bins and edgecolor as needed
+plt.xlabel('cosine similarity (seed320)')
+plt.ylabel('Frequency')
+plt.title('Histogram of cosine similarity, pan+scv, Ngenes='+str(Ngenes_320common))
+plt.savefig('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed320_cos_similarity_hist.png')
+plt.clf()
 
 # add cosine similarities to total counts object
-del adata_total.obs["cos_sim_cell"]
-adata_total.obs["cos_sim_cell"] = np.diag(cos_sim)
-adata_total.obs["cos_sim_cell"] = pd.DataFrame(adata_total.obs["cos_sim_cell"])
-scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_cell",cmap='coolwarm',
+adata_total.obs["cos_sim_seed320"] = cos_sim_seed320
+adata_total.obs["cos_sim_seed320"] = pd.DataFrame(adata_total.obs["cos_sim_seed320"])
+scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed320",cmap='coolwarm',
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo_seed320_cos_similarity.png")
 print("**************** seed320 cosine similarity plotted! ****************")
 
