@@ -65,8 +65,8 @@ scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_cell",
 print("**************** seed317 cosine similarity plotted! ****************")
 
 # read split counts data
-adata_split1_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/erythroid_seed320_split1_seurat.h5ad')
-adata_split2_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_split/erythroid_seed320_split2_seurat.h5ad')
+adata_split1_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed320_split1_seurat.h5ad')
+adata_split2_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed320_split2_seurat.h5ad')
 print("**************** read seed320 split counts! ****************")
 
 ## process split1
