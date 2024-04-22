@@ -26,7 +26,7 @@ scv.tl.recover_dynamics(adata_split1_seed317)
 scv.tl.velocity(adata_split1_seed317, mode="dynamical")
 scv.tl.velocity_graph(adata_split1_seed317)
 scv.pl.velocity_embedding_stream(adata_split1_seed317, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_split1.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_seed317_split1_2000.png")
 print("**************** seed317 split1 processed! ****************")
 
 
@@ -46,36 +46,16 @@ scv.tl.recover_dynamics(adata_split2_seed317)
 scv.tl.velocity(adata_split2_seed317, mode="dynamical")
 scv.tl.velocity_graph(adata_split2_seed317)
 scv.pl.velocity_embedding_stream(adata_split2_seed317, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_split2.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_seed317_split2_2000.png")
 print("**************** seed317 split2 processed! ****************")
 
 # replace nan's to 0's in layers['velocity']
 adata_split1_seed317.layers["velocity_rmNA"] = np.nan_to_num(adata_split1_seed317.layers['velocity'], nan=0)
 adata_split2_seed317.layers["velocity_rmNA"] = np.nan_to_num(adata_split2_seed317.layers['velocity'], nan=0)
-Ngenes_317s1 = np.sum(~np.isnan(adata_split1_seed317.layers['velocity'][0]))
-Ngenes_317s2 = np.sum(~np.isnan(adata_split2_seed317.layers['velocity'][0]))
-Ngenes_317common = np.sum(np.isnan(adata_split1_seed317.layers["velocity"][0] + adata_split2_seed317.layers["velocity"][0])==0)
 # cosine similarity
-cos_sim_seed317 = np.diag(cosine_similarity(adata_split1_seed317.layers["velocity_rmNA"],
-                                            adata_split2_seed317.layers["velocity_rmNA"]))
-print("**************** seed317 erythroid cosine similarity computed! ****************")
-
-# Create histogram
-plt.clf()
-plt.hist(cos_sim_seed317, bins=30, edgecolor='black')  # Adjust bins and edgecolor as needed
-## add mean
-mean_seed317 = np.mean(cos_sim_seed317)
-plt.axvline(mean_seed317, color='red', linestyle='dashed', linewidth=1)
-## add number of genes used in each split
-plt.text(-1, 320, 'mean cosine similarity = '+str(mean_seed317), color='blue', fontsize=10)
-plt.text(-1, 300, 'split1 number of genes = '+str(Ngenes_317s1), color='blue', fontsize=10)
-plt.text(-1, 280, 'split2 number of genes = '+str(Ngenes_317s2), color='blue', fontsize=10)
-## add labels and title
-plt.xlabel('cosine similarity (seed317)')
-plt.ylabel('Frequency')
-plt.title('Histogram of cosine similarity, ery+scv, Ngenes='+str(Ngenes_317common))
-plt.savefig('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_cos_similarity_hist.png')
-plt.clf()
+cos_sim = cosine_similarity(adata_split1_seed317.layers["velocity_rmNA"],
+                            adata_split2_seed317.layers["velocity_rmNA"])
+print("**************** seed317 cosine similarity computed! ****************")
 
 # total counts data process
 scv.pp.normalize_per_cell(adata_total)
@@ -94,14 +74,14 @@ scv.tl.recover_dynamics(adata_total)
 scv.tl.velocity(adata_total, mode="dynamical")
 scv.tl.velocity_graph(adata_total)
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_total.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_seed317_total_2000.png")
 print("**************** total counts processed! ****************")
 
 # add cosine similarities to total counts object
-adata_total.obs["cos_sim_seed317"] = np.diag(cos_sim_seed317)
-adata_total.obs["cos_sim_seed317"] = pd.DataFrame(adata_total.obs["cos_sim_seed317"])
-scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed317",cmap='coolwarm',
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_cos_similarity.png")
+adata_total.obs["cos_sim_cell"] = np.diag(cos_sim)
+adata_total.obs["cos_sim_cell"] = pd.DataFrame(adata_total.obs["cos_sim_cell"])
+scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_cell",cmap='coolwarm',
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_seed317_cos_similarity_2000.png")
 print("**************** seed317 cosine similarity plotted! ****************")
 
 # read split counts data
@@ -126,7 +106,7 @@ scv.tl.recover_dynamics(adata_split1_seed320)
 scv.tl.velocity(adata_split1_seed320, mode="dynamical")
 scv.tl.velocity_graph(adata_split1_seed320)
 scv.pl.velocity_embedding_stream(adata_split1_seed320, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed320_split1_2000.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_seed320_split1_2000.png")
 print("**************** seed320 split1 processed! ****************")
 
 ## process split2
@@ -146,43 +126,24 @@ scv.tl.recover_dynamics(adata_split2_seed320)
 scv.tl.velocity(adata_split2_seed320, mode="dynamical")
 scv.tl.velocity_graph(adata_split2_seed320)
 scv.pl.velocity_embedding_stream(adata_split2_seed320, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed320_split2_2000.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_seed320_split2_2000.png")
 print("**************** seed320 split2 processed! ****************")
 
 # replace nan's to 0's in layers['velocity']
 adata_split1_seed320.layers["velocity_rmNA"] = np.nan_to_num(adata_split1_seed320.layers['velocity'], nan=0)
 adata_split2_seed320.layers["velocity_rmNA"] = np.nan_to_num(adata_split2_seed320.layers['velocity'], nan=0)
-
-Ngenes_320s1 = np.sum(~np.isnan(adata_split1_seed320.layers['velocity'][0]))
-Ngenes_320s2 = np.sum(~np.isnan(adata_split2_seed320.layers['velocity'][0]))
-Ngenes_320common = np.sum(np.isnan(adata_split1_seed320.layers["velocity"][0] + adata_split2_seed320.layers["velocity"][0])==0)
 # cosine similarity
-cos_sim_seed320 = np.diag(cosine_similarity(adata_split1_seed320.layers["velocity_rmNA"],
-                                            adata_split2_seed320.layers["velocity_rmNA"]))
-print("**************** seed320 erythroid cosine similarity computed! ****************")
-
-# Create histogram
-plt.clf()
-plt.hist(cos_sim_seed320, bins=30, edgecolor='black')  # Adjust bins and edgecolor as needed
-## add mean
-mean_seed320 = np.mean(cos_sim_seed320)
-plt.axvline(mean_seed320, color='red', linestyle='dashed', linewidth=1)
-## add number of genes used in each split
-plt.text(-1, 320, 'mean cosine similarity = '+str(mean_seed320), color='blue', fontsize=10)
-plt.text(-1, 300, 'split1 number of genes = '+str(Ngenes_320s1), color='blue', fontsize=10)
-plt.text(-1, 280, 'split2 number of genes = '+str(Ngenes_320s2), color='blue', fontsize=10)
-## add labels and title
-plt.xlabel('cosine similarity (seed320)')
-plt.ylabel('Frequency')
-plt.title('Histogram of cosine similarity, ery+scv, Ngenes='+str(Ngenes_320common))
-plt.savefig('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed320_cos_similarity_hist.png')
-plt.clf()
+cos_sim = 0
+cos_sim = cosine_similarity(adata_split1_seed320.layers["velocity_rmNA"],
+                            adata_split2_seed320.layers["velocity_rmNA"])
+print("**************** seed320 cosine similarity computed! ****************")
 
 # add cosine similarities to total counts object
-adata_total.obs["cos_sim_seed320"] = np.diag(cos_sim_seed320)
-adata_total.obs["cos_sim_seed320"] = pd.DataFrame(adata_total.obs["cos_sim_seed320"])
-scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed320",cmap='coolwarm',
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed320_cos_similarity_2000.png")
+del adata_total.obs["cos_sim_cell"]
+adata_total.obs["cos_sim_cell"] = np.diag(cos_sim)
+adata_total.obs["cos_sim_cell"] = pd.DataFrame(adata_total.obs["cos_sim_cell"])
+scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_cell",cmap='coolwarm',
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo_seed320_cos_similarity_2000.png")
 print("**************** seed320 cosine similarity plotted! ****************")
 
 
