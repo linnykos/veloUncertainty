@@ -3,6 +3,7 @@ import scanpy as sc
 from sklearn.metrics.pairwise import cosine_similarity
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 import bbknn
 
 adata_split1_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed317_split1_seurat.h5ad')
