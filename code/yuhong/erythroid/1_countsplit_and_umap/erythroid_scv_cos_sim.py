@@ -98,7 +98,7 @@ scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="celltype",
 print("**************** total counts processed! ****************")
 
 # add cosine similarities to total counts object
-adata_total.obs["cos_sim_seed317"] = np.diag(cos_sim_seed317)
+adata_total.obs["cos_sim_seed317"] = cos_sim_seed317
 adata_total.obs["cos_sim_seed317"] = pd.DataFrame(adata_total.obs["cos_sim_seed317"])
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed317",cmap='coolwarm',
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_cos_similarity.png")
@@ -179,7 +179,7 @@ plt.savefig('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncer
 plt.clf()
 
 # add cosine similarities to total counts object
-adata_total.obs["cos_sim_seed320"] = np.diag(cos_sim_seed320)
+adata_total.obs["cos_sim_seed320"] = cos_sim_seed320
 adata_total.obs["cos_sim_seed320"] = pd.DataFrame(adata_total.obs["cos_sim_seed320"])
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed320",cmap='coolwarm',
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed320_cos_similarity_2000.png")
