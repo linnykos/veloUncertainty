@@ -83,7 +83,7 @@ print("**************** seed317 total counts processed! ****************")
 # add cosine similarities to total counts object
 adata_total.obs["cos_sim_seed317"] = cos_sim_seed317
 adata_total.obs["cos_sim_seed317"] = pd.DataFrame(adata_total.obs["cos_sim_seed317"])
-scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_cell",cmap='coolwarm',
+scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed317",cmap='coolwarm',
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/scvelo_seed317_cos_similarity.png")
 print("**************** seed317 cosine similarity plotted! ****************")
 
