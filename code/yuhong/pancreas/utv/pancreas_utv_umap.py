@@ -25,7 +25,7 @@ os.environ["TF_USE_LEGACY_KERAS"]="1"
 ## velo_config.TF_USE_LEGACY_KERAS=True
 
 label='clusters'
-adata = scv.datasets.pancreas()
+adata = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Pancreas/endocrinogenesis_day15.h5ad")
 scv.pp.filter_genes(adata, min_shared_counts=20) 
 scv.pp.normalize_per_cell(adata)
 scv.pp.filter_genes_dispersion(adata, n_top_genes=2000) 
