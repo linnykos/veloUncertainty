@@ -11,7 +11,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 velo_config = utv.config.Configuration()
 velo_config.R2_ADJUST = False
 velo_config.IROOT = None
-velo_config.FIT_OPTION = '2'
+velo_config.FIT_OPTION = '1'
 velo_config.ASSIGN_POS_U = True
 
 os.environ["TF_USE_LEGACY_KERAS"]="1"
