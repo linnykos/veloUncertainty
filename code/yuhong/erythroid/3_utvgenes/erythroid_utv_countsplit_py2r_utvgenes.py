@@ -24,7 +24,7 @@ os.environ["TF_USE_LEGACY_KERAS"]="1"
 # Tried this but did not work:
 ## velo_config.TF_USE_LEGACY_KERAS=True
 
-label='clusters'
+label='celltype'
 adata = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Gastrulation/erythroid_lineage.h5ad")
 
 spliced = adata.layers['spliced'].copy() # shape=(9815, 53801)
