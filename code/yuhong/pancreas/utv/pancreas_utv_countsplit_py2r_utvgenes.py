@@ -3,7 +3,7 @@ import unitvelo as utv
 import scanpy as sc
 import tf_keras
 import os
-from sklearn.metrics.pairwise import cosine_similarity
+from scipy.sparse import csr_matrix
 
 ### did not run pp.neighbors
 # the below script uses the environment: "utvClone"
@@ -26,6 +26,20 @@ os.environ["TF_USE_LEGACY_KERAS"]="1"
 
 label='clusters'
 adata = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Pancreas/endocrinogenesis_day15.h5ad")
+
+spliced = adata.layers['spliced'].copy() # shape=(9815, 53801)
+unspliced = adata.layers['unspliced'].copy()
+gene_names = adata.var['highly_variable_genes'].copy()
+
+adata.X = csr_matrix(adata.X)
+positions_dict = {gene: pos for pos, gene in enumerate(gene_names.index)}
+
+positions = [positions_dict[gene] for gene in adata.var['highly_variable_genes'].index]
+
+spliced_subset = spliced[:,positions]
+unspliced_subset = unspliced[:,positions]
+adata.layers['spliced_original'] = spliced_subset
+adata.layers['unspliced_original'] = unspliced_subset
 
 path = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup5_panutv_utvgenes/pan_utv_tmp.h5ad"
 adata.write_h5ad(filename=path)
