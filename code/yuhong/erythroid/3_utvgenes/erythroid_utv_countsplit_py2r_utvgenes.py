@@ -29,12 +29,12 @@ adata = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuho
 
 spliced = adata.layers['spliced'].copy() # shape=(9815, 53801)
 unspliced = adata.layers['unspliced'].copy()
-gene_names = adata.var['highly_variable_genes'].copy()
+gene_names = adata.var['Accession'].copy()
 
 adata.X = csr_matrix(adata.X)
 positions_dict = {gene: pos for pos, gene in enumerate(gene_names.index)}
 
-positions = [positions_dict[gene] for gene in adata.var['highly_variable_genes'].index]
+positions = [positions_dict[gene] for gene in adata.var['Accession'].index]
 
 spliced_subset = spliced[:,positions]
 unspliced_subset = unspliced[:,positions]
