@@ -27,7 +27,7 @@ os.environ["TF_USE_LEGACY_KERAS"]="1"
 label='clusters'
 adata = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Pancreas/endocrinogenesis_day15.h5ad")
 
-path = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup4_utvgenes/tmp/pan_utv_py2r.h5ad"
+path = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup5_panutv_utvgenes/pan_utv_tmp.h5ad"
 adata.write_h5ad(filename=path)
 adata_res = utv.run_model(adata, label, config_file=velo_config)
 adata_res.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pan_utv_utvgenes/pan_utv_preprocess.h5ad')
