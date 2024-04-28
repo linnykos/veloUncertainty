@@ -9,10 +9,11 @@ from scipy.sparse import csr_matrix
 # the below script uses the environment: "utvClone"
 
 velo_config = utv.config.Configuration()
-velo_config.R2_ADJUST = False
+velo_config.R2_ADJUST = True
 velo_config.IROOT = None
 velo_config.FIT_OPTION = '1'
-velo_config.ASSIGN_POS_U = True
+velo_config.AGENES_R2 = 1
+#velo_config.ASSIGN_POS_U = True
 
 os.environ["TF_USE_LEGACY_KERAS"]="1"
 # https://github.com/tensorflow/tensorflow/issues/62337
@@ -46,6 +47,8 @@ adata.write_h5ad(filename=path)
 adata_res = utv.run_model(adata, label, config_file=velo_config)
 adata_res.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/ery_utv_utvgenes/ery_utv_preprocess.h5ad')
 
-scv.pl.velocity_embedding_stream(adata_res,basis="umap",color="clusters",
+scv.pl.velocity_embedding_stream(adata_res,basis="umap",color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo_utvgenes/unitvelo_preprocess.png")
+scv.pl.velocity_embedding_stream(adata_res,color=adata.uns['label'],dpi=100,
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo_utvgenes/unitvelo_preprocess_tut.png")
 
