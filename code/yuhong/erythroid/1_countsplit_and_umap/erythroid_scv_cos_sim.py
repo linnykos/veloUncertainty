@@ -6,6 +6,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import bbknn
 
+adata = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Gastrulation/erythroid_lineage.h5ad")
+scv.pp.normalize_per_cell(adata)
+scv.pp.log1p(adata)
+scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
+
 adata_split1_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed317_split1_seurat.h5ad')
 adata_split2_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed317_split2_seurat.h5ad')
 adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed317_total_seurat.h5ad')
@@ -104,7 +109,21 @@ scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed31
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_cos_similarity.png")
 print("**************** seed317 cosine similarity plotted! ****************")
 
+adata_total.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed317",cmap='coolwarm',
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed317_cos_similarity.png")
+scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="celltype",
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed317_total.png")
+adata_split1_seed317.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(adata_split1_seed317, basis='umap',color="celltype",
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed317_split1.png")
+adata_split2_seed317.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(adata_split1_seed317, basis='umap',color="celltype",
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed317_split2.png")
+
+##################################################################
 # read split counts data
+adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed317_total_seurat.h5ad')
 adata_split1_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed320_split1_seurat.h5ad')
 adata_split2_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed320_split2_seurat.h5ad')
 print("**************** read seed320 split counts! ****************")
@@ -184,5 +203,17 @@ adata_total.obs["cos_sim_seed320"] = pd.DataFrame(adata_total.obs["cos_sim_seed3
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed320",cmap='coolwarm',
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed320_cos_similarity_2000.png")
 print("**************** seed320 cosine similarity plotted! ****************")
+
+adata_total.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed320",cmap='coolwarm',
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed320_cos_similarity.png")
+scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="celltype",
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed320_total.png")
+adata_split1_seed320.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(adata_split1_seed320, basis='umap',color="celltype",
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed320_split1.png")
+adata_split2_seed320.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(adata_split1_seed320, basis='umap',color="celltype",
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed320_split2.png")
 
 
