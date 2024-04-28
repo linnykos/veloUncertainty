@@ -4,6 +4,14 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+adata = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Gastrulation/erythroid_lineage.h5ad")
+#adata = scv.datasets.gastrulation_erythroid()
+scv.pp.filter_genes(adata, min_shared_counts=20) 
+scv.pp.normalize_per_cell(adata)
+scv.pp.filter_genes_dispersion(adata, n_top_genes=2000) 
+### Extracted 2000 highly variable genes.
+scv.pp.log1p(adata)
+
 total_res = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_utv/erythroid_utv_total.h5ad')
 s1_res317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_utv/erythroid_utv_seed317_split1.h5ad')
 s2_res317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_utv/erythroid_utv_seed317_split2.h5ad')
@@ -40,14 +48,19 @@ total_res.obs['cos_sim_317'] = cos_sim_seed317
 total_res.obs['cos_sim_317'] = pd.DataFrame(total_res.obs['cos_sim_317'])
 scv.pl.velocity_embedding_stream(total_res,color="cos_sim_317",cmap="coolwarm",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_seed317_cos_similarity_nonumap.png")
-print("seed317 cosine similarity done!")
-
 scv.pl.velocity_embedding_stream(total_res,color="celltype",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_uncorrected_nonumap.png")
+
+total_res.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(total_res,basi='umap',color="cos_sim_317",cmap="coolwarm",
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_seed317_cos_similarity_preumap.png")
+print("seed317 cosine similarity done!")
+
 
 #####################################################################
 s1_res320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_utv/erythroid_utv_seed320_split1.h5ad')
 s2_res320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_utv/erythroid_utv_seed320_split2.h5ad')
+adata_total = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed317_total_seurat.h5ad')
 
 common_genes_320 = np.intersect1d(s1_res320.var['features'], s2_res320.var['features']) # 1342
 # indices_seed317 = s1_res317.var['features'][s1_res317.var['features'].isin(set(common_genes_317))].index.tolist()
@@ -81,6 +94,11 @@ total_res.obs['cos_sim_320'] = cos_sim_seed320
 total_res.obs['cos_sim_320'] = pd.DataFrame(total_res.obs['cos_sim_320'])
 scv.pl.velocity_embedding_stream(total_res,color="cos_sim_320",cmap="coolwarm",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_seed320_cos_similarity_nonumap.png")
+
+total_res.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(total_res,basi='umap',color="cos_sim_320",cmap="coolwarm",
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_seed320_cos_similarity_preumap.png")
+
 print("seed320 cosine similarity done!")
 
 
@@ -102,19 +120,15 @@ bbknn.bbknn(adata_total, batch_key='sequencing.batch')
 print("Batch correction done for total counts!")
 sc.pp.neighbors(adata_total, n_neighbors=10, n_pcs=40)
 sc.tl.umap(adata_total)
-#scv.tl.recover_dynamics(adata_total)
-#scv.tl.velocity(adata_total, mode="dynamical")
-#scv.tl.velocity_graph(adata_total)
 adata_total.obs['cos_sim_317'] = cos_sim_seed317
 adata_total.obs['cos_sim_320'] = cos_sim_seed320
-
 
 total_res_317 = total_res.copy()
 total_res_317.obsm['X_umap'] = adata_total.obsm['X_umap'].copy()
 scv.pl.velocity_embedding_stream(total_res_317, basis='umap',color="cos_sim_317",cmap='coolwarm',
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_seed317_cos_similarity_scvumap.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_seed317_cos_similarity_scvumapbbknn.png")
 total_res_320 = total_res.copy()
 total_res_320.obsm['X_umap'] = adata_total.obsm['X_umap'].copy()
 scv.pl.velocity_embedding_stream(total_res_320, basis='umap',color="cos_sim_320",cmap='coolwarm',
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_seed320_cos_similarity_scvumap.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_seed320_cos_similarity_scvumapbbknn.png")
 
