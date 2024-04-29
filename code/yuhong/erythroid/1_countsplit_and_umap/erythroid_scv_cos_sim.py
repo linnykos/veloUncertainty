@@ -31,7 +31,7 @@ scv.tl.recover_dynamics(adata_split1_seed317)
 scv.tl.velocity(adata_split1_seed317, mode="dynamical")
 scv.tl.velocity_graph(adata_split1_seed317)
 scv.pl.velocity_embedding_stream(adata_split1_seed317, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_split1.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_bbknn_317s1.png")
 print("**************** seed317 split1 processed! ****************")
 
 
@@ -51,7 +51,7 @@ scv.tl.recover_dynamics(adata_split2_seed317)
 scv.tl.velocity(adata_split2_seed317, mode="dynamical")
 scv.tl.velocity_graph(adata_split2_seed317)
 scv.pl.velocity_embedding_stream(adata_split2_seed317, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_split2.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_bbknn_317s2.png")
 print("**************** seed317 split2 processed! ****************")
 
 # replace nan's to 0's in layers['velocity']
@@ -79,7 +79,7 @@ plt.text(-1, 280, 'split2 number of genes = '+str(Ngenes_317s2), color='blue', f
 plt.xlabel('cosine similarity (seed317)')
 plt.ylabel('Frequency')
 plt.title('Histogram of cosine similarity, ery+scv, Ngenes='+str(Ngenes_317common))
-plt.savefig('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_cos_similarity_hist.png')
+plt.savefig('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_317_cos_similarity_hist.png')
 plt.clf()
 
 # total counts data process
@@ -99,27 +99,27 @@ scv.tl.recover_dynamics(adata_total)
 scv.tl.velocity(adata_total, mode="dynamical")
 scv.tl.velocity_graph(adata_total)
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_total.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_bbknn_total.png")
 print("**************** total counts processed! ****************")
 
 # add cosine similarities to total counts object
 adata_total.obs["cos_sim_seed317"] = cos_sim_seed317
 adata_total.obs["cos_sim_seed317"] = pd.DataFrame(adata_total.obs["cos_sim_seed317"])
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed317",cmap='coolwarm',
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed317_cos_similarity.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_bbknn_317_cos_similarity.png")
 print("**************** seed317 cosine similarity plotted! ****************")
 
 adata_total.obsm['X_umap'] = adata.obsm['X_umap'].copy()
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed317",cmap='coolwarm',
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed317_cos_similarity.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_preumap_317_cos_similarity.png")
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed317_total.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_preumap_317total.png")
 adata_split1_seed317.obsm['X_umap'] = adata.obsm['X_umap'].copy()
 scv.pl.velocity_embedding_stream(adata_split1_seed317, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed317_split1.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_preumap_317s1.png")
 adata_split2_seed317.obsm['X_umap'] = adata.obsm['X_umap'].copy()
 scv.pl.velocity_embedding_stream(adata_split1_seed317, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed317_split2.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_preumap_317s2.png")
 
 ##################################################################
 # read split counts data
@@ -145,7 +145,7 @@ scv.tl.recover_dynamics(adata_split1_seed320)
 scv.tl.velocity(adata_split1_seed320, mode="dynamical")
 scv.tl.velocity_graph(adata_split1_seed320)
 scv.pl.velocity_embedding_stream(adata_split1_seed320, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed320_split1_2000.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_bbknn_320s1.png")
 print("**************** seed320 split1 processed! ****************")
 
 ## process split2
@@ -165,7 +165,7 @@ scv.tl.recover_dynamics(adata_split2_seed320)
 scv.tl.velocity(adata_split2_seed320, mode="dynamical")
 scv.tl.velocity_graph(adata_split2_seed320)
 scv.pl.velocity_embedding_stream(adata_split2_seed320, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed320_split2_2000.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_bbknn_320s2.png")
 print("**************** seed320 split2 processed! ****************")
 
 # replace nan's to 0's in layers['velocity']
@@ -194,26 +194,26 @@ plt.text(-1, 280, 'split2 number of genes = '+str(Ngenes_320s2), color='blue', f
 plt.xlabel('cosine similarity (seed320)')
 plt.ylabel('Frequency')
 plt.title('Histogram of cosine similarity, ery+scv, Ngenes='+str(Ngenes_320common))
-plt.savefig('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed320_cos_similarity_hist.png')
+plt.savefig('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_320_cos_similarity_hist.png')
 plt.clf()
 
 # add cosine similarities to total counts object
 adata_total.obs["cos_sim_seed320"] = cos_sim_seed320
 adata_total.obs["cos_sim_seed320"] = pd.DataFrame(adata_total.obs["cos_sim_seed320"])
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed320",cmap='coolwarm',
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_seed320_cos_similarity_2000.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_bbknn_320_cos_similarity.png")
 print("**************** seed320 cosine similarity plotted! ****************")
 
 adata_total.obsm['X_umap'] = adata.obsm['X_umap'].copy()
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="cos_sim_seed320",cmap='coolwarm',
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed320_cos_similarity.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_preumap_320_cos_similarity.png")
 scv.pl.velocity_embedding_stream(adata_total, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed320_total.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_preumap_320total.png")
 adata_split1_seed320.obsm['X_umap'] = adata.obsm['X_umap'].copy()
 scv.pl.velocity_embedding_stream(adata_split1_seed320, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed320_split1.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_preumap_320s1.png")
 adata_split2_seed320.obsm['X_umap'] = adata.obsm['X_umap'].copy()
 scv.pl.velocity_embedding_stream(adata_split1_seed320, basis='umap',color="celltype",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scvelo_preumap_seed320_split2.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/scvelo/scv_preumap_320s2.png")
 
 
