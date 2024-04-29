@@ -34,9 +34,9 @@ plt.hist(cos_sim_seed317, bins=30, edgecolor='black')  # Adjust bins and edgecol
 mean_seed317 = np.mean(cos_sim_seed317)
 plt.axvline(mean_seed317, color='red', linestyle='dashed', linewidth=1)
 ## add number of genes used in each split
-plt.text(-.75, 525, 'mean cosine similarity = '+str(mean_seed317), color='blue', fontsize=10)
-plt.text(-.75, 500, 'split1 number of genes = '+str(Ngenes_317s1), color='blue', fontsize=10)
-plt.text(-.75, 475, 'split2 number of genes = '+str(Ngenes_317s2), color='blue', fontsize=10)
+plt.text(.6, 5000, 'mean cosine similarity = '+str(mean_seed317), color='blue', fontsize=10)
+plt.text(.6, 4000, 'split1 number of genes = '+str(Ngenes_317s1), color='blue', fontsize=10)
+plt.text(.6, 3000, 'split2 number of genes = '+str(Ngenes_317s2), color='blue', fontsize=10)
 ## add labels and title
 plt.xlabel('cosine similarity (seed317)')
 plt.ylabel('Frequency')
@@ -80,9 +80,9 @@ plt.hist(cos_sim_seed320, bins=30, edgecolor='black')  # Adjust bins and edgecol
 mean_seed320 = np.mean(cos_sim_seed320)
 plt.axvline(mean_seed320, color='red', linestyle='dashed', linewidth=1)
 ## add number of genes used in each split
-plt.text(-.75, 525, 'mean cosine similarity = '+str(mean_seed320), color='blue', fontsize=10)
-plt.text(-.75, 500, 'split1 number of genes = '+str(Ngenes_320s1), color='blue', fontsize=10)
-plt.text(-.75, 475, 'split2 number of genes = '+str(Ngenes_320s2), color='blue', fontsize=10)
+plt.text(.6, 5000, 'mean cosine similarity = '+str(mean_seed320), color='blue', fontsize=10)
+plt.text(.6, 4000, 'split1 number of genes = '+str(Ngenes_320s1), color='blue', fontsize=10)
+plt.text(.6, 3000, 'split2 number of genes = '+str(Ngenes_320s2), color='blue', fontsize=10)
 ## add labels and title
 plt.xlabel('cosine similarity (seed320)')
 plt.ylabel('Frequency')
