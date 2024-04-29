@@ -96,7 +96,7 @@ scv.pl.velocity_embedding_stream(total_res,color="cos_sim_320",cmap="coolwarm",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_seed320_cos_similarity_nonumap.png")
 
 total_res.obsm['X_umap'] = adata.obsm['X_umap'].copy()
-scv.pl.velocity_embedding_stream(total_res,basi='umap',color="cos_sim_320",cmap="coolwarm",
+scv.pl.velocity_embedding_stream(total_res,basis='umap',color="cos_sim_320",cmap="coolwarm",
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_seed320_cos_similarity_preumap.png")
 
 print("seed320 cosine similarity done!")
