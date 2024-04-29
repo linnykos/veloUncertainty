@@ -3,7 +3,6 @@ import unitvelo as utv
 import scanpy as sc
 import tf_keras
 import os
-import bbknn
 
 # the below script uses the environment: "utvClone"
 
@@ -31,7 +30,7 @@ split2_seed317.var['highly_variable'] = adata.var['highly_variable'].copy()
 split2_seed317.__dict__['_raw'].__dict__['_var'] = split2_seed317.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
 split2_path = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup6_eryutv_utvgenes/utv_erythroid_split2_seurat_seed317.h5ad"
 split2_seed317.write_h5ad(filename=split2_path)
-split2_seed317_res = utv.run_model(split1_path, label, config_file=velo_config)
+split2_seed317_res = utv.run_model(split2_path, label, config_file=velo_config)
 split2_seed317_res.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/ery_utv_utvgenes/ery_utvgenes_seed317_split2.h5ad')
 # using original adata umap
 split2_seed317_res2 = split2_seed317_res.copy()
@@ -43,6 +42,7 @@ sc.tl.umap(split2_seed317_res)
 scv.pl.velocity_embedding_stream(split2_seed317_res,basis="umap",color=label,
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo_utvgenes/ery_utvgenes_uncorrected_317s2.png")
 ### batch correction
+import bbknn
 bbknn.bbknn(split2_seed317_res, batch_key='sequencing.batch')
 split2_seed317_res.X = split2_seed317_res.X.toarray()
 bbknn.ridge_regression(split2_seed317_res, batch_key='sample', confounder_key='celltype')

@@ -3,7 +3,6 @@ import unitvelo as utv
 import scanpy as sc
 import tf_keras
 import os
-import bbknn
 
 # the below script uses the environment: "utvClone"
 
@@ -43,6 +42,7 @@ sc.tl.umap(adata_total_res)
 scv.pl.velocity_embedding_stream(adata_total_res,basis="umap",color=label,
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo_utvgenes/ery_utvgenes_uncorrected_total.png")
 ### batch correction
+import bbknn
 bbknn.bbknn(adata_total_res, batch_key='sequencing.batch')
 adata_total_res.X = adata_total_res.X.toarray()
 bbknn.ridge_regression(adata_total_res, batch_key='sample', confounder_key='celltype')
