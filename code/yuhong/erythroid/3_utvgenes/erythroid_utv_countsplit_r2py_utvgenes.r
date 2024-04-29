@@ -171,14 +171,14 @@ s2_seed317 <- LoadH5Seurat("/home/users/y2564li/kzlinlab/projects/veloUncertaint
 s1_seed320 <- LoadH5Seurat("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/ery_utv_utvgenes/erythroid_seed320_split1_seurat.h5Seurat")
 s2_seed320 <- LoadH5Seurat("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/ery_utv_utvgenes/erythroid_seed320_split2_seurat.h5Seurat")
 
-spliced_seed317 <- list(SeuratObject::LayerData(split1_seed317,assay="spliced"),
-                        SeuratObject::LayerData(split2_seed317,assay="spliced"))
-unspliced_seed317 <- list(SeuratObject::LayerData(split1_seed317,assay="unspliced"),
-                          SeuratObject::LayerData(split2_seed317,assay="unspliced"))
-spliced_seed320 <- list(SeuratObject::LayerData(split1_seed320,assay="spliced"),
-                        SeuratObject::LayerData(split2_seed320,assay="spliced"))
-unspliced_seed320 <- list(SeuratObject::LayerData(split1_seed320,assay="unspliced"),
-                          SeuratObject::LayerData(split2_seed320,assay="unspliced"))
+spliced_seed317 <- list(SeuratObject::LayerData(s1_seed317,assay="spliced"),
+                        SeuratObject::LayerData(s2_seed317,assay="spliced"))
+unspliced_seed317 <- list(SeuratObject::LayerData(s1_seed317,assay="unspliced"),
+                          SeuratObject::LayerData(s2_seed317,assay="unspliced"))
+spliced_seed320 <- list(SeuratObject::LayerData(s1_seed320,assay="spliced"),
+                        SeuratObject::LayerData(s2_seed320,assay="spliced"))
+unspliced_seed320 <- list(SeuratObject::LayerData(s1_seed320,assay="unspliced"),
+                          SeuratObject::LayerData(s2_seed320,assay="unspliced"))
 
 ### produce scatterplots of correlations
 total = spliced_seed317[[1]] + spliced_seed317[[2]]
