@@ -91,7 +91,7 @@ cos_sim_seed320 = np.diag(cosine_similarity(adata_split1_seed320.layers["velocit
 
 # add cosine similarities to total counts object
 adata.obs["cos_sim_seed320"] = cos_sim_seed320
-adatal.obs["cos_sim_seed320"] = pd.DataFrame(adata.obs["cos_sim_seed320"])
+adata.obs["cos_sim_seed320"] = pd.DataFrame(adata.obs["cos_sim_seed320"])
 scv.pl.velocity_embedding_stream(adata, basis='umap',color="cos_sim_seed320",cmap='coolwarm',
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/scvelo_seed320_cos_similarity_preumap.png")
 print("**************** seed320 cosine similarity plotted! ****************")
