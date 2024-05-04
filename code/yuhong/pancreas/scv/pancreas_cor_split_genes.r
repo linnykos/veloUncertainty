@@ -18,6 +18,17 @@ spliced_seed320 <- list(SeuratObject::LayerData(split1_seed320,assay="spliced"),
 unspliced_seed320 <- list(SeuratObject::LayerData(split1_seed320,assay="unspliced"),
                           SeuratObject::LayerData(split2_seed320,assay="unspliced"))
 
+total = spliced_seed317[[1]] + spliced_seed317[[2]]
+p <- nrow(total)
+zero_fraction = sapply(1:p, function(j){
+  if(j %% floor(p/10) == 0) cat('*')
+  length(which(total[j,] == 0))/ncol(total)
+}) ## fraction of cells with zero counts for each gene
+break_values <- seq(0, 1, length.out = 20)
+color_palette <- grDevices::colorRampPalette(c("lightgray", "coral"))(20)
+color_values <- sapply(zero_fraction, function(val){
+  color_palette[which.min(abs(val - break_values))]
+})
 
 cor_spliced_seed317 <- sapply(1:nrow(spliced_seed317[[1]]),function(i){ 
   cor( log10(spliced_seed317[[1]][i,]+1), log10(spliced_seed317[[2]][i,]+1) ) } )
