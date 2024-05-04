@@ -37,17 +37,17 @@ cor_unspliced_seed317 <- sapply(1:nrow(unspliced_seed317[[1]]),function(i){
 #####################
 ## multiple genes (spliced counts)
 
-## plot counts in two splits for 6 genes with the most strong negative correlations
+## plot counts in two splits for 6 genes with the most strong correlations
 for (i in order(abs(cor_spliced_seed317),decreasing=T)[1:2] ) {
   x = log10(spliced_seed317[[1]][i,]+1)
   y = log10(spliced_seed317[[2]][i,]+1)
   n = length(x)
   x = x + runif(n, min = -0.1, max = 0.1)
   y = y + runif(n, min = -0.1, max = 0.1)
-  png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/spliced_seed317_negcor_gene",i,".png"),
+  png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/spliced_seed317_cor_gene",i,".png"),
     height = 2000, width = 2000, units = "px", res = 300)
   plot(x, y,pch=16,asp=T, col = rgb(0.5,0.5,0.5,0.1),xlab="split1",ylab="split2",
-       main=paste0("gene",i," log10, jittered"),cex=.7)
+       main=paste0("gene",i," log10, jittered, cor=",round(cor_spliced_seed317[i],2)),cex=.7)
 }
 graphics.off()
 
