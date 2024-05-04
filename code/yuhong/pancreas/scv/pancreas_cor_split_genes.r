@@ -6,17 +6,12 @@ setwd("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pan
 
 split1_seed317 <- LoadH5Seurat("./pancreas_seed317_split1_seurat.h5Seurat")
 split2_seed317 <- LoadH5Seurat("./pancreas_seed317_split2_seurat.h5Seurat")
-split1_seed320 <- LoadH5Seurat("./pancreas_seed320_split1_seurat.h5Seurat")
-split2_seed320 <- LoadH5Seurat("./pancreas_seed320_split2_seurat.h5Seurat")
+
 
 spliced_seed317 <- list(SeuratObject::LayerData(split1_seed317,assay="spliced"),
                         SeuratObject::LayerData(split2_seed317,assay="spliced"))
 unspliced_seed317 <- list(SeuratObject::LayerData(split1_seed317,assay="unspliced"),
                           SeuratObject::LayerData(split2_seed317,assay="unspliced"))
-spliced_seed320 <- list(SeuratObject::LayerData(split1_seed320,assay="spliced"),
-                        SeuratObject::LayerData(split2_seed320,assay="spliced"))
-unspliced_seed320 <- list(SeuratObject::LayerData(split1_seed320,assay="unspliced"),
-                          SeuratObject::LayerData(split2_seed320,assay="unspliced"))
 
 total = spliced_seed317[[1]] + spliced_seed317[[2]]
 p <- nrow(total)
@@ -63,7 +58,7 @@ for (i in order(abs(cor_spliced_seed317),decreasing=T)[1:2] ) {
   overdisp <- res$theta
   x_vec <- round(seq(0, 120, length.out = 100))
   y_vec <- stats::dnbinom(x_vec, size = overdisp, mu = mean(tmp))
-  png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/spliced_seed317_overlayNB_gene",i".png"),height = 1000, width = 1800, units = "px", res = 300)
+  png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/spliced_seed317_overlayNB_gene",i,".png"),height = 1000, width = 1800, units = "px", res = 300)
   hist(total[i,], col="lightblue",main=paste0("total counts - gene",i),xlab="")
   max_val <- 3000
   y_vec <- y_vec * max_val/max(y_vec)
