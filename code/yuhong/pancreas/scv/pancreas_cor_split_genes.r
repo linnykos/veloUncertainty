@@ -45,7 +45,7 @@ for (i in order(abs(cor_spliced_seed317),decreasing=T)[1:2] ) {
   x = x + runif(n, min = -0.1, max = 0.1)
   y = y + runif(n, min = -0.1, max = 0.1)
   png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/spliced_seed317_negcor_gene",i,".png"),
-    height = 1000, width = 1800, units = "px", res = 300)
+    height = 2000, width = 2000, units = "px", res = 300)
   plot(x, y,pch=16,asp=T, col = rgb(0.5,0.5,0.5,0.1),xlab="split1",ylab="split2",
        main=paste0("gene",i," log10, jittered"),cex=.7)
 }
@@ -58,7 +58,8 @@ for (i in order(abs(cor_spliced_seed317),decreasing=T)[1:2] ) {
   overdisp <- res$theta
   x_vec <- round(seq(0, 120, length.out = 100))
   y_vec <- stats::dnbinom(x_vec, size = overdisp, mu = mean(tmp))
-  png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/spliced_seed317_overlayNB_gene",i,".png"),height = 1000, width = 1800, units = "px", res = 300)
+  png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/spliced_seed317_overlayNB_gene",i,".png"),
+  height = 2000, width = 2300, units = "px", res = 300)
   hist(total[i,], col="lightblue",main=paste0("total counts - gene",i),xlab="")
   max_val <- 3000
   y_vec <- y_vec * max_val/max(y_vec)
