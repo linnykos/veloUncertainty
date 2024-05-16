@@ -13,7 +13,7 @@ spliced_seed317 <- list(SeuratObject::LayerData(split1_seed317,assay="spliced"),
 unspliced_seed317 <- list(SeuratObject::LayerData(split1_seed317,assay="unspliced"),
                           SeuratObject::LayerData(split2_seed317,assay="unspliced"))
 
-total = spliced_seed317[[1]] + spliced_seed317[[2]]
+total = spliced_seed317[[1]] + spliced_seed317[[2]] # dim=(2000, 3696)
 p <- nrow(total)
 zero_fraction = sapply(1:p, function(j){
   if(j %% floor(p/10) == 0) cat('*')
@@ -25,34 +25,49 @@ color_values <- sapply(zero_fraction, function(val){
   color_palette[which.min(abs(val - break_values))]
 })
 
-cor_spliced_seed317 <- sapply(1:nrow(spliced_seed317[[1]]),function(i){ 
+cor_spliced_seed317 <- sapply(1:p,function(i){ 
   cor( log10(spliced_seed317[[1]][i,]+1), log10(spliced_seed317[[2]][i,]+1) ) } )
 
-cor_unspliced_seed317 <- sapply(1:nrow(unspliced_seed317[[1]]),function(i){
+cor_unspliced_seed317 <- sapply(1:p,function(i){
   if(i %% floor(p/10) == 0) cat('*')
   cor( log10(unspliced_seed317[[1]][i,]+1), log10(unspliced_seed317[[2]][i,]+1) ) } )
 
-
+## (3 genes in spliced count splits have NA correlation)
 
 #####################
 ## multiple genes (spliced counts)
-
-## plot counts in two splits for 6 genes with the most strong correlations
-for (i in order(abs(cor_spliced_seed317),decreasing=T)[1:2] ) {
+gene_names <- rownames(LayerData(split1_seed317))
+## plot 5 genes in two spliced count splits with greatest correlations
+### 1417 1931 1066  866  452
+for (i in order(abs(cor_spliced_seed317),decreasing=T)[1:5] ) {
   x = log10(spliced_seed317[[1]][i,]+1)
   y = log10(spliced_seed317[[2]][i,]+1)
   n = length(x)
   x = x + runif(n, min = -0.1, max = 0.1)
   y = y + runif(n, min = -0.1, max = 0.1)
-  png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/spliced_seed317_cor_gene",i,".png"),
-    height = 2000, width = 2000, units = "px", res = 300)
+  png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/spliced_seed317_cor_gene_max",i,".png"),
+    height = 1800, width = 1800, units = "px", res = 300)
   plot(x, y,pch=16,asp=T, col = rgb(0.5,0.5,0.5,0.1),xlab="split1",ylab="split2",
-       main=paste0("gene",i," log10, jittered, cor=",round(cor_spliced_seed317[i],2)),cex=.7)
+       main=paste0("gene",i," (",gene_names[i],"), log10, jittered, cor=",round(cor_spliced_seed317[i],2)),cex=.7)
+}
+graphics.off()
+
+### 159 1411   89  399   16
+for (i in order(abs(cor_spliced_seed317[!is.na(cor_spliced_seed317)]),decreasing=F)[1:5] ) {
+  x = log10(spliced_seed317[[1]][i,]+1)
+  y = log10(spliced_seed317[[2]][i,]+1)
+  n = length(x)
+  x = x + runif(n, min = -0.1, max = 0.1)
+  y = y + runif(n, min = -0.1, max = 0.1)
+  png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/scvelo/spliced_seed317_cor_gene_min",i,".png"),
+    height = 1800, width = 1800, units = "px", res = 300)
+  plot(x, y,pch=16,asp=T, col = rgb(0.5,0.5,0.5,0.1),xlab="split1",ylab="split2",
+       main=paste0("gene",i," (",gene_names[i],"), log10, jittered, cor=",round(cor_spliced_seed317[i],2)),cex=.7)
 }
 graphics.off()
 
 # overlaying the negative binomial dist
-for (i in order(abs(cor_spliced_seed317),decreasing=T)[1:2] ) {
+for (i in order(abs(cor_spliced_seed317),decreasing=T)[1:5] ) {
   tmp <- total[i,]
   res <- MASS::glm.nb(x ~ 1, data=data.frame(x=as.numeric(tmp)))
   overdisp <- res$theta
