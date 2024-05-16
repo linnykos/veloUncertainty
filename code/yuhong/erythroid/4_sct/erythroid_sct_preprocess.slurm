@@ -17,4 +17,4 @@ conda env list
 
 python --version
 conda list
-python /home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/code/yuhong/erythroid/sct/erythroid_sct_preprocess.py > /home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup7_sct/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
+python /home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/code/yuhong/erythroid/4_sct/erythroid_sct_preprocess.py > /home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup7_sct/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
