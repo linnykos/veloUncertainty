@@ -18,5 +18,5 @@ adata.obsm['X_TNODE'] = mix_zs
 
 adata.obsm['X_VF'] = tnode.get_vector_field(adata.obs['ptime'].values, adata.obsm['X_TNODE'])
 
-adata.write(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_sct/pan_sct_preprocess.h5ad")
+adata.write(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_sct/ery_sct_preprocess.h5ad")
 
