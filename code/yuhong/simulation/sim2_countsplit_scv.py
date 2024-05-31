@@ -88,8 +88,8 @@ sc.tl.umap(s1)
 scv.tl.recover_dynamics(s1)
 scv.tl.velocity(s1, mode="dynamical")
 scv.tl.velocity_graph(s1)
-scv.pl.velocity_embedding_stream(s1, basis='pca', save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_pca_320split1_vcompute.png")
-scv.pl.velocity_embedding_stream(s1, basis='umap', save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_umap_320split1_vcompute.png")
+scv.pl.velocity_embedding_stream(s1,color="true_t", basis='pca', save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_pca_320split1_vcompute.png")
+scv.pl.velocity_embedding_stream(s1,color="true_t", basis='umap', save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_umap_320split1_vcompute.png")
 
 # seed320, split2
 s2 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim2_seed320_split2_seurat.h5ad")
@@ -102,8 +102,8 @@ sc.tl.umap(s2)
 scv.tl.recover_dynamics(s2)
 scv.tl.velocity(s2, mode="dynamical")
 scv.tl.velocity_graph(s2)
-scv.pl.velocity_embedding_stream(s2, basis='pca', save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_pca_320split2_vcompute.png")
-scv.pl.velocity_embedding_stream(s2, basis='umap', save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_umap_320split2_vcompute.png")
+scv.pl.velocity_embedding_stream(s2,color="true_t", basis='pca', save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_pca_320split2_vcompute.png")
+scv.pl.velocity_embedding_stream(s2,color="true_t", basis='umap', save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_umap_320split2_vcompute.png")
 
 # seed320, cosine similarity
 s1.layers["velocity_rmNA"] = np.nan_to_num(s1.layers['velocity'], nan=0)
@@ -136,5 +136,10 @@ scv.pl.velocity_embedding_stream(data, vkey="true_velocity",basis='pca',color="c
 scv.pl.velocity_embedding_stream(data, vkey="true_velocity", basis='umap',color="cos_sim",cmap='coolwarm',
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_cos_sim_320_umap.png")
 
+scv.tl.velocity_confidence(data)
+scv.pl.scatter(data, c='velocity_confidence', basis='pca',cmap='coolwarm', perc=[5, 95],
+               save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_pca_vcompute_scvconf.png")
+scv.pl.scatter(data, c='velocity_confidence', basis='umap',cmap='coolwarm', perc=[5, 95],
+               save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_umap_vcompute_scvconf.png")
 
 
