@@ -172,9 +172,9 @@ color_values <- sapply(zero_fraction, function(val){
 png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_countsplit_corr_seed317.png"), height = 1000, width = 1800, units = "px", res = 300)
 par(mfrow=c(1,2))
 plot(cor_spliced_seed317, ylim = c(-1,1), pch = 16, col = color_values, 
-     main="Spliced (sim1, seed=317)",ylab="corr",cex=.7,cex.main=.8) 
+     main="Spliced (sim2, seed=317)",ylab="corr",cex=.7,cex.main=.8) 
 plot(cor_unspliced_seed317, ylim = c(-1,1), pch = 16, col = color_values, 
-     main="Unspliced (sim1, seed=317)",ylab="corr",cex=.7,cex.main=.8)
+     main="Unspliced (sim2, seed=317)",ylab="corr",cex=.7,cex.main=.8)
 graphics.off()
 
 png(file = paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_countsplit_corr_seed320.png"), height = 1000, width = 1800, units = "px", res = 300)
