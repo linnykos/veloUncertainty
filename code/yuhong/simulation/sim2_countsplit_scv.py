@@ -79,6 +79,7 @@ scv.pl.velocity_embedding_stream(data, vkey="true_velocity", basis='umap',color=
 ###
 # seed320, split1
 s1 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim2_seed320_split1_seurat.h5ad")
+s1.obs['true_t'] = data.obs['true_t'] 
 #scv.pp.normalize_per_cell(s1,enforce=True)
 scv.pp.log1p(s1)
 scv.pp.moments(s1, n_pcs=30, n_neighbors=30)
@@ -93,6 +94,7 @@ scv.pl.velocity_embedding_stream(s1,color="true_t", basis='umap', save="/home/us
 
 # seed320, split2
 s2 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim2_seed320_split2_seurat.h5ad")
+s2.obs['true_t'] = data.obs['true_t'] 
 #scv.pp.normalize_per_cell(s2,enforce=True)
 scv.pp.log1p(s2)
 scv.pp.moments(s2, n_pcs=30, n_neighbors=30)
