@@ -138,10 +138,33 @@ scv.pl.velocity_embedding_stream(data, vkey="true_velocity",basis='pca',color="c
 scv.pl.velocity_embedding_stream(data, vkey="true_velocity", basis='umap',color="cos_sim",cmap='coolwarm',
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_cos_sim_320_umap.png")
 
+## confidence
+data = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim2.h5ad")
+#scv.pp.normalize_per_cell(data,enforce=True)
+scv.pp.log1p(data)
+scv.pp.moments(data, n_pcs=30, n_neighbors=30)
+sc.tl.pca(data, svd_solver="arpack")
+sc.pp.neighbors(data, n_neighbors=10, n_pcs=40)
+sc.tl.umap(data,alpha=5,gamma=.5)
+scv.tl.recover_dynamics(data,t_max=25)
+scv.tl.velocity(data, mode="dynamical")
+scv.tl.velocity_graph(data)
 scv.tl.velocity_confidence(data)
 scv.pl.scatter(data, c='velocity_confidence', basis='pca',cmap='coolwarm', perc=[5, 95],
                save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_pca_vcompute_scvconf.png")
 scv.pl.scatter(data, c='velocity_confidence', basis='umap',cmap='coolwarm', perc=[5, 95],
                save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_umap_vcompute_scvconf.png")
 
+# histogram
+plt.hist(data.obs['velocity_confidence'], bins=30, edgecolor='black')  # Adjust bins and edgecolor as needed
+mean_conf = np.mean(data.obs['velocity_confidence'])
+plt.axvline(mean_conf, color='red', linestyle='dashed', linewidth=1)
+## add number of genes used in each split
+plt.text(.9, 100, 'mean confidence = '+str(mean_conf), color='blue', fontsize=10)
+## add labels and title
+plt.xlabel('velocity_confidence')
+plt.ylabel('Frequency')
+plt.title('Histogram of velocity confidence, sim2')
+plt.savefig('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim2/sim2_vconf.png')
+plt.clf()
 
