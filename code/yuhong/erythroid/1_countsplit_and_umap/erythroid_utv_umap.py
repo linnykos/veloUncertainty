@@ -4,15 +4,13 @@ import scanpy as sc
 import tf_keras
 import os
 
-
-### did not run pp.neighbors
 # the below script uses the environment: "utvClone"
 
 velo_config = utv.config.Configuration()
-velo_config.R2_ADJUST = False
+velo_config.R2_ADJUST = True
 velo_config.IROOT = None
-velo_config.FIT_OPTION = '2'
-velo_config.ASSIGN_POS_U = True
+velo_config.FIT_OPTION = '1'
+velo_config.AGENES_R2 = 1
 
 os.environ["TF_USE_LEGACY_KERAS"]="1"
 # https://github.com/tensorflow/tensorflow/issues/62337
@@ -48,6 +46,10 @@ adata_total_res.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertaint
 sc.tl.umap(adata_total_res)
 scv.pl.velocity_embedding_stream(adata_total_res,basis="umap",color=label,
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_uncorrected_total.png")
+# using original adata umap
+adata_total_res.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(adata_total_res,basis="umap",color=adata_total_res.uns['label'],
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_preumap_total.png")
 print("************* write adata_total_res to '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_utv/erythroid_utv_total.h5ad' *******************")
 
 split1_seed317 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed317_split1_seurat.h5ad')
@@ -60,6 +62,9 @@ split1_seed317_res.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncerta
 sc.tl.umap(split1_seed317_res)
 scv.pl.velocity_embedding_stream(split1_seed317_res,basis="umap",color=label,
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_uncorrected_seed317_split1.png")
+split1_seed317_res.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(split1_seed317_res,basis="umap",color=split1_seed317_res.uns['label'],
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_preumap_seed317_split1.png")
 print("************* write split1_seed317_res to '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_utv/erythroid_utv_seed317_split1.h5ad' *******************")
 
 
@@ -73,6 +78,9 @@ split2_seed317_res.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncerta
 sc.tl.umap(split2_seed317_res)
 scv.pl.velocity_embedding_stream(split2_seed317_res,basis="umap",color=label,
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_uncorrected_seed317_split2.png")
+split2_seed317_res.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(split2_seed317_res,basis="umap",color=split2_seed317_res.uns['label'],
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_preumap_seed317_split2.png")
 print("************* write split2_seed317_res to '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_utv/erythroid_utv_seed317_split1.h5ad' *******************")
 
 
@@ -86,7 +94,11 @@ split1_seed320_res.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncerta
 sc.tl.umap(split1_seed320_res)
 scv.pl.velocity_embedding_stream(split1_seed320_res,basis="umap",color=label,
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_uncorrected_seed320_split1.png")
+split1_seed320_res.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(split1_seed320_res,basis="umap",color=split1_seed320_res.uns['label'],
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_preumap_seed320_split1.png")
 print("************* write split1_seed320_res to '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_utv/erythroid_utv_seed320_split1.h5ad' *******************")
+
 
 split2_seed320 = scv.read('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_split/erythroid_seed320_split2_seurat.h5ad')
 split2_seed320.var['highly_variable'] = adata.var['highly_variable'].copy()
@@ -98,4 +110,7 @@ split2_seed320_res.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncerta
 sc.tl.umap(split2_seed320_res)
 scv.pl.velocity_embedding_stream(split2_seed320_res,basis="umap",color=label,
                                  save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_uncorrected_seed320_split2.png")
+split2_seed320_res.obsm['X_umap'] = adata.obsm['X_umap'].copy()
+scv.pl.velocity_embedding_stream(split2_seed320_res,basis="umap",color=split2_seed320_res.uns['label'],
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/unitvelo/unitvelo_preumap_seed320_split2.png")
 print("************* write split2_seed320_res to '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/erythroid_utv/erythroid_utv_seed320_split2.h5ad' *******************")
