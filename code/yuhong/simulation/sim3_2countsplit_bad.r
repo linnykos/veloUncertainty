@@ -53,8 +53,12 @@ Seurat::VariableFeatures(scvelo_seurat) <- SeuratObject::Features(scvelo_seurat)
 
 # now do the usual seurat processing
 scvelo_seurat <- Seurat::ScaleData(scvelo_seurat)
-scvelo_seurat <- Seurat::RunPCA(scvelo_seurat, features = Seurat::VariableFeatures(object = scvelo_seurat), verbose = F)
-scvelo_seurat <- Seurat::RunUMAP(scvelo_seurat, dims = 1:30)
+#scvelo_seurat <- Seurat::RunPCA(scvelo_seurat, features = Seurat::VariableFeatures(object = scvelo_seurat), verbose = F)
+## Warning in irlba(A = t(x = object), nv = npcs, ...) :
+##  You're computing too large a percentage of total singular values, use a standard svd instead.
+#scvelo_seurat <- Seurat::RunUMAP(scvelo_seurat, dims = 1:30)
+## Error in Embeddings(object[[reduction]])[, dims] : 
+##  subscript out of bounds
 
 print("Object ready!")
 
@@ -93,7 +97,7 @@ convert_object <- function(s_mat,u_mat,fname,seed_arg) {
   seurat_res[["RNA"]] <- as(object = seurat_res[["RNA"]], Class = "Assay")
   seurat_res[["spliced"]] <- Seurat::CreateAssayObject(counts = s_mat, Class = "Assay")
   seurat_res[["unspliced"]] <- Seurat::CreateAssayObject(counts = u_mat, Class = "Assay")
-  path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim3","sim3bad_seed",seed_arg,fname,".h5Seurat")
+  path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim3/","sim3bad_seed",seed_arg,fname,".h5Seurat")
   print(path)
   SeuratDisk::SaveH5Seurat(seurat_res, filename=path, overwrite = TRUE)
   SeuratDisk::Convert(path, dest = "h5ad", overwrite = TRUE)
