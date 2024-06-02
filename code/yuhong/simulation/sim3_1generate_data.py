@@ -140,7 +140,7 @@ plt.hist(data2.obs['velocity_confidence'], bins=30, edgecolor='black')
 mean_conf = np.mean(data2.obs['velocity_confidence'])
 plt.axvline(mean_conf, color='red', linestyle='dashed', linewidth=1)
 ## add number of genes used in each split
-plt.text(.85, 150, 'mean confidence = '+str(mean_conf), color='blue', fontsize=10)
+plt.text(.55, 150, 'mean confidence = '+str(mean_conf), color='blue', fontsize=10)
 ## add labels and title
 plt.xlabel('velocity_confidence')
 plt.ylabel('Frequency')
