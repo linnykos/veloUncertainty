@@ -81,13 +81,13 @@ scv.tl.velocity_graph(data2)
 scv.pl.velocity_embedding_grid(data2, basis='pca', color="true_t", arrow_length=2, arrow_size=2, min_mass=10,
                                save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim3/sim3good_pca_vcompute_arrow.png")
 scv.pl.velocity_embedding_stream(data2, basis='pca', color="true_t",
-                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim3/sim3ood_pca_vcompute.png")
+                                 save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim3/sim3good_pca_vcompute.png")
 scv.tl.velocity_confidence(data2)
 scv.pl.scatter(data2, c='velocity_confidence', basis='pca',cmap='coolwarm', perc=[5, 95],
                save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim3/sim3good_pca_vcompute_scvconf.png")
 # histogram
-plt.hist(data.obs['velocity_confidence'], bins=30, edgecolor='black')
-mean_conf = np.mean(data.obs['velocity_confidence'])
+plt.hist(data2.obs['velocity_confidence'], bins=30, edgecolor='black')
+mean_conf = np.mean(data2.obs['velocity_confidence'])
 plt.axvline(mean_conf, color='red', linestyle='dashed', linewidth=1)
 ## add number of genes used in each split
 plt.text(.85, 150, 'mean confidence = '+str(mean_conf), color='blue', fontsize=10)
@@ -136,8 +136,8 @@ scv.tl.velocity_confidence(data2)
 scv.pl.scatter(data2, c='velocity_confidence', basis='pca',cmap='coolwarm', perc=[5, 95],
                save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/simulation/sim3/sim3bad_pca_vcompute_scvconf.png")
 # histogram
-plt.hist(data.obs['velocity_confidence'], bins=30, edgecolor='black')
-mean_conf = np.mean(data.obs['velocity_confidence'])
+plt.hist(data2.obs['velocity_confidence'], bins=30, edgecolor='black')
+mean_conf = np.mean(data2.obs['velocity_confidence'])
 plt.axvline(mean_conf, color='red', linestyle='dashed', linewidth=1)
 ## add number of genes used in each split
 plt.text(.85, 150, 'mean confidence = '+str(mean_conf), color='blue', fontsize=10)
