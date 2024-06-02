@@ -41,11 +41,7 @@ def generate_data(alpha, beta, gamma, max_thre, n_obs, n_vars,
     # Find the quantiles of the flattened array
     quantile_results = np.quantile(adata.X, quantiles)
     print(f"The quantiles {quantiles} of the matrix are: {quantile_results}")
-    # https://github.com/theislab/scvelo/issues/1212 
-    scv.pp.log1p(adata)
-    sc.pp.pca(adata)
-    sc.pp.neighbors(adata, n_pcs=30, n_neighbors=30)
-    scv.pp.moments(adata, n_pcs=None, n_neighbors=None)
+    
     return adata
 
 # good scv
@@ -65,6 +61,11 @@ data = generate_data(alpha=alpha, beta=beta, gamma=gamma, max_thre=max_thre, n_o
 data.write("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim3/sim3good.h5ad")
 
 ## True velocity
+# https://github.com/theislab/scvelo/issues/1212 
+scv.pp.log1p(data)
+sc.pp.pca(data)
+sc.pp.neighbors(data, n_pcs=30, n_neighbors=30)
+scv.pp.moments(data, n_pcs=None, n_neighbors=None)
 scv.tl.recover_dynamics(data,t_max=25)
 scv.tl.velocity_graph(data,vkey="true_velocity")
 scv.pl.velocity_embedding_grid(data, basis='pca', color="true_t", vkey="true_velocity", arrow_length=2, arrow_size=2, min_mass=10,
@@ -75,6 +76,10 @@ del data
 
 ## run scv
 data2 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim3/sim3good.h5ad")
+scv.pp.log1p(data2)
+sc.pp.pca(data2)
+sc.pp.neighbors(data2, n_pcs=30, n_neighbors=30)
+scv.pp.moments(data2, n_pcs=None, n_neighbors=None)
 scv.tl.recover_dynamics(data2)
 scv.tl.velocity(data2, mode='dynamical')
 scv.tl.velocity_graph(data2)
@@ -115,6 +120,10 @@ data = generate_data(alpha=alpha, beta=beta, gamma=gamma, max_thre=max_thre, n_o
 data.write("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim3/sim3bad.h5ad")
 
 ## True velocity
+scv.pp.log1p(data)
+sc.pp.pca(data)
+sc.pp.neighbors(data, n_pcs=30, n_neighbors=30)
+scv.pp.moments(data, n_pcs=None, n_neighbors=None)
 scv.tl.recover_dynamics(data,t_max=25)
 scv.tl.velocity_graph(data,vkey="true_velocity")
 scv.pl.velocity_embedding_grid(data, basis='pca', color="true_t", vkey="true_velocity", arrow_length=2, arrow_size=2, min_mass=10,
@@ -125,6 +134,10 @@ del data
 
 ## run scv
 data2 = scv.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim3/sim3bad.h5ad")
+scv.pp.log1p(data2)
+sc.pp.pca(data2)
+sc.pp.neighbors(data2, n_pcs=30, n_neighbors=30)
+scv.pp.moments(data2, n_pcs=None, n_neighbors=None)
 scv.tl.recover_dynamics(data2)
 scv.tl.velocity(data2, mode='dynamical')
 scv.tl.velocity_graph(data2)
