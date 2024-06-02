@@ -93,7 +93,7 @@ convert_object <- function(s_mat,u_mat,fname,seed_arg) {
   seurat_res[["RNA"]] <- as(object = seurat_res[["RNA"]], Class = "Assay")
   seurat_res[["spliced"]] <- Seurat::CreateAssayObject(counts = s_mat, Class = "Assay")
   seurat_res[["unspliced"]] <- Seurat::CreateAssayObject(counts = u_mat, Class = "Assay")
-  path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim3","sim3good_seed",seed_arg,fname,".h5Seurat")
+  path <- paste0("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/simulation/sim3/","sim3good_seed",seed_arg,fname,".h5Seurat")
   print(path)
   SeuratDisk::SaveH5Seurat(seurat_res, filename=path, overwrite = TRUE)
   SeuratDisk::Convert(path, dest = "h5ad", overwrite = TRUE)
