@@ -3,6 +3,14 @@ import scanpy as sc
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import torch
+import random
+
+sct_seed = 615
+# https://pytorch.org/docs/stable/notes/randomness.html
+torch.manual_seed(sct_seed)
+random.seed(sct_seed)
+np.random.seed(sct_seed)
 
 adata = sc.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Pancreas/endocrinogenesis_day15.h5ad")
 
@@ -14,6 +22,7 @@ tnode.train()
 
 adata.obs['ptime'] = tnode.get_time()
 mix_zs, zs, pred_zs = tnode.get_latentsp(alpha_z=0.5, alpha_predz=0.5)
+### 3-tuple of weighted combined latent space, encoder-derived latent space, and ODE-solver-derived latent space
 adata.obsm['X_TNODE'] = mix_zs
 
 adata.obsm['X_VF'] = tnode.get_vector_field(adata.obs['ptime'].values, adata.obsm['X_TNODE'])
