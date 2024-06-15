@@ -3,6 +3,14 @@ import scanpy as sc
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import torch
+import random
+
+sct_seed = 615
+# https://pytorch.org/docs/stable/notes/randomness.html
+torch.manual_seed(sct_seed)
+random.seed(sct_seed)
+np.random.seed(sct_seed)
 
 adata = sc.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Gastrulation/erythroid_lineage.h5ad")
 

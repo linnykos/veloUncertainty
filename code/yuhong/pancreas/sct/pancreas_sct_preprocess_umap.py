@@ -1,6 +1,7 @@
 import sctour as sct
 import scanpy as sc
 import matplotlib.pyplot as plt
+import numpy as np
 
 adata = sc.read("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_sct/pan_sct_preprocess.h5ad")
 
@@ -16,7 +17,7 @@ adata = adata[np.argsort(adata.obs['ptime'].values), :]
 sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=30)
 sc.tl.umap(adata)
 sc.pl.umap(adata, color=['clusters'], legend_loc='on data', 
-           save="pancreas_sct_umap2000.png") # manually move out of the figures/ folder, "umappancreas_sct_umap2000.png"
+           save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/sctour/pancreas_sct_umap2000.png") # manually move out of the figures/ folder, "umappancreas_sct_umap2000.png"
 
 ## largely unaffected by batch effects
 fig, axs = plt.subplots(ncols=3, nrows=1, figsize=(15, 4))
