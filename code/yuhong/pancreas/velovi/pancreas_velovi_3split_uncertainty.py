@@ -11,7 +11,7 @@ import seaborn as sns
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_velovi/"
 s1_317_name = "pancreas_seed317_split1_seurat.h5ad"
 s2_317_name = "pancreas_seed317_split2_seurat.h5ad"
-total_name = "adata_pancreas_preprocess.h5ad"
+total_name = "pancreas_velovi_preprocess.h5ad"
 
 figure_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/velovi/"
 
