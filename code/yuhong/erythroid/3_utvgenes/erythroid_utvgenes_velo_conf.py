@@ -39,7 +39,13 @@ def plot_velo_conf(data,fig_name):
                    save=figure_folder+"ery_utvgenes_umapRecover_scatter_"+fig_name+".png")
 
 scv.pl.scatter(adata, color=label, cmap=color_map, basis="umap",
-                   save=figure_folder+"ery_utvgenes_pca_umapOriginal_preprocess.png")
+                   save=figure_folder+"ery_utvgenes_umapOriginal_preprocess.png")
+scv.tl.velocity_confidence(adata)
+scv.pl.scatter(adata, c='velocity_confidence', cmap='coolwarm', perc=[5, 95], basis="pca",
+               save=figure_folder+"ery_utvgenes_pca_velo_confidence_preprocess.png")
+scv.pl.scatter(adata, c='velocity_confidence', cmap='coolwarm', perc=[5, 95], basis="umap",
+               save=figure_folder+"ery_utvgenes_umapOriginal_velo_confidence_preprocess.png")
+
 
 plot_velo_conf(total_res, "total")
 plot_velo_conf(s1_res317, "seed317_s1")

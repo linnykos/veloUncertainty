@@ -12,7 +12,6 @@ tmp <- Seurat::as.Seurat(scvelo_sc, counts = "X", data = "X")
 scvelo_seurat <- Seurat::CreateSeuratObject(counts = tmp[["originalexp"]], data = tmp[["originalexp"]], meta.data = tmp@meta.data)
 scvelo_seurat[["RNA"]] <- as(object = scvelo_seurat[["RNA"]], Class = "Assay5")
 
-
 # put in the assays
 name_vec <- names(scvelo_sc@assays)
 gene_vec <- SeuratObject::Features(scvelo_seurat[["RNA"]])
@@ -46,7 +45,6 @@ for(name_val in name_vec){
   
   scvelo_seurat[[name_val2]] <- Seurat::CreateDimReducObject(embeddings = mat, assay = "RNA")
 }
-#### "velocity_umap": Warning message: Key ‘scvelo_’ taken, using ‘scveloxumap_’ instead 
 
 # put in the metadata
 metadata_list <- scvelo_sc@metadata
