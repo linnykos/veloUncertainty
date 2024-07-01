@@ -17,13 +17,16 @@ figure_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloU
 
 total = sc.read(data_folder+total_name)
 
+label = 'clusters'
+label_color = 'clusters_colors'
+
 ## scatter plot without velocity arrows
-scv.pl.scatter(total, color='clusters', cmap='clusters_colors', save=figure_folder+"pancreas_preprocess_scatter.png")
+scv.pl.scatter(total, color=label, cmap=label_color, save=figure_folder+"pancreas_preprocess_scatter.png")
 
 ## velocity confidence
 scv.tl.velocity_confidence(total)
 scv.pl.scatter(total, c='velocity_confidence', cmap='coolwarm', perc=[5, 95], 
-               save=figure_folder+"pancreas_preprocess_velo_confidence.png")
+               save=figure_folder+"velo_conf/pancreas_preprocess_velo_confidence.png")
 
 ## cosine similarity on preprocessed umap
 import scanpy as sc
@@ -75,12 +78,6 @@ add_velovi_outputs_to_adata(s2_317, vae_317s2)
 # ValueError: Multi-dimensional indexing (e.g. `obj[:, None]`) is no longer supported. 
 ### Convert to a numpy array before indexing instead.
 
-scv.tl.velocity_graph(s1_317)
-scv.pl.velocity_embedding_stream(s1_317, basis='umap', save=figure_folder+"seed317_split1_umap.png")
-
-scv.tl.velocity_graph(s2_317)
-scv.pl.velocity_embedding_stream(s2_317, basis='umap', save=figure_folder+"seed317_split2_umap.png")
-
 # write data
 s1_317.write(filename=data_folder+"pancreas_seed317_split1.h5ad")
 s2_317.write(filename=data_folder+"pancreas_seed317_split1.h5ad")
@@ -89,15 +86,36 @@ vae_317s1.save(data_folder+'vae_seed317_split1.pt')
 vae_317s2.save(data_folder+'vae_seed317_split2.pt')
 print("Saved vae")
 
-# intrinsic uncertainty
+def recover_umap_and_plot_velocity(data, fig_name):
+    scv.tl.velocity_graph(data)
+    scv.pl.velocity_embedding_stream(data, basis="pca",save=figure_folder+"velocity/pancreas_velovi_pca_"+fig_name+".png")
+    scv.pl.velocity_embedding_stream(data, basis="umap",save=figure_folder+"velocity/pancreas_velovi_umapOriginal_"+fig_name+".png")
+    data.obsm['X_umap'] = total.obsm['X_umap'].copy()
+    del data.obsm['X_umap']
+    scv.pp.moments(data, n_pcs=30, n_neighbors=30)
+    sc.tl.pca(data, svd_solver="arpack")
+    sc.pp.neighbors(data, n_neighbors=10, n_pcs=40)
+    sc.tl.umap(data)
+    scv.pl.velocity_embedding_stream(data, basis="umap",save=figure_folder+"velocity/pancreas_velovi_umapRecover_"+fig_name+".png")
+    scv.pl.scatter(data, color=label, cmap=label_color, basis="umap", save=figure_folder+"pancreas_velovi_scatter_umapRecover_"+fig_name+".png")
+
+print("start recover_umap_and_plot_velocity")
+recover_umap_and_plot_velocity(s1_317, "seed317_split1")
+recover_umap_and_plot_velocity(s2_317, "seed317_split2")
+print("finished recover_umap_and_plot_velocity")
+
+
+# intrinsic uncertainty, figure output "uncertainty"
 def compute_intrinsic_uncertatinty_and_plot(vae, adata, save_name):
     uncertainty_df, _ = vae.get_directional_uncertainty(n_samples=100)
     for c in uncertainty_df.columns:
         adata.obs[c] = np.log10(uncertainty_df[c].values)
     sc.pl.umap(adata, color="directional_cosine_sim_variance",cmap="Greys",vmin="p1",vmax="p99",save=save_name)
 
+print("start compute_intrinsic_uncertatinty_and_plot")
 compute_intrinsic_uncertatinty_and_plot(vae_317s1, s1_317, "pan_velovi_in_uncertainty_seed317_split1.png")
 compute_intrinsic_uncertatinty_and_plot(vae_317s2, s2_317, "pan_velovi_in_uncertainty_seed317_split2.png")
+print("finished compute_intrinsic_uncertatinty_and_plot")
 
 # extrinsic uncertainty
 def compute_extrinisic_uncertainty(adata, vae, n_samples=25) -> pd.DataFrame:
@@ -128,8 +146,11 @@ def compute_extrinsic_uncertainty_and_plot(vae, adata, save_name):
         adata.obs[c + "_extrinisic"] = np.log10(df[c].values)
     sc.pl.umap(adata, color="directional_cosine_sim_variance_extrinisic", vmin="p1", vmax="p99", save=save_name)
 
+print("start compute_extrinsic_uncertainty_and_plot")
 compute_extrinsic_uncertainty_and_plot(vae_317s1, s1_317, "pan_velovi_seed317_split1_ex_uncertainty.png")
 compute_extrinsic_uncertainty_and_plot(vae_317s2, s2_317, "pan_velovi_seed317_split2_ex_uncertainty.png")
+print("finished compute_extrinsic_uncertainty_and_plot")
+
 
 # permutation score
 def compute_permutation_score_and_plot(vae, adata, label, fig_name):
@@ -140,7 +161,8 @@ def compute_permutation_score_and_plot(vae, adata, label, fig_name):
     plt.savefig(figure_folder+fig_name+".png")
     plt.clf()
 
+print("start compute_permutation_score_and_plot")
 compute_permutation_score_and_plot(vae_317s1, s1_317, "clusters", "pan_velovi_seed317_split1_permutation_score")
 compute_permutation_score_and_plot(vae_317s2, s2_317, "clusters", "pan_velovi_seed317_split2_permutation_score")
+print("finished compute_permutation_score_and_plot")
 
-# cosine similarity
