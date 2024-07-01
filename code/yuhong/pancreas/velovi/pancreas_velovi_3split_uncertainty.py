@@ -72,6 +72,8 @@ def add_velovi_outputs_to_adata(adata, vae):
     ) * scaling
     adata.layers["fit_t"] = latent_time.values * np.array(scaling)[np.newaxis, :] # scaling[np.newaxis, :] 
     adata.var['fit_scaling'] = 1.0
+    adata.__dict__['_raw'].__dict__['_var'] = adata.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
+    # ValueError: '_index' is a reserved name for dataframe columns.
 
 add_velovi_outputs_to_adata(s1_317, vae_317s1)
 add_velovi_outputs_to_adata(s2_317, vae_317s2)
