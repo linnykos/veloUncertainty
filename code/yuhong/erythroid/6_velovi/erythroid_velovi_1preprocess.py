@@ -26,6 +26,7 @@ VELOVI.setup_anndata(adata, spliced_layer="Ms", unspliced_layer="Mu")
 vae = VELOVI(adata)
 vae.train()
 vae.save(data_folder+'vae_erythroid_preprocess.pt')
+print("########################### Wrote vae ###########################")
 
 def add_velovi_outputs_to_adata(adata, vae):
     latent_time = vae.get_latent_time(n_samples=25)
@@ -62,55 +63,8 @@ spliced_subset = spliced[:,positions]
 unspliced_subset = unspliced[:,positions]
 adata.layers['spliced_original'] = spliced_subset
 adata.layers['unspliced_original'] = unspliced_subset
+adata.__dict__['_raw'].__dict__['_var'] = adata.__dict__['_raw'].__dict__['_var'].rename(columns={'_index': 'features'})
+# ValueError: '_index' is a reserved name for dataframe columns.
 adata.write(filename=data_folder+"erythroid_velovi_preprocess.h5ad")
-
-# intrinsic uncertainty
-uncertainty_df, _ = vae.get_directional_uncertainty(n_samples=100)
-uncertainty_df.head()
-
-for c in uncertainty_df.columns:
-    adata.obs[c] = np.log10(uncertainty_df[c].values)
-sc.pl.umap(
-    adata, color="directional_cosine_sim_variance",
-    cmap="Greys", vmin="p1", vmax="p99", save="erythroid_uncertaintyIn_preprocess.png")
-# /home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/erythroid/velovi/
-
-# extrinsic uncertainty
-def compute_extrinisic_uncertainty(adata, vae, n_samples=25) -> pd.DataFrame:
-    from velovi._model import _compute_directional_statistics_tensor
-    from scvi.utils import track
-    from contextlib import redirect_stdout
-    import io
-    extrapolated_cells_list = []
-    for i in track(range(n_samples)):
-        with io.StringIO() as buf, redirect_stdout(buf):
-            vkey = "velocities_velovi_{i}".format(i=i)
-            v = vae.get_velocity(n_samples=1, velo_statistic="mean")
-            adata.layers[vkey] = v
-            scv.tl.velocity_graph(adata, vkey=vkey, sqrt_transform=False, approx=True)
-            t_mat = scv.utils.get_transition_matrix(
-                adata, vkey=vkey, self_transitions=True, use_negative_cosines=True
-            )
-            extrapolated_cells = np.asarray(t_mat @ adata.layers["Ms"])
-            extrapolated_cells_list.append(extrapolated_cells)
-    extrapolated_cells = np.stack(extrapolated_cells_list)
-    df = _compute_directional_statistics_tensor(extrapolated_cells, n_jobs=-1, n_cells=adata.n_obs)
-    return df
-ext_uncertainty_df = compute_extrinisic_uncertainty(adata, vae) # [3696 rows x 5 columns]
-df = ext_uncertainty_df[0]
-
-for c in df.columns:
-    adata.obs[c + "_extrinisic"] = np.log10(df[c].values)
-sc.pl.umap(adata, color="directional_cosine_sim_variance_extrinisic", vmin="p1", vmax="p99",
-           save=fig_folder+"erythroid_uncertaintyEx_preprocess.png")
-
-# permutation score
-perm_df, _ = vae.get_permutation_scores(labels_key="clusters")
-adata.var["permutation_score"] = perm_df.max(1).values
-
-plt.clf()
-sns.kdeplot(data=adata.var, x="permutation_score")
-plt.savefig(fig_folder+"erythroid_permutation_score_preprocess.png")
-plt.clf()
-
+print("########################### Wrote data ###########################")
 
