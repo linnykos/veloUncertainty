@@ -23,11 +23,6 @@ label_color = 'clusters_colors'
 ## scatter plot without velocity arrows
 scv.pl.scatter(total, color=label, cmap=label_color, save=figure_folder+"pancreas_preprocess_scatter.png")
 
-## velocity confidence
-scv.tl.velocity_confidence(total)
-scv.pl.scatter(total, c='velocity_confidence', cmap='coolwarm', perc=[5, 95], 
-               save=figure_folder+"velo_conf/pancreas_preprocess_velo_confidence.png")
-
 def train_vae_and_save(adata,adata_name,vae_name):
     scv.pp.filter_and_normalize(adata, min_shared_counts=20, n_top_genes=2000) # 30 in tutorial
     scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
