@@ -24,7 +24,7 @@ vae = VELOVI(adata)
 vae.train()
 
 # save vae
-vae.save('vae_317s2_trained_model.pt',overwrite=True)
+vae.save('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_velovi/vae_preprocess.pt',overwrite=True)
 print("########################### vae saved ###########################")
 
 # write adata
