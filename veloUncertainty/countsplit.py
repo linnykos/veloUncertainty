@@ -30,11 +30,6 @@ def rmultinom_1(size, probs):
     outcome = np.random.multinomial(size, probs)
     return outcome
 
-# Example usage:
-size = 10
-probs = [0.2, 0.3, 0.5]
-rmultinom_1(size, probs)
-
 ################################################################
 ## Returns a single Dirichlet-Multinomial realization, who length is equal to "folds".
 ## Assumes that we want all folds to have equal information in them- slower version must be called if this is not the case.
@@ -67,12 +62,6 @@ def dir_mul_sample(size, folds, b):
     # Draw from a multinomial distribution with the calculated probs
     result = np.random.multinomial(size, probs)
     return result
-
-# Example usage:
-size = 10
-folds = 3
-b = 5.0
-dir_mul_sample(size, folds, b)
 
 
 ################################################################
@@ -114,12 +103,6 @@ def dir_mul_slower(size, epsilon, b):
     result = np.random.multinomial(size, probs)
     return result
 
-# Example usage:
-size = 10
-epsilon = np.array([0.2, 0.3, 0.5])
-b = 5.0
-dir_mul_slower(size, epsilon, b)
-
 ################################################################
 ## Returns a single draw from a beta binomial distribution.
 ## This is the univariate version of the Dirichlet Multinomial,
@@ -147,12 +130,6 @@ def beta_bin_sample(size, eps, b):
     p = beta.rvs(eps * b, (1.0 - eps) * b)
     return np.random.binomial(size, p)
 
-# Example usage:
-size = 10
-eps = 0.3
-b = 5.0
-beta_bin_sample(size, eps, b)
-
 ################################################################
 ## Handles the efficient calling of dir_mul_sample across all elements in x
 ## Entry j in x gets turned into a vector with length folds, where these entries
@@ -175,12 +152,6 @@ def mapply_dir_mul_sample(x, folds, overdisps):
         sample = dir_mul_sample(x[i], folds, overdisps[i])
         result[:, i] = sample
     return result
-
-# Example usage:
-x = np.array([10, 20, 30])
-folds = 3
-overdisps = np.array([5.0, 2.0, 8.0])
-mapply_dir_mul_sample(x, folds, overdisps)
 
 ################################################################
 ## Handles the efficient calling of dir_mul_sample across all elements in x.
@@ -205,12 +176,6 @@ def mapply_dir_mul_slower(x, epsilon, overdisps):
         result[:, i] = sample
     return result
 
-# Example usage:
-x = np.array([10, 20, 30])
-epsilon = np.array([0.2, 0.3, 0.5])
-overdisps = np.array([5.0, 2.0, 8.0])
-mapply_dir_mul_slower(x, epsilon, overdisps)
-
 ################################################################
 ## Handles the efficient calling of beta_bin_sample_cpp across all elements in x.
 ## Entry j in x gets turned into (x1,x2), where x1 is drawn from a betabinomial distribution with parameters
@@ -232,13 +197,6 @@ def mapply_betabin_sample(x, eps1, overdisps):
         result[0, i] = x1
         result[1, i] = x[i] - x1
     return result
-
-# Example usage:
-x = np.array([10, 20, 30])
-eps1 = 0.3
-overdisps = np.array([5.0, 2.0, 8.0])
-mapply_betabin_sample(x, eps1, overdisps)
-
 
 ################################################################
 ################################################################
@@ -269,19 +227,6 @@ def countsplit(X, folds=2, epsilon=None, overdisps=None):
         Xfold.data = results[f, :].astype(float)
         partition.append(Xfold)
     return partition
-
-# Example usage:
-X = csr_matrix([[1, 0, 3], [4, 5, 6], [0, 0, 1]])
-folds = 2
-epsilon = np.array([0.5, 0.5])
-overdisps = np.array([np.inf, np.inf, np.inf])
-partition = countsplit(X, folds, epsilon, overdisps)
-for fold in partition:
-    print(fold.toarray())
-
-
-
-
 
 
 
