@@ -1,6 +1,10 @@
 import numpy as np
 from scipy.stats import gamma, beta
 from scipy.sparse import csr_matrix, find
+import pandas as pd
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
+
 
 
 # may set a global seed through np.random.seed()
@@ -199,7 +203,6 @@ def mapply_betabin_sample(x, eps1, overdisps):
     return result
 
 ################################################################
-################################################################
 def countsplit(X, folds=2, epsilon=None, overdisps=None):
     if epsilon is None:
         epsilon = np.full(folds, 1.0 / folds)
@@ -228,5 +231,31 @@ def countsplit(X, folds=2, epsilon=None, overdisps=None):
         partition.append(Xfold)
     return partition
 
+################################################################
+"""
+Estimate overdispersion parameter
+Input: a cell-by-gene matrix
+Output: a vector of overdispersion parameters of length Ngenes
+"""
+def estimate_overdisps(X):
+    res = []
+    p = None
+    if X.ndim==1: 
+        p = 1
+        data = { 'counts': X }
+        df = pd.DataFrame(data)
+        model = smf.negativebinomial('counts ~ 1', data=df)
+        result = model.fit()
+        res.append(result.params['alpha'])
+    if X.ndim==2:
+        p = X.shape[1]
+        for col in range(p):
+            y = X[:, col]
+            data = { 'counts': y }
+            df = pd.DataFrame(data)
+            model = smf.negativebinomial('counts ~ 1', data=df)
+            result = model.fit()
+            res.append(result.params['alpha'])
+    return res
 
 
