@@ -7,7 +7,7 @@ def compute_sctour_velocity(tnode, timestep=1/100):
     X = np.log1p(X)
 
     tnode.model.eval()
-    X = torch.tensor(X).to(tnode.model.device)
+    X = torch.tensor(X.toarray()).to(tnode.model.device)
 
     pseudtotime, posterior_mean, _ = tnode.model.encoder(X)
     differences = []
