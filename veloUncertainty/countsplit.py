@@ -250,9 +250,11 @@ def estimate_overdisps(X):
     if X.ndim==2:
         p = X.shape[1]
         for col in range(p):
+            print(col)
             y = X[:, col]
-            data = { 'counts': y }
-            df = pd.DataFrame(data)
+            if hasattr(y, 'todense'):
+                y = y.todense().A 
+            df = pd.DataFrame({'counts': y.flatten()})
             model = smf.negativebinomial('counts ~ 1', data=df)
             result = model.fit()
             res.append(result.params['alpha'])
