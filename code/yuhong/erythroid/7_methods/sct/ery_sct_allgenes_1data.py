@@ -77,6 +77,7 @@ def train_sct_and_return_tnode(adata):
     return tnode
 
 adata_split1 = create_adata_erythroid(S_split1,U_split1,adata)
+adata_split1.write(data_folder+'v2_erythroid/adata_allgenes_seed317_split1.h5ad')
 print_message_with_time("########### Split1 adata object created, start training model ###########")
 tnode_split1 = train_sct_and_return_tnode(adata_split1)
 print_message_with_time("########### Split1 model training completed, strat computing velocity ###########")
@@ -88,6 +89,7 @@ tnode_split1.save_model(save_dir=data_folder+'v2_erythroid/sct/', save_prefix='t
 print_message_with_time("########### Split1 data wrote ###########")
 
 adata_split2 = create_adata_erythroid(S_split2,U_split2,adata)
+adata_split2.write(data_folder+'v2_erythroid/adata_allgenes_seed317_split2.h5ad')
 print_message_with_time("########### Split2 adata object created, start training model ###########")
 tnode_split2 = train_sct_and_return_tnode(adata_split2)
 print_message_with_time("########### Split2 model training completed, strat computing velocity ###########")
