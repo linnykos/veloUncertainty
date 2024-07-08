@@ -254,10 +254,13 @@ def estimate_overdisps(X):
             y = X[:, col]
             if hasattr(y, 'todense'):
                 y = y.todense().A 
-            df = pd.DataFrame({'counts': y.flatten()})
-            model = smf.negativebinomial('counts ~ 1', data=df)
-            result = model.fit()
-            res.append(result.params['alpha'])
+            if np.sum(y)==0:
+                res.append(np.inf)
+            else: 
+                df = pd.DataFrame({'counts': y.flatten()})
+                model = smf.negativebinomial('counts ~ 1', data=df)
+                result = model.fit()
+                res.append(result.params['alpha'])
     return np.array(res)
 
 
