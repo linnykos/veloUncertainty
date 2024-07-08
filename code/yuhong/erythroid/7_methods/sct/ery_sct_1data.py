@@ -77,7 +77,7 @@ tnode.save_model(save_dir=data_folder+'v1_erythroid/sct/', save_prefix='tnode_er
 #S_split1, S_split2  = countsplit(S_subset,overdisps=overdisps_S)
 #U_split1, U_split2  = countsplit(U_subset,overdisps=overdisps_U)
 
-def run_countsplit_with_overdispersion(S,U,s1,s2,u1,u2,split_seed):
+def run_countsplit_with_overdispersion(S,U,split_seed):
     print_message_with_time("########### Estimating overdispersion parameters")
     overdisps_S = estimate_overdisps(S)
     overdisps_U = estimate_overdisps(U)
@@ -85,12 +85,7 @@ def run_countsplit_with_overdispersion(S,U,s1,s2,u1,u2,split_seed):
     np.random.seed(split_seed)
     s1, s2  = countsplit(S_subset,overdisps=overdisps_S)
     u1, u2  = countsplit(U_subset,overdisps=overdisps_U)
-    return [s1,s2,u1,u2]
-
-print_message_with_time("########### Running the function for overdispersion estimation and countsplitting")
-S_split1, S_split2,U_split1, U_split2 = None,None,None,None
-run_countsplit_with_overdispersion(S=S_subset,U=U_subset,s1=S_split1,s2=S_split2,u1=U_split1,u2=U_split2,split_seed=317)
-
+    return [[s1,u1],[s2,u2]]#[s1,s2,u1,u2]
 
 # compute velocity
 def create_adata_erythroid(S_split,U_split,adata_total):
@@ -108,13 +103,13 @@ def create_adata_erythroid(S_split,U_split,adata_total):
     return adata_split
 
 def countsplit_and_create_adata(S,U,total,split_seed):
-    S_split1,S_split2,U_split1,U_split2 = None,None,None,None
-    run_countsplit_with_overdispersion(S=S,U=U,s1=S_split1,s2=S_split2,u1=U_split1,u2=U_split2,split_seed=split_seed)
-    adata1 = create_adata_erythroid(S_split1,U_split1,total)
-    adata2 = create_adata_erythroid(S_split2,U_split2,total)
+    print_message_with_time("########### Running the function for overdispersion estimation and countsplitting")
+    split1,split2 = run_countsplit_with_overdispersion(S=S,U=U,split_seed=split_seed)
+    print_message_with_time("########### Creating split adata objects")
+    adata1 = create_adata_erythroid(split1[0],split1[1],total)
+    adata2 = create_adata_erythroid(split2[0],split2[1],total)
     return adata1,adata2
 
-print_message_with_time("########### Creating split adata objects")
 adata_split1,adata_split2 = countsplit_and_create_adata(S=S_subset,U=U_subset,total=adata,split_seed=317)
 
 # adata_split1 = create_adata_erythroid(S_split1,U_split1,adata)
