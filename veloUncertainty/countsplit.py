@@ -54,7 +54,7 @@ def dir_mul_sample(size, folds, b):
     probs = np.full(folds, 1.0 / folds)
     # If b is not infinity, sample "probs" from a Dirichlet distribution
     if not np.isinf(b):
-        gammas = gamma.rvs(1.0 / folds * b, size=folds) # np.random.gamma(1.0 / folds * b, 1.0,size=folds)
+        gammas =  np.random.gamma(1.0 / folds * b, 1.0,size=folds) # error: gamma.rvs(1.0 / folds * b, size=folds)
         sum_gammas = np.sum(gammas)
         if sum_gammas > 0:
             probs = gammas / sum_gammas
