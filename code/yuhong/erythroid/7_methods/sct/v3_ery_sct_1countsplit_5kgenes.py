@@ -129,6 +129,7 @@ adata_split2.write(data_folder+'v3_erythroid/sct/adata_ery_sct_seed317_split2.h5
 tnode_split2.save_model(save_dir=data_folder+'v3_erythroid/sct/', save_prefix='tnode_ery_sct_seed317_split2')
 
 print_message_with_time("########### Training model for total")
+adata = sc.read(data_folder+"Gastrulation/erythroid_lineage.h5ad")
 tnode_total = train_sct_and_return_tnode(adata,n_top_genes=2000)
 print_message_with_time("########### Computing velocities for total")
 diff_mat_total = compute_sctour_velocity(tnode_total, timestep=1/100)
