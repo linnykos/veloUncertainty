@@ -29,7 +29,7 @@ adata_split2 = sc.read_h5ad(data_folder+'v2_erythroid/seed317_split2_allgenes.h5
 #adata_split1.var['Accession'] = total.var['Accession'].copy()
 #adata_split1.var['Accession'] = total.var['Accession'].copy()
 
-print_message_with_time("########### Added fields to split1 and split2")
+print_message_with_time("########### Start to add fields to split1 and split2")
 def add_fields_erythroid(split,total):
     for obs_col in total.obs.columns:
         split.obs[obs_col] = total.obs[obs_col].copy()
@@ -38,6 +38,10 @@ def add_fields_erythroid(split,total):
     #split.obs['theiler'] = total.obs['theiler'].copy()
     for var_col in total.var.columns:
         split.var[var_col] = total.var[var_col].copy()
+
+add_fields_erythroid(adata_split1)
+add_fields_erythroid(adata_split2)
+
 
 def train_sct_and_return_tnode(adata, sct_seed=615):
     torch.manual_seed(sct_seed)
