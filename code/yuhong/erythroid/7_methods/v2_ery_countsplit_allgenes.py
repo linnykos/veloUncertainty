@@ -43,7 +43,7 @@ def create_adata_erythroid(S_split,U_split,adata_total):
     adata_split.obs['sequencing.batch'] = adata_total.obs['sequencing.batch'].copy()
     adata_split.var = pd.DataFrame(index=adata_total.var.index)
     adata_split.var['Accession'] = adata_total.var['Accession'].index.copy()
-    adata_split.uns['celltype_colors'] = {'celltype_colors':adata.uns['celltype_colors'].copy()}
+    adata_split.uns = {'celltype_colors':adata.uns['celltype_colors'].copy()}
     adata_split.obsm['X_pcaOriginal'] = adata_total.obsm['X_pca'].copy()
     adata_split.obsm['X_umapOriginal'] = adata_total.obsm['X_umap'].copy()
     return adata_split
@@ -51,6 +51,15 @@ def create_adata_erythroid(S_split,U_split,adata_total):
 def countsplit_and_create_adata(S,U,total,split_seed):
     print_message_with_time("########### Running the function for overdispersion estimation and countsplitting")
     split1,split2 = run_countsplit_with_overdispersion(S=S,U=U,split_seed=split_seed)
+    print_message_with_time("########### Writing adata objects with counts only")
+    counts_adata1 = ad.AnnData(X=split1[0].astype(np.float32))
+    counts_adata1.layers["spliced"] = split1[0]
+    counts_adata1.layers["unspliced"] = split1[1]
+    counts_adata2 = ad.AnnData(X=split2[0].astype(np.float32))
+    counts_adata2.layers["spliced"] = split2[0]
+    counts_adata2.layers["unspliced"] = split2[1]
+    counts_adata1.write(data_folder+'v2_erythroid/counts_seed317_split1_allgenes.h5ad')
+    counts_adata2.write(data_folder+'v2_erythroid/counts_seed317_split2_allgenes.h5ad')
     print_message_with_time("########### Creating split adata objects")
     adata1 = create_adata_erythroid(split1[0],split1[1],total)
     adata2 = create_adata_erythroid(split2[0],split2[1],total)

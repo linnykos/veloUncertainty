@@ -31,7 +31,7 @@ sct_seed = 615
 #np.random.seed(sct_seed)
 
 print_message_with_time("########### Starting countsplit")
-adata = sc.read(data_folder+"Gastrulation/erythroid_lineage.h5ad")
+adata = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
 S_mat = adata.layers['spliced'].copy()
 U_mat = adata.layers['unspliced'].copy()
 gene_names = adata.var.index.copy()
@@ -83,8 +83,8 @@ def run_countsplit_with_overdispersion(S,U,split_seed):
     overdisps_U = estimate_overdisps(U)
     print_message_with_time("########### Countsplitting")
     np.random.seed(split_seed)
-    s1, s2  = countsplit(S_subset,overdisps=overdisps_S)
-    u1, u2  = countsplit(U_subset,overdisps=overdisps_U)
+    s1, s2  = countsplit(S,overdisps=overdisps_S)
+    u1, u2  = countsplit(U,overdisps=overdisps_U)
     return [[s1,u1],[s2,u2]]#[s1,s2,u1,u2]
 
 # compute velocity
@@ -96,8 +96,8 @@ def create_adata_erythroid(S_split,U_split,adata_total):
     adata_split.obs['celltype'] = adata_total.obs['celltype'].copy()
     adata_split.obs['sequencing.batch'] = adata_total.obs['sequencing.batch'].copy()
     adata_split.var = pd.DataFrame(index=adata_total.var.index)
-    adata_split.var['Accession'] = adata_total.var['Accession'].index.copy()
-    adata_split.uns['celltype_colors'] = {'celltype_colors':adata.uns['celltype_colors'].copy()}
+    adata_split.var['Accession'] = adata_total.var['Accession'].copy()
+    adata_split.uns = {'celltype_colors':adata.uns['celltype_colors'].copy()}
     adata_split.obsm['X_pcaOriginal'] = adata_total.obsm['X_pca'].copy()
     adata_split.obsm['X_umapOriginal'] = adata_total.obsm['X_umap'].copy()
     return adata_split
