@@ -41,7 +41,7 @@ def create_adata_pancreas(S_split,U_split,adata_total):
     adata_split.obs = pd.DataFrame(index=adata_total.obs.index)
     adata_split.obs['clusters'] = adata_total.obs['clusters'].copy()
     adata_split.var = pd.DataFrame(index=adata_total.var.index)
-    adata_split.var['high_variable_genes'] = adata_total.var['high_variable_genes'].index.copy()
+    adata_split.var['highly_variable_genes'] = adata_total.var['highly_variable_genes'].copy()
     adata_split.uns = {'clusters_colors':adata.uns['clusters_colors'].copy()}
     adata_split.obsm['X_pcaOriginal'] = adata_total.obsm['X_pca'].copy()
     adata_split.obsm['X_umapOriginal'] = adata_total.obsm['X_umap'].copy()
