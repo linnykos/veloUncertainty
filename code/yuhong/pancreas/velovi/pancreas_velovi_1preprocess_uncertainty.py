@@ -9,12 +9,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # read adata
+fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/velovi/"
 label = "clusters"
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_velovi/"
-adata = sc.read(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/pancreas_velovi/pancreas_velovi_preprocess.h5ad")
-vae = VELOVI.load(data_folder+'vae_pancreas_preprocess.pt',adata)
+adata = sc.read(filename=data_folder+"pancreas_velovi_preprocess.h5ad")
+vae = VELOVI.load(data_folder+'vae_preprocess.pt',adata)
 print("########################### adata and vae loaded ###########################")
-
 
 def add_velovi_outputs_to_adata(adata, vae):
     latent_time = vae.get_latent_time(n_samples=25)
@@ -40,8 +40,7 @@ add_velovi_outputs_to_adata(adata, vae)
 ### Convert to a numpy array before indexing instead.
 
 scv.tl.velocity_graph(adata)
-scv.pl.velocity_embedding_stream(adata, basis='umap', save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/velovi/preprocess_umap.png")
-
+scv.pl.velocity_embedding_stream(adata, basis='umap', save=fig_folder+"velocity/preprocess.png")
 
 # intrinsic uncertainty
 uncertainty_df, _ = vae.get_directional_uncertainty(n_samples=100)
@@ -49,10 +48,7 @@ uncertainty_df.head()
 
 for c in uncertainty_df.columns:
     adata.obs[c] = np.log10(uncertainty_df[c].values)
-sc.pl.umap(
-    adata, color="directional_cosine_sim_variance",
-    cmap="Greys", vmin="p1", vmax="p99", save="/tut_uncertainty_int.png")
-# /home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/velovi/
+sc.pl.umap(adata, color="directional_cosine_sim_variance",cmap="Greys", vmin="p1", vmax="p99", save="/uncertaintyIn_preprocess.png")
 
 # extrinsic uncertainty
 def compute_extrinisic_uncertainty(adata, vae, n_samples=25) -> pd.DataFrame:
@@ -80,7 +76,8 @@ df = ext_uncertainty_df[0]
 
 for c in df.columns:
     adata.obs[c + "_extrinisic"] = np.log10(df[c].values)
-sc.pl.umap(adata, color="directional_cosine_sim_variance_extrinisic", vmin="p1", vmax="p99",save="/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/velovi/uncertaintyEx.png")
+sc.pl.umap(adata, color="directional_cosine_sim_variance_extrinisic", vmin="p1", vmax="p99",
+           save="/uncertaintyEx_preprocess.png")
 
 # permutation score
 perm_df, _ = vae.get_permutation_scores(labels_key=label)
@@ -88,7 +85,9 @@ adata.var["permutation_score"] = perm_df.max(1).values
 
 plt.clf()
 sns.kdeplot(data=adata.var, x="permutation_score")
-plt.savefig("/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/velovi/permutation_score.png")
+plt.savefig(fig_folder+"/uncertainty/permutation_score.png")
 plt.clf()
 
-
+### run this on command line:
+# cd /home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup10_velovi/figures/umap/
+# mv * /home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/pancreas/velovi/uncertainty/
