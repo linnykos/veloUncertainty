@@ -260,7 +260,10 @@ def estimate_overdisps(X):
                 df = pd.DataFrame({'counts': y.flatten()})
                 model = smf.negativebinomial('counts ~ 1', data=df)
                 result = model.fit()
-                res.append(result.params['alpha'])
+                alpha = result.params['alpha']
+                if alpha < 1e-3:
+                    alpha = 1e-3
+                res.append(alpha)
     return np.array(res)
 
 
