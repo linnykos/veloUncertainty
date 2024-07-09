@@ -39,8 +39,8 @@ def add_fields_erythroid(split,total):
     for var_col in total.var.columns:
         split.var[var_col] = total.var[var_col].copy()
 
-add_fields_erythroid(adata_split1)
-add_fields_erythroid(adata_split2)
+add_fields_erythroid(adata_split1,total)
+add_fields_erythroid(adata_split2,total)
 
 
 def train_sct_and_return_tnode(adata, sct_seed=615):
