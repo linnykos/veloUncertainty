@@ -21,19 +21,6 @@ total = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
 adata_split1 = sc.read_h5ad(data_folder+'v2_erythroid/seed317_split1_allgenes.h5ad') # 9815 × 53801
 adata_split2 = sc.read_h5ad(data_folder+'v2_erythroid/seed317_split2_allgenes.h5ad')
 
-def add_fields_erythroid(split,total):
-    for obs_col in total.obs.columns:
-        split.obs[obs_col] = total.obs[obs_col].copy()
-    #split.obs['sample'] = total.obs['sample'].copy()
-    #split.obs['stage'] = total.obs['stage'].copy()
-    #split.obs['theiler'] = total.obs['theiler'].copy()
-    for var_col in total.var.columns:
-        split.var[var_col] = total.var[var_col].copy()
-
-add_fields_erythroid(adata_split1,total)
-add_fields_erythroid(adata_split2,total)
-
-
 def scv_compute_velocity(adata):
     scv.pp.filter_and_normalize(adata, min_shared_counts=20, n_top_genes=2000)
     scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
