@@ -14,7 +14,7 @@ def print_message_with_time(message):
     print(f"{message} at {current_time}")
 
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/"
-fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v2_erythroid/sct/" 
+fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v2_erythroid/scv/" 
 
 print_message_with_time("########### Start to read total, split1 and split2")
 total = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
