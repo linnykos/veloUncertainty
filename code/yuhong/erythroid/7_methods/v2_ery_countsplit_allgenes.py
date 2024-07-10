@@ -38,14 +38,15 @@ def create_adata_erythroid(S_split,U_split,adata_total):
     adata_split = ad.AnnData(X=S_split.astype(np.float32))
     adata_split.layers["spliced"] = S_split
     adata_split.layers["unspliced"] = U_split
-    adata_split.obs = pd.DataFrame(index=adata_total.obs.index)
-    adata_split.obs['celltype'] = adata_total.obs['celltype'].copy()
-    adata_split.obs['sequencing.batch'] = adata_total.obs['sequencing.batch'].copy()
-    adata_split.var = pd.DataFrame(index=adata_total.var.index)
-    adata_split.var['Accession'] = adata_total.var['Accession'].index.copy()
     adata_split.uns = {'celltype_colors':adata.uns['celltype_colors'].copy()}
     adata_split.obsm['X_pcaOriginal'] = adata_total.obsm['X_pca'].copy()
     adata_split.obsm['X_umapOriginal'] = adata_total.obsm['X_umap'].copy()
+    adata_split.obs = pd.DataFrame(index=adata_total.obs.index)
+    for obs_col in adata_total.obs.columns:
+        adata_split.obs[obs_col] = adata_total.obs[obs_col].copy()
+    adata_split.var = pd.DataFrame(index=adata_total.var.index)
+    for var_col in adata_total.var.columns:
+        adata_split.var[var_col] = adata_total.var[var_col].copy()
     return adata_split
 
 def countsplit_and_create_adata(S,U,total,split_seed):
