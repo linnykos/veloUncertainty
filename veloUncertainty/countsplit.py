@@ -226,9 +226,8 @@ def countsplit(X, folds=2, epsilon=None, overdisps=None):
         results = mapply_dir_mul_sample(data, folds, mapped_overdisps)
     partition = []
     for f in range(folds):
-        Xfold = X.copy()
-        Xfold.data = results[f, :].astype(float)
-        partition.append(Xfold)
+        Xfold = csr_matrix((results[f],(row,col)),shape=X.shape)
+        partition.append(Xfold.astype(float))
     return partition
 
 ################################################################
@@ -261,9 +260,8 @@ def estimate_overdisps(X):
                 model = smf.negativebinomial('counts ~ 1', data=df)
                 result = model.fit()
                 alpha = result.params['alpha']
-                if alpha < 1e-3:
-                    alpha = 1e-3
-                res.append(alpha)
+                b = 1/alpha
+                res.append(b)
     return np.array(res)
 
 
