@@ -52,10 +52,10 @@ adata.layers['velocity'] = diff_mat_adata
 
 positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
 positions = [positions_dict[gene] for gene in adata.var.index]
-S_subset = S_mat[:,positions]
-U_subset = U_mat[:,positions]
-adata.layers['spliced_original'] = S_subset
-adata.layers['unspliced_original'] = U_subset
+S_mat = S_mat[:,positions]
+U_mat = U_mat[:,positions]
+adata.layers['spliced_original'] = S_mat
+adata.layers['unspliced_original'] = U_mat
 
 print_message_with_time("########### Writing data for preprocessed adata")
 adata.write(filename=data_folder+"v3_erythroid/sct/adata_ery_sct_preprocess_5kgenes.h5ad")
