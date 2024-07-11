@@ -38,7 +38,7 @@ print_message_with_time("#################### Save vae ")
 vae_split1.save(data_folder+'v2_erythroid/velovi/vae_ery_velovi_split1_v2.pt',overwrite=True)
 adata_split1.write(filename=data_folder+"v2_erythroid/velovi/backup/adata_ery_velovi_split1.h5ad")
 
-positions_dict = {gene: pos for pos, gene in enumerate(gene_names.index)}
+positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
 positions = [positions_dict[gene] for gene in adata_split1.var.index]
 
 S_mat_split1 = S_mat_split1[:,positions]

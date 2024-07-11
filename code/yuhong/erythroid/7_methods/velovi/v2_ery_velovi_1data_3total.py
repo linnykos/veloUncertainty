@@ -38,7 +38,7 @@ print_message_with_time("#################### Save vae ")
 vae_total.save(data_folder+'v2_erythroid/velovi/vae_ery_velovi_total_v2.pt',overwrite=True)
 adata_total.write(filename=data_folder+"v2_erythroid/velovi/backup/adata_ery_velovi_total.h5ad")
 
-positions_dict = {gene: pos for pos, gene in enumerate(gene_names.index)}
+positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
 positions = [positions_dict[gene] for gene in adata_total.var.index]
 
 S_mat_total = S_mat_total[:,positions]
