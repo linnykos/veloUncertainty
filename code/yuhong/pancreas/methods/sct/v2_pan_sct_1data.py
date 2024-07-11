@@ -26,7 +26,7 @@ total = sc.read_h5ad(data_folder+"Pancreas/endocrinogenesis_day15.h5ad")
 adata_split1 = sc.read_h5ad(data_folder+'v2_pancreas/seed317_split1_allgenes.h5ad')
 adata_split2 = sc.read_h5ad(data_folder+'v2_pancreas/seed317_split2_allgenes.h5ad')
 
-def train_sct_and_return_tnode(adata, sct_seed=615):
+def sct_train_and_return_tnode(adata, sct_seed=615):
     torch.manual_seed(sct_seed)
     random.seed(sct_seed)
     np.random.seed(sct_seed)
@@ -42,7 +42,7 @@ def train_sct_and_return_tnode(adata, sct_seed=615):
     return tnode
 
 print_message_with_time("########### Start to train model for split1")
-tnode_split1 = train_sct_and_return_tnode(adata_split1)
+tnode_split1 = sct_train_and_return_tnode(adata_split1)
 print_message_with_time("########### Start to compute velocity for split1")
 diff_mat_split1 = compute_sctour_velocity(tnode_split1, timestep=1/100)
 print_message_with_time("########### Split1 velocity computed, start to write data")
@@ -52,7 +52,7 @@ tnode_split1.save_model(save_dir=data_folder+'v2_pancreas/sct/', save_prefix='tn
 print_message_with_time("########### Split1 data wrote")
 
 print_message_with_time("########### Start to train model for split2")
-tnode_split2 = train_sct_and_return_tnode(adata_split2)
+tnode_split2 = sct_train_and_return_tnode(adata_split2)
 print_message_with_time("########### Start to compute velocity for split2")
 diff_mat_split2 = compute_sctour_velocity(tnode_split2, timestep=1/100)
 print_message_with_time("########### Split2 velocity computed, start to write data")
@@ -62,7 +62,7 @@ tnode_split2.save_model(save_dir=data_folder+'v2_pancreas/sct/', save_prefix='tn
 print_message_with_time("########### Split2 data wrote")
 
 print_message_with_time("########### Start to train model for total")
-tnode_total = train_sct_and_return_tnode(total)
+tnode_total = sct_train_and_return_tnode(total)
 print_message_with_time("########### Start to compute velocity for split1")
 diff_mat_total = compute_sctour_velocity(tnode_total, timestep=1/100)
 print_message_with_time("########### Total velocity computed, start to write data")
