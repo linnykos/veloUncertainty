@@ -3,8 +3,6 @@ import unitvelo as utv
 import scanpy as sc
 import tf_keras
 import os
-import bbknn
-from scipy.sparse import csr_matrix
 import datetime
 
 velo_config = utv.config.Configuration()

@@ -3,8 +3,6 @@ import unitvelo as utv
 import scanpy as sc
 import tf_keras
 import os
-import bbknn
-from scipy.sparse import csr_matrix
 import datetime
 
 velo_config = utv.config.Configuration()
@@ -49,7 +47,7 @@ adata_split2.write_h5ad(data_folder+'v2_erythroid/utv/backup/adata_ery_utv_split
 positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
 positions_split2 = [positions_dict[gene] for gene in adata_split2.var.index]
 
-adata_split2.layers['spliced_original'] = S_mat_split2[:,positions_split2] # looks like i did not do this actually
+adata_split2.layers['spliced_original'] = S_mat_split2[:,positions_split2] 
 adata_split2.layers['unspliced_original'] = U_mat_split2[:,positions_split2]
 
 print_message_with_time("#################### Write data (final version)")
