@@ -57,7 +57,7 @@ def plot_pvalues(Xtrain, Xtest, method, fig_name, seed_kmeans=1):
 
 get_pvalues(X,X)
 plot_pvalues(X,X,method="naive",fig_name="NB_naive.png")
-np.quantile(get_pvalues(X), [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1])
+np.quantile(get_pvalues(X,X), [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1])
 
 ## Poisson countsplitting
 np.random.seed(1)
@@ -68,12 +68,77 @@ get_pvalues(Xtrain,Xtest)
 plot_pvalues(Xtrain,Xtest,method="countsplit",fig_name="NB_countsplitPoi.png")
 
 ## NB countsplitting
+np.random.seed(1)
 splitNB = countsplit(X, overdisps=np.full(p,size)) # size=1/alpha, where alpha is the obtained overdispersion parameter estimate from estimation_overdisps()
 XtrainNB = splitNB[0].toarray()
 XtestNB = splitNB[1].toarray()
-get_pvalues(XtrainNB,XtestNB)
-np.quantile(get_pvalues(XtrainNB,XtestNB), [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1])
+#get_pvalues(XtrainNB,XtestNB)
+#np.quantile(get_pvalues(XtrainNB,XtestNB), [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1])
 plot_pvalues(XtrainNB,XtestNB,method="countsplit (NB)",fig_name="NB_countsplitNB.png")
+
+## NB countsplitting with correct overdispersion estimation
+np.random.seed(1)
+overdisps = estimate_overdisps(X)
+splitNB = countsplit(X, overdisps=overdisps) # size=1/alpha, where alpha is the obtained overdispersion parameter estimate from estimation_overdisps()
+XtrainNB = splitNB[0].toarray()
+XtestNB = splitNB[1].toarray()
+plot_pvalues(XtrainNB,XtestNB,method="countsplit (NB size=5, overdisps estimated)",fig_name="NB_countsplitNB_size5_overdisps.png")
+
+## NB countsplitting with wrong overdispersion estimation
+np.random.seed(1)
+overdisps = estimate_overdisps(X)
+splitNB = countsplit(X, overdisps=1/overdisps) # size=1/alpha, where alpha is the obtained overdispersion parameter estimate from estimation_overdisps()
+XtrainNB = splitNB[0].toarray()
+XtestNB = splitNB[1].toarray()
+plot_pvalues(XtrainNB,XtestNB,method="countsplit (NB size=5, overdisps estimated but use the inverse)",fig_name="NB_countsplitNB_size5_overdispsInverse.png")
+
+### size=.05
+np.random.seed(1)
+n = 1000  
+p = 200   
+mu = 5    # Mean of the negative binomial distribution
+size = .05  # Size parameter of the negative binomial distribution
+# Generate the negative binomial distributed data
+data = nbinom.rvs(n=size, p=size/(size + mu), size=n*p)
+# Reshape the data into a matrix with n rows and p columns
+X = data.reshape((n, p))
+
+plot_pvalues(X,X,method="naive",fig_name="NB_size5e-2_naive.png")
+
+seed_kmeans=1
+## Poisson countsplitting
+np.random.seed(1)
+split = countsplit(X)
+Xtrain = split[0].toarray()
+Xtest = split[1].toarray()
+#get_pvalues(Xtrain,Xtest)
+plot_pvalues(Xtrain,Xtest,method="countsplit",fig_name="NB_size5e-2_countsplitPoi.png")
+
+## NB countsplitting
+np.random.seed(1)
+splitNB = countsplit(X, overdisps=np.full(p,size)) # size=1/alpha, where alpha is the obtained overdispersion parameter estimate from estimation_overdisps()
+XtrainNB = splitNB[0].toarray()
+XtestNB = splitNB[1].toarray()
+#get_pvalues(XtrainNB,XtestNB)
+#np.quantile(get_pvalues(XtrainNB,XtestNB), [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1])
+plot_pvalues(XtrainNB,XtestNB,method="countsplit (NB size=.05)",fig_name="NB_size5e-2_countsplitNB.png")
+
+## NB countsplitting with correct overdispersion estimation
+np.random.seed(1)
+overdisps = estimate_overdisps(X)
+splitNB = countsplit(X, overdisps=overdisps) # size=1/alpha, where alpha is the obtained overdispersion parameter estimate from estimation_overdisps()
+XtrainNB = splitNB[0].toarray()
+XtestNB = splitNB[1].toarray()
+plot_pvalues(XtrainNB,XtestNB,method="countsplit (NB size=.05, overdisps estimated)",fig_name="NB_size5e-2_countsplitNB_overdisps.png")
+
+## NB countsplitting with wrong overdispersion estimation
+np.random.seed(1)
+overdisps = estimate_overdisps(X)
+splitNB = countsplit(X, overdisps=1/overdisps) # size=1/alpha, where alpha is the obtained overdispersion parameter estimate from estimation_overdisps()
+XtrainNB = splitNB[0].toarray()
+XtestNB = splitNB[1].toarray()
+plot_pvalues(XtrainNB,XtestNB,method="countsplit (NB size=.05, overdisps estimated but use the inverse)",fig_name="NB_size5e-2_countsplitNB_overdispsInverse.png")
+
 
 
 ######### testing code #########

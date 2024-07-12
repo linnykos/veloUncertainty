@@ -21,10 +21,15 @@ total = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
 adata_split1 = sc.read_h5ad(data_folder+'v2_erythroid/seed317_split1_allgenes.h5ad') # 9815 × 53801
 adata_split2 = sc.read_h5ad(data_folder+'v2_erythroid/seed317_split2_allgenes.h5ad')
 gene_names = total.var.index.copy()
+positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
+
 S_mat_split1 = adata_split1.layers['spliced'].copy()
-S_mat_split2 = adata_split2.layers['spliced'].copy()
 U_mat_split1 = adata_split1.layers['unspliced'].copy()
+S_mat_split2 = adata_split2.layers['spliced'].copy()
 U_mat_split2 = adata_split2.layers['unspliced'].copy()
+S_mat_total = total.layers['spliced'].copy()
+U_mat_total = total.layers['unspliced'].copy()
+
 
 def scv_compute_velocity(adata):
     scv.pp.filter_and_normalize(adata, min_shared_counts=20, n_top_genes=2000)
@@ -43,36 +48,36 @@ def scv_compute_velocity(adata):
     scv.tl.velocity_graph(adata)
 
 scv_compute_velocity(total) # running this
+positions_total = [positions_dict[gene] for gene in total.var.index]
+total.layers['spliced_original'] = S_mat_total[:,positions_total]
+total.layers['unspliced_original'] = U_mat_total[:,positions_total]
+
 scv_compute_velocity(adata_split1)
-scv_compute_velocity(adata_split2)
-
-positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
 positions_split1 = [positions_dict[gene] for gene in adata_split1.var.index]
-positions_split2 = [positions_dict[gene] for gene in adata_split2.var.index]
-
-S_mat_split1 = S_mat_split1[:,positions_split1]
-U_mat_split1 = U_mat_split1[:,positions_split1]
-adata_split1.layers['spliced_original'] = S_mat_split1[:,positions_split1] # looks like i did not do this actually
+adata_split1.layers['spliced_original'] = S_mat_split1[:,positions_split1] 
 adata_split1.layers['unspliced_original'] = U_mat_split1[:,positions_split1]
+
+scv_compute_velocity(adata_split2)
+positions_split2 = [positions_dict[gene] for gene in adata_split2.var.index]
 adata_split2.layers['spliced_original'] = S_mat_split2[:,positions_split2]
 adata_split2.layers['unspliced_original'] = U_mat_split2[:,positions_split2]
 
-
 import numpy as np
 common_genes_filter = np.intersect1d(np.array(adata_split1.var.index), np.array(adata_split2.var.index))
-common_genes_filter.shape # 1481 common genes
-np.intersect1d(np.array(adata_split1.var.index), np.array(total.var.index)).shape # 589 -> 1335
-np.intersect1d(np.array(adata_split2.var.index), np.array(total.var.index)).shape # 580 -> 1328
+print('Number of overlapped genes between splits = '+str(common_genes_filter.shape[0])) # 1481 common genes
+print('Number of overlapped genes between split1 and total = '+str(np.intersect1d(np.array(adata_split1.var.index), np.array(total.var.index)).shape[0])) # 589 -> 1335
+print('Number of overlapped genes between split2 and total = '+str(np.intersect1d(np.array(adata_split2.var.index), np.array(total.var.index)).shape[0])) # 580 -> 1328
 
 #adata_split1.layers["velocity_rmNA"] = np.nan_to_num(adata_split1.layers['velocity'], nan=0)
 #adata_split2.layers["velocity_rmNA"] = np.nan_to_num(adata_split2.layers['velocity'], nan=0)
-np.sum(~np.isnan(adata_split1.layers['velocity'][0])) # Ngenes in split1 for velocity computation=9 -> 311
-np.sum(~np.isnan(adata_split2.layers['velocity'][0])) # Ngenes in split2 for velocity computation=9 -> 315
+print("Number of genes used in velocity computation in split1 = "+str(np.sum(~np.isnan(adata_split1.layers['velocity'][0])))) # 9 -> 311
+print("Number of genes used in velocity computation in split2 = "+str(np.sum(~np.isnan(adata_split2.layers['velocity'][0])))) # 9 -> 315
+print("Number of genes used in velocity computation in total = "+str(np.sum(~np.isnan(total.layers['velocity'][0])))) # 590
 
 velo_genes_split1 = adata_split1.var.index[~np.isnan(adata_split1.layers['velocity'][0])]
 velo_genes_split2 = adata_split2.var.index[~np.isnan(adata_split2.layers['velocity'][0])]
 common_genes_velocity = np.intersect1d(np.array(velo_genes_split1), np.array(velo_genes_split2))
-common_genes_velocity.shape # =1 -> 209
+print('Number of overlapped genes for velocity computation in splits = '+str(common_genes_velocity.shape[0])) # =1 -> 209
 
 # write data
 total.write_h5ad(data_folder+'v2_erythroid/scv/adata_ery_scv_total_v2.h5ad')
@@ -82,14 +87,20 @@ adata_split2.write_h5ad(data_folder+'v2_erythroid/scv/adata_ery_scv_seed317_spli
 ######################################################
 ## plot velocities
 raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
-scv.pl.velocity_embedding_stream(total, basis='umap',color="celltype",save=fig_folder+"velocity/ery_scv_total_umapCompute.png")
 scv.pl.velocity_embedding_stream(total, basis='umap',color="sequencing.batch",save=fig_folder+"velocity/ery_scv_total_umapCompute_byBatch.png")
 
-def plot_velocities_scv(split, adata_total, fig_info):
-    adata=split.copy()
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color="celltype",save=fig_folder+"velocity/ery_scv_"+fig_info+"_umapCompute.png")
-    adata.obsm['X_umap'] = adata_total.obsm['X_umap'].copy()
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color="celltype",save=fig_folder+"velocity/ery_scv_"+fig_info+"_umapOriginal.png")
+def plot_velocities_scv(adata_in,adata_raw,fig_info,data,method,color_label=None):
+    if data=="ery":
+        color_label = 'celltype'
+    elif data=="pan":
+        color_label = 'clusters'
+    data_method = data+"_"+method
+    # umapCompute
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color="celltype",save=fig_folder+"velocity/"+data_method+fig_info+"_umapCompute.png")
+    # umapOriginal
+    adata=adata_in.copy()
+    adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=color_label,save=fig_folder+"velocity/"+data_method+fig_info+"_umapOriginal.png")    
 
 plot_velocities_scv(total,raw,"total")
 plot_velocities_scv(adata_split1,raw,"seed317_split1")
@@ -138,4 +149,14 @@ scv.pl.scatter(total, c='velocity_confidence', cmap='coolwarm', perc=[1, 100],
 scv.pl.scatter(total, color='cos_sim', cmap='coolwarm', perc=[1, 100],
                save=fig_folder+"cos_sim/seed317_cos_sim_umapCompute_scatter.png")
 
+# plot velocity, velo_conf, cos_sim in one figure
+total.obs['cos_sim'] = cos_sim
+plt.clf()
+fig, axs = plt.subplots(ncols=3, nrows=1, figsize=(18, 5))  # figsize=(horizontal, vertical)
+scv.pl.velocity_embedding_stream(total, basis='umap',color="celltype",
+                                 ax=axs[0],legend_loc='on data',frameon=False,size=100,alpha=0.2)
+scv.pl.scatter(total,c='velocity_confidence',cmap='coolwarm',vmin=-.38,vmax=.97,ax=axs[1],legend_loc='none',frameon=False,size=100,alpha=0.15)
+scv.pl.scatter(total,color='cos_sim',cmap='coolwarm',vmin=-.38,vmax=.97,ax=axs[2],legend_loc='none',frameon=False,size=100,alpha=0.15)
+plt.savefig(fig_folder+"cos_sim/seed317_cosSim_veloConf.png")
+plt.clf()
 
