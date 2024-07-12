@@ -120,6 +120,7 @@ scv.tl.velocity_pseudotime(total)
 cell_types = total.obs['celltype']
 colors = dict(zip(['Blood progenitors 1', 'Blood progenitors 2', 'Erythroid1', 'Erythroid2', 'Erythroid3'],
                   ['#f9decf', '#c9a997', '#C72228', '#f79083', '#EF4E22']))
+# dict(zip(raw.obs['celltype'].cat.categories,raw.uns['celltype_colors']))
 
 def plot_pseudotime(adata_in,fig_name):
     adata = adata_in.copy()
