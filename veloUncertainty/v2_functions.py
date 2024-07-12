@@ -63,7 +63,11 @@ def plot_gene_correlation_between_splits(adata1,adata2,fig_path,fig_folder):
     plt.savefig(fig_folder+fig_path) 
     plt.clf()
 
+######################################################
+######################################################
 ## 3plots.py
+######################################################
+# velocity
 ### plot velocity on umap
 def plot_velocities_scv_utv(adata_in,adata_raw,fig_folder,fig_info,dataset,method,color_label=None):
     if dataset=="ery":
@@ -78,6 +82,8 @@ def plot_velocities_scv_utv(adata_in,adata_raw,fig_folder,fig_info,dataset,metho
     adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=color_label,save=fig_folder+"velocity/"+data_method+"_"+fig_info+"_umapOriginal.png")    
 
+######################################################
+# cosine similarity
 ### compute cosine similarity
 def compute_cosine_similarity(adata_split1,adata_split2,method):
     velo_genes_split1 = adata_split1.var.index
@@ -127,3 +133,79 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,datas
                                      save=fig_folder+"cos_sim/"+dataset_method+"_cos_sim_umapOriginal.png")
     scv.pl.scatter(adata_total_plot, color='cos_sim', cmap='coolwarm', perc=[1, 100],
                    save=fig_folder+"cos_sim/"+dataset_method+"_cos_sim_scatter_umapOriginal.png")
+#### plot 2 by 1 figures, left: umap of cell development with velocity estimates, right: cosine similarity of velocities
+def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_raw,dataset,method,fig_folder,text_x=None,text_y=None):
+    cos_sim, Ngenes = compute_cosine_similarity(adata_split1,adata_split2,method)
+    adata_total.obs['cos_sim'] = cos_sim
+    dataset_method = dataset+'_'+method
+    celltype_label = None
+    if dataset=="pan":
+        celltype_label = "clusters"
+    if dataset=="ery":
+        celltype_label = "celltype"
+    # umapCompute
+    adata_plot = adata_total.copy()
+    fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
+    scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',frameon=False,size=100,alpha=0.5)
+    scv.pl.scatter(adata_plot,color='cos_sim',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
+                   title='cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes),frameon=False,size=100,alpha=0.3)
+    plt.savefig(fig_folder+"cos_sim/"+dataset_method+"_cos_sim_withRef_umapCompute.png")
+    plt.clf()
+    # umapOriginal
+    adata_plot = adata_total.copy()
+    adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
+    fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
+    scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',frameon=False,size=100,alpha=0.5)
+    scv.pl.scatter(adata_plot,color='cos_sim',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
+                   title='cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
+    plt.savefig(fig_folder+"cos_sim/"+dataset_method+"_cos_sim_withRef_umapOriginal.png")
+    plt.clf()
+
+######################################################
+# plot pseudotime
+def plot_pseudotime(adata_in,data_raw,fig_name,dataset,method):
+    data_method = dataset+'_'+method
+    fig_name = data_method+'_'+fig_name
+    if not 'velocity_pseudotime' in adata_in.obs.columns: raise ValueError('No pseudotime information')
+    celltype_label = "celltype"
+    if dataset=="pan": celltype_label="clusters"
+    # umapCompute
+    adata = adata_in.copy()
+    scv.pl.scatter(adata, color="velocity_pseudotime", color_map="gnuplot",title='velocity pseudotime, '+dataset+'+'+method,
+                   save=fig_folder+'ptime/'+fig_name+'_ptime_umapCompute.png')
+    fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',frameon=False,size=100,alpha=0.5)
+    scv.pl.scatter(adata,ax=axs[1], color="velocity_pseudotime", color_map="gnuplot",title='velocity pseudotime, '+dataset+'+'+method)
+    plt.savefig(fig_folder+"ptime/"+fig_name+'_ptime_withRef_umapCompute.png')
+    plt.clf()
+    # umapOriginal
+    adata = adata_in.copy()
+    adata.obsm['X_umap'] = data_raw.obsm['X_umap'].copy()
+    scv.pl.scatter(adata, color="velocity_pseudotime", color_map="gnuplot", title='velocity pseudotime, '+dataset+'+'+method,
+                   save=fig_folder+'ptime/'+fig_name+'_ptime_umapOriginal.png')
+    fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',frameon=False,size=100,alpha=0.5)
+    scv.pl.scatter(adata,ax=axs[1], color="velocity_pseudotime", color_map="gnuplot",title='velocity pseudotime, '+dataset+'+'+method)
+    plt.savefig(fig_folder+"ptime/"+fig_name+'_ptime_withRef_umapOriginal.png')
+    plt.clf()
+
+# plot pseudotime correlation
+def ptime_correlation_scatter_plot(s1,s2,method,dataset,name,xlab,ylab,fig_folder):
+    celltype_label = "celltype"
+    if dataset == "pan": celltype_label = "clusters"
+    cell_types = s1.obs[celltype_label]
+    colors = dict(zip(s1.obs[celltype_label].cat.categories, s1.uns[celltype_label+'_colors']))
+    #raw.obs['clusters'].cat.categories,raw.uns['clusters_colors']
+    data_method = dataset+'_'+method
+    df = pd.DataFrame({'split1':s1.obs['velocity_pseudotime'],'split2':s2.obs['velocity_pseudotime'],'cell_types':cell_types})
+    corr = np.round(np.corrcoef(s1.obs['velocity_pseudotime'],s2.obs['velocity_pseudotime']),3)[0,1]
+    print(corr)
+    plt.figure(figsize=(7, 5))
+    for category, color in colors.items(): plt.scatter([], [], color=color, label=category)
+    plt.scatter(df['split1'], df['split2'], c=df['cell_types'].map(colors))
+    plt.legend()
+    plt.xlabel(xlab)
+    plt.ylabel(ylab)
+    plt.title('Pseudotime correlation '+name+', '+dataset+'+'+method+', corr='+str(corr)+')')
+    plt.savefig(fig_folder+'ptime/'+data_method+"_pseudotimeCorr"+name+".png")
+    plt.close()
