@@ -234,7 +234,7 @@ def plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_fol
     plt.savefig(fig_folder+"cos_sim/"+data_method+"_veloConf_and_cosSim_"+fig_umap+".png")
     plt.clf()
 
-def plot_veloConf_and_cosSim(adata_total,adata_split1,adata_split2,adata_raw,dataset=dataset_short,method=method,fig_folder=fig_folder):
+def plot_veloConf_and_cosSim(adata_total,adata_split1,adata_split2,adata_raw,dataset,method,fig_folder):
     if not 'velocity_confidence' in adata_total.obs.columns:
         scv.tl.velocity_confidence(adata_total)
     cos_sim,Ngenes = compute_cosine_similarity(adata_split1,adata_split2,method=method)

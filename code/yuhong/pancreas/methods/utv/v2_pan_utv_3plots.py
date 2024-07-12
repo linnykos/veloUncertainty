@@ -47,13 +47,10 @@ plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=spli
 ######################################################
 ## ptime
 'velocity_pseudotime' in split1.obs.columns
-#scv.tl.velocity_pseudotime(total)
-#scv.tl.velocity_pseudotime(split1)
-#scv.tl.velocity_pseudotime(split2)
 
-plot_pseudotime(adata_in=split1,data_raw=raw,fig_name="split1",dataset=dataset_short,method=method)
-plot_pseudotime(adata_in=split2,data_raw=raw,fig_name="split2",dataset=dataset_short,method=method)
-plot_pseudotime(adata_in=total,data_raw=raw,fig_name="total",dataset=dataset_short,method=method)
+plot_pseudotime(adata_in=split1,data_raw=raw,fig_name="split1",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=split2,data_raw=raw,fig_name="split2",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=total,data_raw=raw,fig_name="total",dataset=dataset_short,method=method,fig_folder=fig_folder)
 
 ptime_correlation_scatter_plot(s1=split1,s2=split2,method=method,dataset='pan',name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder)
 ptime_correlation_scatter_plot(s1=split1,s2=total,method=method,dataset='pan',name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder)
