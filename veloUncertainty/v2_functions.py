@@ -163,7 +163,7 @@ def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_r
 
 ######################################################
 # plot pseudotime
-def plot_pseudotime(adata_in,data_raw,fig_name,dataset,method):
+def plot_pseudotime(adata_in,data_raw,fig_name,dataset,method,fig_folder):
     data_method = dataset+'_'+method
     fig_name = data_method+'_'+fig_name
     if not 'velocity_pseudotime' in adata_in.obs.columns: raise ValueError('No pseudotime information')
@@ -209,3 +209,40 @@ def ptime_correlation_scatter_plot(s1,s2,method,dataset,name,xlab,ylab,fig_folde
     plt.title('Pseudotime correlation '+name+', '+dataset+'+'+method+', corr='+str(corr)+')')
     plt.savefig(fig_folder+'ptime/'+data_method+"_pseudotimeCorr"+name+".png")
     plt.close()
+
+######################################################
+## plot velo_conf
+def plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_folder,umapOriginal,vmin,vmax,Ngenes):
+    adata_plot = adata_total.copy()
+    celltype_label = None
+    if dataset=="ery": celltype_label="celltype"
+    elif dataset=="pan": celltype_label="clusters"
+    data_method = dataset+'_'+method
+    fig_umap = "umapCompute"
+    if umapOriginal==True:
+        adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
+        fig_umap = "umapOriginal"
+    scv.pl.scatter(adata_plot, c='velocity_confidence', cmap='coolwarm', perc=[1, 100],
+                   save=fig_folder+"velo_conf/"+data_method+"_veloConf_"+fig_umap+".png")
+    plt.clf()
+    fig, axs = plt.subplots(ncols=3, nrows=1, figsize=(15, 4))  # figsize=(horizontal, vertical)
+    scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',frameon=False,size=100,alpha=0.5)
+    scv.pl.scatter(adata_plot,c='velocity_confidence',cmap='coolwarm',vmin=vmin,vmax=vmax,ax=axs[1],legend_loc='none',
+                   title='velocity confidence, '+dataset+'+'+method,frameon=False,size=100,alpha=0.3)
+    scv.pl.scatter(adata_plot,color='cos_sim',cmap='coolwarm',vmin=vmin,vmax=vmax,ax=axs[2],legend_loc='none',
+                   title='velocity cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes),frameon=False,size=100,alpha=0.3)
+    plt.savefig(fig_folder+"cos_sim/"+data_method+"_veloConf_and_cosSim_"+fig_umap+".png")
+    plt.clf()
+
+def plot_veloConf_and_cosSim(adata_total,adata_split1,adata_split2,adata_raw,dataset=dataset_short,method=method,fig_folder=fig_folder):
+    if not 'velocity_confidence' in adata_total.obs.columns:
+        scv.tl.velocity_confidence(adata_total)
+    cos_sim,Ngenes = compute_cosine_similarity(adata_split1,adata_split2,method=method)
+    adata_total.obs['cos_sim'] = cos_sim
+    vmin = np.min([0, np.min(cos_sim)-1e-5, np.min(adata_total.obs['velocity_confidence'])-1e-5])
+    vmax = np.max([np.max(cos_sim)+1e-5, np.max(adata_total.obs['velocity_confidence'])+1e-5, 1])
+    data_method = dataset+'_'+method
+    # umapCompute
+    plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_folder,umapOriginal=False,vmin=vmin,vmax=vmax,Ngenes=Ngenes)
+    # umapOriginal
+    plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_folder,umapOriginal=True,vmin=vmin,vmax=vmax,Ngenes=Ngenes)

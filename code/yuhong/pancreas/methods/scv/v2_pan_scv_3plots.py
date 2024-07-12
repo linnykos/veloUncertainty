@@ -11,7 +11,7 @@ import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v2_functions import *
 
-method = 'utv'
+method = 'scv'
 dataset_long = 'pancreas'
 dataset_short = 'pan'
 
@@ -24,15 +24,10 @@ split2 = scv.read(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_sh
 raw = scv.read(data_folder+"Pancreas/endocrinogenesis_day15.h5ad")
 
 ######################################################
-## compute umap
-sc.tl.umap(total)
-sc.tl.umap(split1)
-sc.tl.umap(split2)
-
+## plot velocity
 plot_velocities_scv_utv(adata_in=total,adata_raw=raw,fig_folder=fig_folder,fig_info="total",dataset=dataset_short,method=method)
 plot_velocities_scv_utv(adata_in=split1,adata_raw=raw,fig_folder=fig_folder,fig_info="split1",dataset=dataset_short,method=method)
 plot_velocities_scv_utv(adata_in=split2,adata_raw=raw,fig_folder=fig_folder,fig_info="split2",dataset=dataset_short,method=method)
-
 
 ######################################################
 ## plot cosine similarity
@@ -46,17 +41,16 @@ plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=spli
 
 ######################################################
 ## ptime
-'velocity_pseudotime' in split1.obs.columns
-#scv.tl.velocity_pseudotime(total)
-#scv.tl.velocity_pseudotime(split1)
-#scv.tl.velocity_pseudotime(split2)
+if not 'velocity_pseudotime' in split1.obs.columns:
+    scv.tl.velocity_pseudotime(total)
+    scv.tl.velocity_pseudotime(split1)
+    scv.tl.velocity_pseudotime(split2)
 
-plot_pseudotime(adata_in=split1,data_raw=raw,fig_name="split1",dataset=dataset_short,method=method)
-plot_pseudotime(adata_in=split2,data_raw=raw,fig_name="split2",dataset=dataset_short,method=method)
-plot_pseudotime(adata_in=total,data_raw=raw,fig_name="total",dataset=dataset_short,method=method)
+plot_pseudotime(adata_in=split1,data_raw=raw,fig_name="split1",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=split2,data_raw=raw,fig_name="split2",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=total,data_raw=raw,fig_name="total",dataset=dataset_short,method=method,fig_folder=fig_folder)
 
 ptime_correlation_scatter_plot(s1=split1,s2=split2,method=method,dataset='pan',name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder)
 ptime_correlation_scatter_plot(s1=split1,s2=total,method=method,dataset='pan',name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder)
 ptime_correlation_scatter_plot(s1=split2,s2=total,method=method,dataset='pan',name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder)
-
 
