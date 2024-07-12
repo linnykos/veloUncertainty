@@ -1,4 +1,4 @@
-import sctour as sct
+import scvelo as scv
 import scanpy as sc
 import numpy as np
 import pandas as pd
@@ -11,47 +11,79 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/"
 
-s1 = sc.read_h5ad(data_folder+'v2_pancreas/seed317_split1_allgenes.h5ad')
-s2 = sc.read_h5ad(data_folder+'v2_pancreas/seed317_split2_allgenes.h5ad')
+dataset_long = "pancreas"
+dataset_short = "pan"
+method = "scv"
 
-np.corrcoef(np.array(s1.layers['spliced'].todense()[:,0].reshape(1,3696)),
-            np.array(s2.layers['spliced'].todense()[:,0].reshape(1,3696)))
-np.transpose(s1.layers['spliced'])
+def print_message_with_time(message):
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"{message} at {current_time}")
 
-np.corrcoef(np.transpose(np.array(s1.layers['spliced'].todense()[:,0])),
-            np.transpose(np.array(s2.layers['spliced'].todense()[0,:])))
+print_message_with_time("################## Read data")
+total = sc.read_h5ad(data_folder+"Pancreas/endocrinogenesis_day15.h5ad")
+adata_split1 = sc.read_h5ad(data_folder+'v2_'+dataset_long+'/seed317_split1_allgenes.h5ad')
+adata_split2 = sc.read_h5ad(data_folder+'v2_'+dataset_long+'/seed317_split2_allgenes.h5ad')
+gene_names = total.var.index.copy()
+positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
 
-np.corrcoef(np.transpose(s1.layers['spliced'].todense())[0,:],np.transpose(s2.layers['spliced'].todense())[0,:])
+S_mat_split1 = adata_split1.layers['spliced'].copy()
+U_mat_split1 = adata_split1.layers['unspliced'].copy()
+S_mat_split2 = adata_split2.layers['spliced'].copy()
+U_mat_split2 = adata_split2.layers['unspliced'].copy()
+S_mat_total = total.layers['spliced'].copy()
+U_mat_total = total.layers['unspliced'].copy()
 
-cor = [np.corrcoef(np.transpose(s1.layers['spliced'].todense())[i,:],np.transpose(s2.layers['spliced'].todense())[i,:]) for i in range(s1.layers['spliced'].shape[1])]
+## run model
+def scv_compute_velocity_pancreas(adata):
+    scv.pp.filter_and_normalize(adata, min_shared_counts=20, n_top_genes=2000)
+    scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
+    sc.tl.pca(adata, svd_solver="arpack")
+    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+    sc.tl.umap(adata)
+    scv.tl.recover_dynamics(adata)
+    scv.tl.velocity(adata, mode="dynamical")
+    scv.tl.velocity_graph(adata)
 
-cor = []
-S1 = np.transpose(s1.layers['spliced'].todense())
-S2 = np.transpose(s2.layers['spliced'].todense())
-for i in range(S1.shape[0]):
-    if i%100==0:
-        print(i)
-    if np.sum(S1[i,:])==0 and np.sum(S2[i,:])==0:
-        cor.append(np.nan)
-    else:
-        cor.append(np.corrcoef(S1[i,:],S2[i,:])[0,1])
-cor = np.array(cor)
-cor[~np.isnan(cor)].shape
-np.quantile(cor[~np.isnan(cor)],[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1])
+print_message_with_time("################## Run model on total")
+scv_compute_velocity_pancreas(total)
+positions_total = [positions_dict[gene] for gene in total.var.index]
+total.layers['spliced_original'] = S_mat_total[:,positions_total]
+total.layers['unspliced_original'] = U_mat_total[:,positions_total]
 
+print_message_with_time("################## Read model on split1")
+scv_compute_velocity_pancreas(adata_split1)
+positions_split1 = [positions_dict[gene] for gene in adata_split1.var.index]
+adata_split1.layers['spliced_original'] = S_mat_split1[:,positions_split1] 
+adata_split1.layers['unspliced_original'] = U_mat_split1[:,positions_split1]
 
-split1 = sc.read_h5ad(data_folder+'v2_pancreas/sct/adata_pan_sct_seed317_split1_v2.h5ad')
-split2 = sc.read_h5ad(data_folder+'v2_pancreas/sct/adata_pan_sct_seed317_split2_v2.h5ad')
-total = sc.read_h5ad(data_folder+'v2_pancreas/sct/adata_pan_sct_total_v2.h5ad')
+print_message_with_time("################## Read model on split2")
+scv_compute_velocity_pancreas(adata_split2)
+positions_split2 = [positions_dict[gene] for gene in adata_split2.var.index]
+adata_split2.layers['spliced_original'] = S_mat_split2[:,positions_split2]
+adata_split2.layers['unspliced_original'] = U_mat_split2[:,positions_split2]
 
-common_genes = np.intersect1d(np.array(split1.var.index), np.array(split2.var.index)) # 1335 common genes
-np.intersect1d(np.array(split1.var.index), np.array(total.var.index)).shape # 1585
-np.intersect1d(np.array(split2.var.index), np.array(total.var.index)).shape # 1571
+# write data
+print_message_with_time("################## Write data")
+total.write_h5ad(data_folder+'v2_'+dataset_long+'/scv/adata_'+dataset_short+'_scv_total_v2.h5ad')
+adata_split1.write_h5ad(data_folder+'v2_'+dataset_long+'/scv/adata_'+dataset_short+'_scv_seed317_split1_v2.h5ad')
+adata_split2.write_h5ad(data_folder+'v2_'+dataset_long+'/scv/adata_'+dataset_short+'_scv_seed317_split2_v2.h5ad')
 
-velo_df1 = pd.DataFrame(split1.layers['velocity'], columns=split1.var.index.tolist())
-velo_df2 = pd.DataFrame(split2.layers['velocity'], columns=split2.var.index.tolist())
-cos_sim = np.diag(cosine_similarity(velo_df1[common_genes],velo_df2[common_genes]))
+print_message_with_time("################## All done with the data")
 
+import numpy as np
+common_genes_filter = np.intersect1d(np.array(adata_split1.var.index), np.array(adata_split2.var.index))
+print('Number of overlapped genes between splits = '+str(common_genes_filter.shape[0])) 
+print('Number of overlapped genes between split1 and total = '+str(np.intersect1d(np.array(adata_split1.var.index), np.array(total.var.index)).shape[0])) # 589 -> 1335
+print('Number of overlapped genes between split2 and total = '+str(np.intersect1d(np.array(adata_split2.var.index), np.array(total.var.index)).shape[0])) # 580 -> 1328
+
+print("Number of genes used in velocity computation in split1 = "+str(np.sum(~np.isnan(adata_split1.layers['velocity'][0])))) 
+print("Number of genes used in velocity computation in split2 = "+str(np.sum(~np.isnan(adata_split2.layers['velocity'][0])))) 
+print("Number of genes used in velocity computation in total = "+str(np.sum(~np.isnan(total.layers['velocity'][0])))) 
+
+velo_genes_split1 = adata_split1.var.index[~np.isnan(adata_split1.layers['velocity'][0])]
+velo_genes_split2 = adata_split2.var.index[~np.isnan(adata_split2.layers['velocity'][0])]
+common_genes_velocity = np.intersect1d(np.array(velo_genes_split1), np.array(velo_genes_split2))
+print('Number of overlapped genes for velocity computation in splits = '+str(common_genes_velocity.shape[0]))
 
 
 
