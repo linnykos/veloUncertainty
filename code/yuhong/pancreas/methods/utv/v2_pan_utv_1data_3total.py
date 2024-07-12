@@ -38,7 +38,7 @@ def print_message_with_time(message):
     print(f"{message} at {current_time}")
 
 print_message_with_time("#################### Read data ")
-adata = sc.read_h5ad(data_folder+'v2_'+dataset_long+'/seed317_'+data_version+'_allgenes.h5ad') # 3696 × 27998
+adata = sc.read_h5ad(data_folder+"Pancreas/endocrinogenesis_day15.h5ad") # 3696 × 27998
 
 gene_names = adata.var.index.copy()
 S_mat = adata.layers['spliced'].copy()
