@@ -27,15 +27,15 @@ def plot_velocities_scv(adata_in,adata_raw,fig_info,data,method,color_label=None
         color_label = 'clusters'
     data_method = data+"_"+method
     # umapCompute
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color="celltype",save=fig_folder+"velocity/"+data_method+fig_info+"_umapCompute.png")
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=color_label,save=fig_folder+"velocity/"+data_method+"_"+fig_info+"_umapCompute.png")
     # umapOriginal
     adata=adata_in.copy()
     adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=color_label,save=fig_folder+"velocity/"+data_method+fig_info+"_umapOriginal.png")    
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=color_label,save=fig_folder+"velocity/"+data_method+"_"+fig_info+"_umapOriginal.png")    
 
-plot_velocities_scv(total,raw,"total")
-plot_velocities_scv(split1,raw,"seed317_split1")
-plot_velocities_scv(split2,raw,"seed317_split2")
+plot_velocities_scv(adata_in=total,adata_raw=raw,fig_info="total",data="ery",method="scv")
+plot_velocities_scv(adata_in=split1,adata_raw=raw,fig_info="seed317_split1",data="ery",method="scv")
+plot_velocities_scv(adata_in=split2,adata_raw=raw,fig_info="seed317_split2",data="ery",method="scv")
 
 ######################################################
 ## plot cosine similarity - done in 1data.py

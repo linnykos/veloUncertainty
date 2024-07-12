@@ -1,7 +1,14 @@
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+import datetime
 
+## print current time with a message
+def print_message_with_time(message):
+    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print(f"{message} at {current_time}")
+
+### used in 2splitCorr.py, helper function inside plot_gene_correlation_between_splits
 def compute_gene_correlation_between_splits(mat1,mat2):
     if hasattr(mat1, 'todense'):
         mat1 = mat1.todense().A 
@@ -21,6 +28,7 @@ def compute_gene_correlation_between_splits(mat1,mat2):
     print("Quantiles: "+str(np.quantile(cor[~np.isnan(cor)],[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1])))
     return cor
 
+### used in 2splitCorr.py, to plot correlations between splits
 def plot_gene_correlation_between_splits(adata1,adata2,fig_path,fig_folder):
     common_genes = np.intersect1d(np.array(adata1.var.index), np.array(adata2.var.index))
     gene_names_split1 = adata1.var.index.copy()
