@@ -36,21 +36,27 @@ def plot_vf_umap(adata_in,adata_raw,fig_name,data,method='sct'):
     adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
     fig, axs = plt.subplots(ncols=3, nrows=1, figsize=(15, 4))  # figsize=(horizontal, vertical)
     sc.pl.umap(adata, color=celltype_label, ax=axs[0], legend_loc='on data', show=False, frameon=False)
+    print("umapOriginal[0] done")
     sc.pl.umap(adata, color='ptime', ax=axs[1], show=False, frameon=False)
+    print("umapOriginal[1] done")
     sct.vf.plot_vector_field(adata,zs_key='X_TNODE',vf_key='X_VF',use_rep_neigh='X_TNODE',color=celltype_label, 
                              show=False,ax=axs[2],legend_loc='none',frameon=False,size=100,alpha=0.2,title=data+' '+fig_name,
                              save=fig_folder+'vf/'+data_method+'_vf_'+fig_name+'_umapOriginal.png')
+    print("umapOriginal[2] done")    
     # umapCompute
     adata = adata_in.copy()
     adata = adata[np.argsort(adata.obs['ptime'].values), :]
-    sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=30)
+    sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # used 30 in first ery version
     sc.tl.umap(adata)
     fig, axs = plt.subplots(ncols=3, nrows=1, figsize=(15, 4))  # figsize=(horizontal, vertical)
     sc.pl.umap(adata, color=celltype_label, ax=axs[0], legend_loc='on data', show=False, frameon=False)
+    print("umapCompute[0] done")
     sc.pl.umap(adata, color='ptime', ax=axs[1], show=False, frameon=False)
+    print("umapCompute[1] done")
     sct.vf.plot_vector_field(adata, zs_key='X_TNODE', vf_key='X_VF', use_rep_neigh='X_TNODE', color=celltype_label, 
                             show=False, ax=axs[2], legend_loc='none', frameon=False, size=100, alpha=0.2, title=data+' '+fig_name,
                             save=fig_folder+'vf/'+data_method+'_vf_'+fig_name+'_umapCompute.png')
+    print("umapCompute[2] done")
  
 plot_vf_umap(adata_in=split1, adata_raw=raw, fig_name="split1",data=dataset_short,method=method)
 plot_vf_umap(adata_in=split2, adata_raw=raw, fig_name="split2",data=dataset_short,method=method)
