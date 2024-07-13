@@ -46,7 +46,7 @@ def plot_gene_correlation_between_splits(adata1,adata2,fig_path,fig_folder):
     cor_unspliced = compute_gene_correlation_between_splits(adata1.layers['unspliced_original'][:,positions_split1],
                                                             adata2.layers['unspliced_original'][:,positions_split2])
     Ngenes_spliced = len(cor_spliced[~np.isnan(cor_spliced)])
-    Ngenes_unspliced = len(cor_spliced[~np.isnan(cor_spliced)])
+    Ngenes_unspliced = len(cor_unspliced[~np.isnan(cor_unspliced)])
     plt.clf()
     fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 5))  # 1 row, 2 columns
     # Plotting spliced

@@ -96,9 +96,9 @@ def plot_velocity_sct(adata_in, adata_raw, fig_name, dataset, method='sct'):
                                      save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapCompute.png")
 
 
-plot_velocity_sct(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=dataset_short)
-plot_velocity_sct(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short)
-plot_velocity_sct(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short)
+plot_velocity_sct(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=dataset_short,fig_folder=fig_folder)
+plot_velocity_sct(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short,fig_folder=fig_folder)
+plot_velocity_sct(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short,fig_folder=fig_folder)
 
 
 ######################################################

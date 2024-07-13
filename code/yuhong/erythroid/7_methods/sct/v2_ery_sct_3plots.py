@@ -75,6 +75,31 @@ plot_cosine_similarity(adata_split1=split1,adata_split2=split2,adata_total=total
 plot_cosine_similarity_withRef(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
 
 
+
+######################################################
+#### plot veloConf
+#scv.tl.velocity_graph(total)
+#scv.tl.velocity_confidence(total)
+# KeyError: 'Ms'
+#scv.pl.scatter(total, c='velocity_confidence', cmap='coolwarm', perc=[1, 100],save=fig_folder+"sct/velo_conf/total_veloConf_umapOriginal.png")
+
+plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+######################################################
+## ptime
+plot_pseudotime(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+ptime_correlation_scatter_plot(s1=split1,s2=split2,method=method,dataset=dataset_short,name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder)
+ptime_correlation_scatter_plot(s1=split1,s2=total,method=method,dataset=dataset_short,name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder)
+ptime_correlation_scatter_plot(s1=split2,s2=total,method=method,dataset=dataset_short,name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder)
+
+
+exit()
+
+######################################################
+######################################################
 #### plot cosine similarity
 ### common genes being selected and used for velocity computation
 common_genes = np.intersect1d(np.array(split1.var.index), np.array(split2.var.index))
@@ -128,8 +153,7 @@ def plot_cosine_similarity_sct(cos_sim, total,adata_raw, seed_split=317,text_x=N
     scv.pl.scatter(adata, color='cos_sim', cmap='coolwarm', perc=[1, 100],
                    save=fig_folder+"sct/cos_sim/seed"+str(seed_split)+"_cos_sim_umapOriginal_scatter.png")
 
-
-# plot_cosine_similarity_sct(cos_sim,total,adata_raw=raw)
+plot_cosine_similarity_sct(cos_sim,total,adata_raw=raw)
 
 def plot_cosine_similarity_sct_wCelltype(cos_sim, total,adata_raw, seed_split=317,text_x=None,text_y=None):
     # umap
@@ -153,29 +177,9 @@ def plot_cosine_similarity_sct_wCelltype(cos_sim, total,adata_raw, seed_split=31
                                      ax=axs[1], legend_loc='none', frameon=False, size=100, alpha=0.2,
                                      save=fig_folder+"sct/cos_sim/seed"+str(seed_split)+"_cos_sim_umapOriginal_wCelltype.png")
 
-# plot_cosine_similarity_sct_wCelltype(cos_sim,total,adata_raw=raw)
-
-
-######################################################
-#### plot veloConf
-#scv.tl.velocity_graph(total)
-#scv.tl.velocity_confidence(total)
-# KeyError: 'Ms'
-#scv.pl.scatter(total, c='velocity_confidence', cmap='coolwarm', perc=[1, 100],save=fig_folder+"sct/velo_conf/total_veloConf_umapOriginal.png")
-
-plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_cosine_similarity_sct_wCelltype(cos_sim,total,adata_raw=raw)
 
 ######################################################
-## ptime
-plot_pseudotime(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=dataset_short,method=method,fig_folder=fig_folder)
-plot_pseudotime(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short,method=method,fig_folder=fig_folder)
-plot_pseudotime(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short,method=method,fig_folder=fig_folder)
-
-ptime_correlation_scatter_plot(s1=split1,s2=split2,method=method,dataset=dataset_short,name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder)
-ptime_correlation_scatter_plot(s1=split1,s2=total,method=method,dataset=dataset_short,name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder)
-ptime_correlation_scatter_plot(s1=split2,s2=total,method=method,dataset=dataset_short,name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder)
-
-
 #### plot ptime corr
 cell_to_color = dict(zip(np.array(raw.obs['celltype'].cat.categories), raw.uns['celltype_colors']))
 cell_types = raw.obs['celltype']
@@ -195,9 +199,9 @@ def plot_ptime_corr_scatter(adata_split1,adata_split2,seed_split,name,xlab,ylab)
     plt.savefig(fig_folder+"sct/ptime/seed"+str(seed_split)+"_pseudotime"+name+".png")
     plt.close()
 
-#plot_ptime_corr_scatter(adata_split1=split1,adata_split2=split2,seed_split=317,name="split1vs2",xlab="split1",ylab="split2")
-#plot_ptime_corr_scatter(adata_split1=split1,adata_split2=total,seed_split=317,name="split1vstotal",xlab="split1",ylab="total")
-#plot_ptime_corr_scatter(adata_split1=split2,adata_split2=total,seed_split=317,name="split2vstotal",xlab="split2",ylab="total")
+plot_ptime_corr_scatter(adata_split1=split1,adata_split2=split2,seed_split=317,name="split1vs2",xlab="split1",ylab="split2")
+plot_ptime_corr_scatter(adata_split1=split1,adata_split2=total,seed_split=317,name="split1vstotal",xlab="split1",ylab="total")
+plot_ptime_corr_scatter(adata_split1=split2,adata_split2=total,seed_split=317,name="split2vstotal",xlab="split2",ylab="total")
 
 
 
