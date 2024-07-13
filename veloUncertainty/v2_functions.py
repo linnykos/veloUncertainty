@@ -83,6 +83,33 @@ def plot_velocity_scv_utv(adata_in,adata_raw,fig_folder,fig_info,dataset,method,
     adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=color_label,save=fig_folder+"velocity/"+data_method+"_"+fig_info+"_umapOriginal.png")    
 
+def plot_velocity_sct(adata_in,adata_raw,fig_name,dataset,fig_folder,method='sct'):
+    data_method = dataset+'_'+method
+    print(data_method)
+    celltype_label = "celltype"
+    if dataset=="pan": celltype_label = 'clusters'
+    if not fig_name == "total":
+        # umapOriginal: for total: ValueError: Your neighbor graph seems to be corrupted. Consider recomputing via pp.neighbors.
+        adata = adata_in.copy()
+        adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
+        scv.tl.velocity_graph(adata)
+        scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label, title='Velocity '+dataset+'+'+method+' '+fig_name,
+                                        save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapOriginal.png")
+    # umapOriginal_recomputeNbr
+    adata = adata_in.copy()
+    sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # as in tutorial
+    adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
+    scv.tl.velocity_graph(adata)
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label, title='Velocity '+dataset+'+'+method+' '+fig_name,
+                                     save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapOriginal_recomputeNbr.png")
+    # umapCompute
+    adata = adata_in.copy()
+    sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # as in tutorial
+    sc.tl.umap(adata)
+    scv.tl.velocity_graph(adata)
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label, title='Velocity '+dataset+'+'+method+' '+fig_name,
+                                     save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapCompute.png")
+
 ######################################################
 # cosine similarity
 ### compute cosine similarity
@@ -121,9 +148,7 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,datas
     # umapCompute
     adata_total_plot = adata_total.copy()
     if method=="sct":
-        scv.pp.moments(adata_total_plot, n_pcs=30, n_neighbors=30)
-        sc.tl.pca(adata_total_plot)    
-        sc.pp.neighbors(adata_total_plot, use_rep='X_TNODE', n_neighbors=10) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
+        sc.pp.neighbors(adata_total_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
         sc.tl.umap(adata_total_plot)
         scv.tl.velocity_graph(adata_total_plot)
     scv.pl.velocity_embedding_stream(adata_total_plot, basis='umap',color="cos_sim",cmap='coolwarm',title="Velocity "+dataset+'+'+method,
@@ -133,7 +158,7 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,datas
     # umapOriginal
     adata_total_plot = adata_total.copy()
     if method=="sct":
-        sc.pp.neighbors(adata_total_plot, use_rep='X_TNODE', n_neighbors=10) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
+        sc.pp.neighbors(adata_total_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
         adata_total_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
         scv.tl.velocity_graph(adata_total_plot)
     else:
@@ -154,9 +179,7 @@ def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_r
     # umapCompute
     adata_plot = adata_total.copy()
     if method=="sct":
-        scv.pp.moments(adata_plot, n_pcs=30, n_neighbors=30)
-        sc.tl.pca(adata_plot)    
-        sc.pp.neighbors(adata_plot, use_rep='X_TNODE', n_neighbors=10) # sc.pp.neighbors(adata_plot, n_neighbors=10, n_pcs=40)
+        sc.pp.neighbors(adata_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_plot, n_neighbors=10, n_pcs=40)
         sc.tl.umap(adata_plot)
         scv.tl.velocity_graph(adata_plot)
     fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
@@ -169,7 +192,7 @@ def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_r
     # umapOriginal
     adata_plot = adata_total.copy()
     if method=="sct":
-        sc.pp.neighbors(adata_plot, use_rep='X_TNODE', n_neighbors=10) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
+        sc.pp.neighbors(adata_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
         adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
         scv.tl.velocity_graph(adata_plot)
     else:
@@ -186,14 +209,14 @@ def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_r
 ## plot velo_conf
 def get_umap_sct(adata, adata_raw, umapOriginal,velocity_graph):
     if umapOriginal==True:
-        sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=10) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
+        sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
         adata.obsm['X_umap'] = adata_raw.obsm['X_umap']
         if velocity_graph==True:
             scv.tl.velocity_graph(adata)
     else:
         scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
         sc.tl.pca(adata)    
-        sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=10) # sc.pp.neighbors(adata_plot, n_neighbors=10, n_pcs=40)
+        sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_plot, n_neighbors=10, n_pcs=40)
         sc.tl.umap(adata)
         if velocity_graph==True:
             scv.tl.velocity_graph(adata)
