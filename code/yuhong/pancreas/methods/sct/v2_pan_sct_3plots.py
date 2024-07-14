@@ -103,7 +103,7 @@ plot_velocity_sct(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_
 
 ######################################################
 ## plot cosine similarity
-plot_cosine_similarity(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_cosine_similarity(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,text_x=0)
 
 plot_cosine_similarity_withRef(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
 
