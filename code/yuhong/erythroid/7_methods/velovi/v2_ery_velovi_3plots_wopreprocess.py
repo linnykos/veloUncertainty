@@ -164,9 +164,9 @@ def compute_intrinisic_uncertainty(adata_in,vae,adata_raw,dataset,fig_folder,fig
     plt.clf()
     fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
-                                     title="Velocity "+dataset+'+velovi', frameon=False,size=100,alpha=0.5)
-    scv.pl.umap(adata,color='directional_cosine_sim_variance',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
-                title='Intrinsic uncertainty, '+dataset+'+velovi, Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
+                                     title="Velocity "+dataset+'+velovi '+fig_name, frameon=False,size=100,alpha=0.5)
+    scv.pl.umap(adata,color='directional_cosine_sim_variance',cmap='coolwarm',vmin="p1", vmax="p99",ax=axs[1],legend_loc='none',
+                title='Intrinsic uncertainty, '+dataset+'+velovi '+fig_name+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+'uncertainty/'+dataset+'_velovi_uncertainty_intrinsic_withRef_'+fig_name+'_umapCompute.png')
     plt.clf()
     # umapOriginal
@@ -178,9 +178,9 @@ def compute_intrinisic_uncertainty(adata_in,vae,adata_raw,dataset,fig_folder,fig
     plt.clf()
     fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
-                                     title="Velocity "+dataset+'+velovi', frameon=False,size=100,alpha=0.5)
-    scv.pl.umap(adata,color='directional_cosine_sim_variance',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
-                title='Intrinsic uncertainty, '+dataset+'+velovi, Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
+                                     title="Velocity "+dataset+'+velovi '+fig_name, frameon=False,size=100,alpha=0.5)
+    scv.pl.umap(adata,color='directional_cosine_sim_variance',cmap='coolwarm',vmin="p1", vmax="p99",ax=axs[1],legend_loc='none',
+                title='Intrinsic uncertainty, '+dataset+'+velovi '+fig_name+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+'uncertainty/'+dataset+'_velovi_uncertainty_intrinsic_withRef_'+fig_name+'_umapOriginal.png')
     plt.clf()
 
@@ -219,6 +219,7 @@ def compute_extrinisic_uncertainty(adata_in,vae,adata_raw,dataset,fig_folder,fig
     celltype_label = 'celltype'
     if dataset == 'pan': celltype_label = 'clusters'
     Ngenes = adata.layers['velocity'].shape[1]
+    import os
     import random
     torch.manual_seed(sample_seed)
     random.seed(sample_seed)
@@ -235,9 +236,9 @@ def compute_extrinisic_uncertainty(adata_in,vae,adata_raw,dataset,fig_folder,fig
     plt.clf()
     fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
-                                     title="Velocity "+dataset+'+velovi', frameon=False,size=100,alpha=0.5)
-    scv.pl.umap(adata,color='directional_cosine_sim_variance_extrinisic',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
-                title='Extrinsic uncertainty, '+dataset+'+velovi, Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
+                                     title="Velocity "+dataset+'+velovi '+fig_name, frameon=False,size=100,alpha=0.5)
+    scv.pl.umap(adata,color='directional_cosine_sim_variance_extrinisic',vmin="p1", vmax="p99",ax=axs[1],legend_loc='none',
+                title='Extrinsic uncertainty, '+dataset+'+velovi '+fig_name+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+'uncertainty/'+dataset+'_velovi_uncertainty_extrinsic_withRef_'+fig_name+'_umapCompute.png')
     plt.clf()
     # umapOriginal
@@ -249,20 +250,21 @@ def compute_extrinisic_uncertainty(adata_in,vae,adata_raw,dataset,fig_folder,fig
     plt.clf()
     fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
-                                     title="Velocity "+dataset+'+velovi', frameon=False,size=100,alpha=0.5)
-    scv.pl.umap(adata,color='directional_cosine_sim_variance_extrinisic',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
-                title='Extrinsic uncertainty, '+dataset+'+velovi, Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
+                                     title="Velocity "+dataset+'+velovi '+fig_name, frameon=False,size=100,alpha=0.5)
+    scv.pl.umap(adata,color='directional_cosine_sim_variance_extrinisic',vmin="p1", vmax="p99",ax=axs[1],legend_loc='none',
+                title='Extrinsic uncertainty, '+dataset+'+velovi '+fig_name+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+'uncertainty/'+dataset+'_velovi_uncertainty_extrinsic_withRef_'+fig_name+'_umapOriginal.png')
     plt.clf()
 
 print_message_with_time("############## Plot extrinsic uncertainty for split1")
-compute_extrinisic_uncertainty(adata=split1,vae=vae_split1,dataset=dataset_short,fig_folder=fig_folder,fig_name="split1")
+compute_extrinisic_uncertainty(adata_in=split1,vae=vae_split1,adata_raw=raw,dataset=dataset_short,fig_folder=fig_folder,fig_name="split1")
 
 print_message_with_time("############## Plot extrinsic uncertainty for split2")
-compute_extrinisic_uncertainty(adata=split2,vae=vae_split2,dataset=dataset_short,fig_folder=fig_folder,fig_name="split2")
+compute_extrinisic_uncertainty(adata_in=split2,vae=vae_split2,adata_raw=raw,dataset=dataset_short,fig_folder=fig_folder,fig_name="split2")
 
 print_message_with_time("############## Plot extrinsic uncertainty for total")
-compute_extrinisic_uncertainty(adata=total,vae=vae_total,dataset=dataset_short,fig_folder=fig_folder,fig_name="total")
+compute_extrinisic_uncertainty(adata_in=total,vae=vae_total,adata_raw=raw,dataset=dataset_short,fig_folder=fig_folder,fig_name="total")
+
 
 #######################################
 ## permutation score
