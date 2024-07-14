@@ -31,6 +31,11 @@ def add_velovi_outputs_to_adata(adata, vae):
     adata.var['fit_scaling'] = 1.0
 
 # compute umap
+def compute_umap_pan(adata):
+    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+    sc.tl.umap(adata)
+    scv.tl.velocity_graph(adata)
+
 def compute_umap_ery(adata):
     import bbknn
     bbknn.bbknn(adata, batch_key='sequencing.batch')
@@ -45,6 +50,18 @@ def compute_umap_ery(adata):
 
 #######################################
 # plot velocity
+def plot_velocity_velovi_pan(adata,adata_raw,dataset,method,fig_folder,fig_name): # the same as ery ver
+    celltype_label = 'clutsers'
+    Ngenes = adata.layers['velocity'].shape[1]
+    # umapCompute
+    scv.pl.velocity_embedding_stream(adata_plot, basis='umap', color=celltype_label,title="pan+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
+                                     save=fig_folder+"velocity/"+dataset+"_"+method+"_"+fig_name+"_umapCompute.png")
+    # umapOriginal
+    adata_plot = adata.copy()
+    adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
+    scv.pl.velocity_embedding_stream(adata_plot, basis='umap', color=celltype_label,title="pan+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
+                                     save=fig_folder+"velocity/"+dataset+"_"+method+"_"+fig_name+"_umapOriginal.png")
+
 def plot_velocity_velovi_ery(adata,adata_raw,dataset,method,fig_folder,fig_name):
     celltype_label = 'celltype'
     Ngenes = adata.layers['velocity'].shape[1]
