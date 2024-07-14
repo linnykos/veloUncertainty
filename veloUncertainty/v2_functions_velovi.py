@@ -32,6 +32,8 @@ def add_velovi_outputs_to_adata(adata, vae):
 
 # compute umap
 def compute_umap_pan(adata):
+    scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
+    sc.tl.pca(adata, svd_solver="arpack")
     sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
     sc.tl.umap(adata)
     scv.tl.velocity_graph(adata)
