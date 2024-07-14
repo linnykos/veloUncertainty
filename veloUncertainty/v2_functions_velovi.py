@@ -53,7 +53,7 @@ def compute_umap_ery(adata):
 #######################################
 # plot velocity
 def plot_velocity_velovi_pan(adata,adata_raw,dataset,method,fig_folder,fig_name): # the same as ery ver
-    celltype_label = 'clutsers'
+    celltype_label = 'clusters'
     Ngenes = adata.layers['velocity'].shape[1]
     # umapCompute
     scv.pl.velocity_embedding_stream(adata, basis='umap', color=celltype_label,title="pan+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
