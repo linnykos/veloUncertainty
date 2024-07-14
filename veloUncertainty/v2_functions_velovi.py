@@ -56,7 +56,7 @@ def plot_velocity_velovi_pan(adata,adata_raw,dataset,method,fig_folder,fig_name)
     celltype_label = 'clutsers'
     Ngenes = adata.layers['velocity'].shape[1]
     # umapCompute
-    scv.pl.velocity_embedding_stream(adata_plot, basis='umap', color=celltype_label,title="pan+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
+    scv.pl.velocity_embedding_stream(adata, basis='umap', color=celltype_label,title="pan+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
                                      save=fig_folder+"velocity/"+dataset+"_"+method+"_"+fig_name+"_umapCompute.png")
     # umapOriginal
     adata_plot = adata.copy()
