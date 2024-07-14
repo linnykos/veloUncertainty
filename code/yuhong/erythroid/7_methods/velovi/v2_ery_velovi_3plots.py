@@ -158,28 +158,28 @@ def compute_intrinisic_uncertainty(adata_in,vae,adata_raw,dataset,fig_folder,fig
         adata.obs[c] = np.log10(uncertainty_df[c].values)
     # umapCompute
     save_path = os.path.join(fig_folder, 'uncertainty/'+dataset+'_velovi_uncertainty_intrinsic_'+fig_name+"_umapCompute.png")
-    sc.pl.umap(adata, color="directional_cosine_sim_variance", cmap="coolwarm", vmin="p1", vmax="p99", 
+    sc.pl.umap(adata, color="directional_cosine_sim_variance", cmap="coolwarm", perc=[1,100], 
                frameon=False,title=dataset+'+velovi, '+fig_name, show=False)
     plt.savefig(save_path, bbox_inches='tight')
     plt.clf()
     fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      title="Velocity "+dataset+'+velovi '+fig_name, frameon=False,size=100,alpha=0.5)
-    scv.pl.umap(adata,color='directional_cosine_sim_variance',cmap='coolwarm',vmin="p1", vmax="p99",ax=axs[1],legend_loc='none',
+    scv.pl.umap(adata,color='directional_cosine_sim_variance',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
                 title='Intrinsic uncertainty, '+dataset+'+velovi '+fig_name+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+'uncertainty/'+dataset+'_velovi_uncertainty_intrinsic_withRef_'+fig_name+'_umapCompute.png')
     plt.clf()
     # umapOriginal
     adata.obsm['X_umap'] = adata_raw.obsm['X_umap']
     save_path = os.path.join(fig_folder, 'uncertainty/'+dataset+'_velovi_uncertainty_intrinsic_'+fig_name+"_umapOriginal.png")
-    sc.pl.umap(adata, color="directional_cosine_sim_variance", cmap="coolwarm", vmin="p1", vmax="p99", 
+    sc.pl.umap(adata, color="directional_cosine_sim_variance", cmap="coolwarm", perc=[1,100], 
                frameon=False,title=dataset+'+velovi, '+fig_name, show=False)
     plt.savefig(save_path, bbox_inches='tight')
     plt.clf()
     fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      title="Velocity "+dataset+'+velovi '+fig_name, frameon=False,size=100,alpha=0.5)
-    scv.pl.umap(adata,color='directional_cosine_sim_variance',cmap='coolwarm',vmin="p1", vmax="p99",ax=axs[1],legend_loc='none',
+    scv.pl.umap(adata,color='directional_cosine_sim_variance',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
                 title='Intrinsic uncertainty, '+dataset+'+velovi '+fig_name+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+'uncertainty/'+dataset+'_velovi_uncertainty_intrinsic_withRef_'+fig_name+'_umapOriginal.png')
     plt.clf()
@@ -230,28 +230,28 @@ def compute_extrinisic_uncertainty(adata_in,vae,adata_raw,dataset,fig_folder,fig
         adata.obs[c + "_extrinisic"] = np.log10(df[c].values)
     # umapCompute
     save_path = os.path.join(fig_folder, 'uncertainty/'+dataset+'_velovi_uncertainty_extrinsic_'+fig_name+"umapCompute.png")
-    sc.pl.umap(adata, color="directional_cosine_sim_variance_extrinisic", vmin="p1", vmax="p99",
+    sc.pl.umap(adata, color="directional_cosine_sim_variance_extrinisic", perc=[1,100],
                frameon=False,title=dataset+'+velovi, '+fig_name, show=False)
     plt.savefig(save_path, bbox_inches='tight')
     plt.clf()
     fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      title="Velocity "+dataset+'+velovi '+fig_name, frameon=False,size=100,alpha=0.5)
-    scv.pl.umap(adata,color='directional_cosine_sim_variance_extrinisic',vmin="p1", vmax="p99",ax=axs[1],legend_loc='none',
+    scv.pl.umap(adata,color='directional_cosine_sim_variance_extrinisic',perc=[1,100],ax=axs[1],legend_loc='none',
                 title='Extrinsic uncertainty, '+dataset+'+velovi '+fig_name+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+'uncertainty/'+dataset+'_velovi_uncertainty_extrinsic_withRef_'+fig_name+'_umapCompute.png')
     plt.clf()
     # umapOriginal
     adata.obsm['X_umap'] = adata_raw.obsm['X_umap']
     save_path = os.path.join(fig_folder, 'uncertainty/'+dataset+'_velovi_uncertainty_extrinsic_'+fig_name+"umapOriginal.png")
-    sc.pl.umap(adata, color="directional_cosine_sim_variance_extrinisic", vmin="p1", vmax="p99",
+    sc.pl.umap(adata, color="directional_cosine_sim_variance_extrinisic", perc=[1,100],
                frameon=False,title=dataset+'+velovi, '+fig_name, show=False)
     plt.savefig(save_path, bbox_inches='tight')
     plt.clf()
     fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      title="Velocity "+dataset+'+velovi '+fig_name, frameon=False,size=100,alpha=0.5)
-    scv.pl.umap(adata,color='directional_cosine_sim_variance_extrinisic',vmin="p1", vmax="p99",ax=axs[1],legend_loc='none',
+    scv.pl.umap(adata,color='directional_cosine_sim_variance_extrinisic',perc=[1,100],ax=axs[1],legend_loc='none',
                 title='Extrinsic uncertainty, '+dataset+'+velovi '+fig_name+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+'uncertainty/'+dataset+'_velovi_uncertainty_extrinsic_withRef_'+fig_name+'_umapOriginal.png')
     plt.clf()
