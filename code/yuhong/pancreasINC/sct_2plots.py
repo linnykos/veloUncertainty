@@ -1,5 +1,5 @@
-import scvelo as scv
 import sctour as sct
+import scvelo as scv
 import scanpy as sc
 import numpy as np
 import pandas as pd
@@ -138,6 +138,7 @@ plot_cosine_similarity_withRef(adata_split1=split1,adata_split2=split2,adata_tot
 ######################################################
 ## plot velo_conf
 plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_veloConf_hist(adata_total=total,dataset=dataset_short,method=method,fig_folder=fig_folder)
 
 ######################################################
 ## ptime
