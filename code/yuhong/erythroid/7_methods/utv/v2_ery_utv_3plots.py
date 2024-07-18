@@ -22,6 +22,7 @@ fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUnce
 total = scv.read(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_total_v2.h5ad') # 
 split1 = scv.read(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_split1_v2.h5ad') # 
 split2 = scv.read(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_split2_v2.h5ad') # 
+raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
 
 ######################################################
 ## compute umap
@@ -39,6 +40,35 @@ utv_compute_umap(total)
 utv_compute_umap(split1)
 utv_compute_umap(split2)
 
+######################################################
+## plot velocity - done in 1data.py, copied (and modified variable names here)
+plot_velocity_scv_utv(adata_in=total,adata_raw=raw,fig_folder=fig_folder,fig_info='total',dataset=dataset_short,method=method)
+plot_velocity_scv_utv(adata_in=split1,adata_raw=raw,fig_folder=fig_folder,fig_info='total',dataset=dataset_short,method=method)
+plot_velocity_scv_utv(adata_in=split2,adata_raw=raw,fig_folder=fig_folder,fig_info='total',dataset=dataset_short,method=method)
+
+######################################################
+## plot cosine similarity
+plot_cosine_similarity(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+plot_cosine_similarity_withRef(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+######################################################
+## plot velo_conf
+plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+######################################################
+## ptime
+plot_pseudotime(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+ptime_correlation_scatter_plot(s1=split1,s2=split2,method=method,dataset=dataset_short,name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder)
+ptime_correlation_scatter_plot(s1=split1,s2=total,method=method,dataset=dataset_short,name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder)
+ptime_correlation_scatter_plot(s1=split2,s2=total,method=method,dataset=dataset_short,name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder)
+
+
+
+exit()
 ######################################################
 ## plot velocity - done in 1data.py, copied (and modified variable names here)
 raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
