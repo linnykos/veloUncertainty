@@ -73,7 +73,7 @@ def plot_gene_correlation_between_splits(adata1,adata2,fig_path,fig_folder):
 def plot_velocity_scv_utv(adata_in,adata_raw,fig_folder,fig_info,dataset,method,color_label=None):
     if dataset=="ery":
         color_label = 'celltype'
-    elif dataset=="pan":
+    elif "pan" in dataset:
         color_label = 'clusters'
     data_method = dataset+"_"+method
     # umapCompute
@@ -87,7 +87,7 @@ def plot_velocity_sct(adata_in,adata_raw,fig_name,dataset,fig_folder,method='sct
     data_method = dataset+'_'+method
     print(data_method)
     celltype_label = "celltype"
-    if dataset=="pan": celltype_label = 'clusters'
+    if "pan" in dataset: celltype_label = 'clusters'
     if not fig_name == "total":
         # umapOriginal: for total: ValueError: Your neighbor graph seems to be corrupted. Consider recomputing via pp.neighbors.
         adata = adata_in.copy()
@@ -174,7 +174,7 @@ def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_r
     adata_total.obs['cos_sim'] = cos_sim
     dataset_method = dataset+'_'+method
     celltype_label = None
-    if dataset=="pan": celltype_label = "clusters"
+    if "pan" in dataset: celltype_label = "clusters"
     if dataset=="ery": celltype_label = "celltype"
     # umapCompute
     adata_plot = adata_total.copy()
@@ -222,7 +222,7 @@ def plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_fol
     adata_plot = adata_total.copy()
     celltype_label = None
     if dataset=="ery": celltype_label="celltype"
-    elif dataset=="pan": celltype_label="clusters"
+    elif "pan" in dataset: celltype_label="clusters"
     data_method = dataset+'_'+method
     fig_umap = "umapCompute"
     if method=='sct':
@@ -272,7 +272,7 @@ def plot_pseudotime(adata_in,adata_raw,fig_name,dataset,method,fig_folder):
     if method == 'sct': ptime_label='ptime'
     if not ptime_label in adata_in.obs.columns: raise ValueError('No pseudotime information')
     celltype_label = "celltype"
-    if dataset=="pan": celltype_label="clusters"
+    if "pan" in dataset: celltype_label="clusters"
     # umapCompute
     adata = adata_in.copy()
     if method=='sct': get_umap_sct(adata=adata, adata_raw=adata_raw, umapOriginal=False,moments=False)
@@ -298,7 +298,7 @@ def plot_pseudotime(adata_in,adata_raw,fig_name,dataset,method,fig_folder):
 # plot pseudotime correlation
 def ptime_correlation_scatter_plot(s1,s2,method,dataset,name,xlab,ylab,fig_folder):
     celltype_label = "celltype"
-    if dataset == "pan": celltype_label = "clusters"
+    if "pan" in dataset: celltype_label = "clusters"
     cell_types = s1.obs[celltype_label]
     colors = dict(zip(s1.obs[celltype_label].cat.categories, s1.uns[celltype_label+'_colors']))
     ptime_label = 'velocity_pseudotime'
