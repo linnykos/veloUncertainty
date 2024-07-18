@@ -266,7 +266,8 @@ def plot_veloConf_hist(adata_total,dataset,method,fig_folder,text_x=None,text_y=
     if method=='sct': 
         scv.pp.moments(adata_plot, n_pcs=30, n_neighbors=30)
         sc.pp.neighbors(adata_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_plot, n_neighbors=10, n_pcs=40)
-        sc.tl.umap(adata_plot)        
+        sc.tl.umap(adata_plot)
+        scv.tl.velocity_graph(adata_plot)      
         scv.tl.velocity_confidence(adata_plot)
     if (not method=='sct') and (not 'velocity_confidence' in adata_plot.obs.columns):
         scv.tl.velocity_confidence(adata_plot)
