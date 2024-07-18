@@ -35,7 +35,7 @@ del adata.obsp
 S_mat = adata.layers['spliced'][cell_index,:].copy()
 U_mat = adata.layers['unspliced'][cell_index,:].copy()
 
-def create_adata_INC(S,U,adata_old):
+def create_adata_pancreasINC(S,U,adata_old):
     adata_new = ad.AnnData(X=S.astype(np.float32))
     adata_new.layers["spliced"] = S
     adata_new.layers["unspliced"] = U
@@ -44,11 +44,13 @@ def create_adata_INC(S,U,adata_old):
     del clusters_colors['Pre-endocrine']
     adata_new.uns['clusters_colors'] = np.array(list(clusters_colors.values())).flatten().astype(object)
     adata_new.obs = adata_old.obs[adata_old.obs['clusters']!='Pre-endocrine']
+    del adata_new.obs['S_score']
+    del adata_new.obs['G2M_score']
     adata_new.obsm['X_pca'] = adata_old.obsm['X_pca'][cell_index,]
     adata_new.obsm['X_umap'] = adata_old.obsm['X_umap'][cell_index,]
     return adata_new
 
-total = create_adata_INC(S=S_mat,U=U_mat,adata_old=adata)
+total = create_adata_pancreasINC(S=S_mat,U=U_mat,adata_old=adata)
 total.write(data_folder+'v2_pancreasINC/pancreasINC_total_allgenes.h5ad')
 
 def run_countsplit_with_overdispersion(S,U,split_seed):
