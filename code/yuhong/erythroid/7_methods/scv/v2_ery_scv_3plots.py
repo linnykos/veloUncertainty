@@ -8,16 +8,56 @@ import anndata as ad
 from sklearn.metrics.pairwise import cosine_similarity
 import datetime
 
+import sys
+sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
+from v2_functions import *
+
+dataset_short = 'ery'
+dataset_long = 'erythroid'
+method = 'scv'
+
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/"
 fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v2_erythroid/scv/" 
 
 total = scv.read(data_folder+'v2_erythroid/scv/adata_ery_scv_total_v2.h5ad')
 split1 = scv.read(data_folder+'v2_erythroid/scv/adata_ery_scv_seed317_split1_v2.h5ad')
 split2 = scv.read(data_folder+'v2_erythroid/scv/adata_ery_scv_seed317_split2_v2.h5ad')
+raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
+
 
 ######################################################
 ## plot velocity - done in 1data.py, copied (and modified variable names here)
-raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
+plot_velocity_scv_utv(adata_in=total,adata_raw=raw,fig_folder=fig_folder,fig_info='total',dataset=dataset_short,method=method)
+plot_velocity_scv_utv(adata_in=split1,adata_raw=raw,fig_folder=fig_folder,fig_info='total',dataset=dataset_short,method=method)
+plot_velocity_scv_utv(adata_in=split2,adata_raw=raw,fig_folder=fig_folder,fig_info='total',dataset=dataset_short,method=method)
+
+######################################################
+## plot cosine similarity
+plot_cosine_similarity(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+plot_cosine_similarity_withRef(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+######################################################
+## plot velo_conf
+plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+######################################################
+## ptime
+if not 'velocity_pseudotime' in split1.obs.columns:
+    scv.tl.velocity_pseudotime(total)
+    scv.tl.velocity_pseudotime(split1)
+    scv.tl.velocity_pseudotime(split2)
+
+plot_pseudotime(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+ptime_correlation_scatter_plot(s1=split1,s2=split2,method=method,dataset='pan',name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder)
+ptime_correlation_scatter_plot(s1=split1,s2=total,method=method,dataset='pan',name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder)
+ptime_correlation_scatter_plot(s1=split2,s2=total,method=method,dataset='pan',name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder)
+
+
+exit()
 scv.pl.velocity_embedding_stream(total, basis='umap',color="sequencing.batch",save=fig_folder+"velocity/ery_scv_total_umapCompute_byBatch.png")
 
 def plot_velocities_scv(adata_in,adata_raw,fig_info,data,method,color_label=None):
