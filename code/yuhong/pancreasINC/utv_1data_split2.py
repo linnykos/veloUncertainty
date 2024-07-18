@@ -24,21 +24,20 @@ os.environ["TF_USE_LEGACY_KERAS"]="1"
 # Tried this but did not work:
 ## velo_config.TF_USE_LEGACY_KERAS=True
 
-dataset_long = "pancreas"
-dataset_short = "pan"
+dataset_long = "pancreasINC"
+dataset_short = "panINC"
 method = "utv"
 celltype_label = "clusters"
 data_version = "split2"
 
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/"
-#fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v2_"+dataset_long+"/"+method+"/" 
 
 def print_message_with_time(message):
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"{message} at {current_time}")
 
 print_message_with_time("#################### Read data ")
-adata = sc.read_h5ad(data_folder+'v2_'+dataset_long+'/seed317_'+data_version+'_allgenes.h5ad') # 3696 × 27998
+adata = sc.read_h5ad(data_folder+'v2_pancreasINC/pancreasINC_'+data_version+'_allgenes.h5ad') 
 
 gene_names = adata.var.index.copy()
 S_mat = adata.layers['spliced'].copy()
@@ -47,8 +46,8 @@ positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
 
 ### fit model
 print_message_with_time("#################### Fit model")
-adata.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup16_v2_utv/tmp_v2_"+dataset_short+"_split2.h5ad")
-adata = utv.run_model("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup16_v2_utv/tmp_v2_"+dataset_short+"_split2.h5ad", celltype_label, config_file=velo_config)
+adata.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup20_pancreasINC/tmp_v2_"+dataset_short+"_"+data_version+".h5ad")
+adata = utv.run_model("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup20_pancreasINC/tmp_v2_"+dataset_short+"_"+data_version+".h5ad", celltype_label, config_file=velo_config)
 
 ### 
 print_message_with_time("#################### Write original counts")
@@ -57,9 +56,7 @@ adata.layers['spliced_original'] = S_mat[:,positions]
 adata.layers['unspliced_original'] = U_mat[:,positions]
 
 print_message_with_time("#################### Write data")
-adata.write_h5ad(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_'+data_version+'_v2.h5ad')
+adata.write_h5ad(data_folder+'v2_pancreasINC/'+method+'/adata_'+dataset_short+'_'+method+'_'+data_version+'_v2.h5ad')
 
 print_message_with_time("####################All done for "+data_version)
-
-
 
