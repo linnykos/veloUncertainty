@@ -3,7 +3,7 @@ import pandas as pd
 import scanpy as sc
 import scvelo as scv
 import torch
-from velovi import preprocess_data, VELOVI
+from velovi import VELOVI
 import datetime
 
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/"
