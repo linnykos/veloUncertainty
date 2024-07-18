@@ -46,8 +46,8 @@ positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
 
 ### fit model
 print_message_with_time("#################### Fit model")
-adata.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup20_pancreasINC/tmp_v2_"+dataset_short+"_split1.h5ad")
-adata = utv.run_model("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup20_pancreasINC/tmp_v2_"+dataset_short+"_split1.h5ad", celltype_label, config_file=velo_config)
+adata.write_h5ad(filename="/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup20_pancreasINC/tmp_v2_"+dataset_short+"_"+data_version+".h5ad")
+adata = utv.run_model("/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup20_pancreasINC/tmp_v2_"+dataset_short+"_"+data_version+".h5ad", celltype_label, config_file=velo_config)
 
 ### 
 print_message_with_time("#################### Write original counts")

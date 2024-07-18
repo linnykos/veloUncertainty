@@ -50,7 +50,7 @@ adata.write(filename=savedata_folder+"adata_panINC_velovi_"+data_version+"_v2.h5
 print_message_with_time("#################### "+data_version+": All done for "+data_version)
 
 ########################################
-########### split1
+########### split2
 data_version = "split2"
 print_message_with_time("#################### "+data_version+": Read data ")
 adata = sc.read_h5ad(data_folder+'v2_pancreasINC/pancreasINC_'+data_version+'_allgenes.h5ad') 
