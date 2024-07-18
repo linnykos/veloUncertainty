@@ -84,6 +84,7 @@ plot_cosine_similarity_withRef(adata_split1=split1,adata_split2=split2,adata_tot
 #scv.pl.scatter(total, c='velocity_confidence', cmap='coolwarm', perc=[1, 100],save=fig_folder+"sct/velo_conf/total_veloConf_umapOriginal.png")
 
 plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_veloConf_hist(adata_total=total,dataset=dataset_short,method=method,fig_folder=fig_folder,text_x=.4)
 
 ######################################################
 ## ptime
