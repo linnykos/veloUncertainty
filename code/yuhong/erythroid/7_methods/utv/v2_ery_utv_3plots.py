@@ -27,6 +27,7 @@ raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
 ######################################################
 ## compute umap
 def utv_compute_umap(adata):
+    scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
     bbknn.bbknn(adata, batch_key='sequencing.batch')
     adata.X = adata.X.toarray()
     bbknn.ridge_regression(adata, batch_key='sample', confounder_key='celltype')
