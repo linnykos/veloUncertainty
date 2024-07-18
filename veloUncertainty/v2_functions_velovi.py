@@ -84,7 +84,7 @@ def plot_velocity_velovi_ery(adata,adata_raw,dataset,method,fig_folder,fig_name)
 def plot_uncertainty_velovi(adata, dataset, uncertainty_type, umap_type, fig_folder, fig_name, color_label=None):
     import os
     celltype_label = 'celltype'
-    if dataset == 'pan': celltype_label = 'clusters'
+    if 'pan' in dataset: celltype_label = 'clusters'
     if 'C' in umap_type or 'c' in umap_type:
         umap_type = 'umapCompute'
     else: umap_type = 'umapOriginal'
@@ -116,7 +116,7 @@ def plot_uncertainty_velovi(adata, dataset, uncertainty_type, umap_type, fig_fol
 def compute_intrinisic_uncertainty(adata_in,vae,adata_raw,dataset,fig_folder,fig_name,sample_seed=2216,n_samples=100):
     adata = adata_in.copy()
     celltype_label = 'celltype'
-    if dataset == 'pan': celltype_label = 'clusters'
+    if 'pan' in dataset: celltype_label = 'clusters'
     Ngenes = adata.layers['velocity'].shape[1]
     import random
     torch.manual_seed(sample_seed)
@@ -156,7 +156,7 @@ def compute_extrinisic_uncertainty_df(adata, vae, n_samples=25) -> pd.DataFrame:
 def compute_extrinisic_uncertainty(adata_in,vae,adata_raw,dataset,fig_folder,fig_name,sample_seed=2216,n_samples=25):
     adata = adata_in.copy()
     celltype_label = 'celltype'
-    if dataset == 'pan': celltype_label = 'clusters'
+    if 'pan' in dataset: celltype_label = 'clusters'
     Ngenes = adata.layers['velocity'].shape[1]
     import os
     import random
@@ -177,7 +177,7 @@ def compute_extrinisic_uncertainty(adata_in,vae,adata_raw,dataset,fig_folder,fig
 # plot permutation score
 def compute_permutation_score(adata,vae,dataset,fig_folder,fig_name):
     celltype_label = 'celltype'
-    if dataset == 'pan': celltype_label = 'clusters'
+    if 'pan' in dataset: celltype_label = 'clusters'
     perm_df, _ = vae.get_permutation_scores(labels_key=celltype_label)
     adata.var["permutation_score"] = perm_df.max(1).values
     plt.clf()
