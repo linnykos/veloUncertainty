@@ -261,6 +261,32 @@ def plot_veloConf_and_cosSim(adata_total,adata_split1,adata_split2,adata_raw,dat
     # umapOriginal
     plot_veloConf_and_cosSim_helper(adata_plot,adata_raw,dataset,method,fig_folder,umapOriginal=True,Ngenes=Ngenes)
 
+def plot_veloConf_hist(adata_total,dataset,method,fig_folder,text_x=None,text_y=None):
+    adata_plot = adata_total.copy()
+    if method=='sct': 
+        scv.pp.moments(adata_plot, n_pcs=30, n_neighbors=30)
+        sc.pp.neighbors(adata_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_plot, n_neighbors=10, n_pcs=40)
+        sc.tl.umap(adata_plot)        
+        scv.tl.velocity_confidence(adata_plot)
+    if (not method=='sct') and (not 'velocity_confidence' in adata_plot.obs.columns):
+        scv.tl.velocity_confidence(adata_plot)
+    velo_conf = adata_plot.obs['velocity_confidence']
+    Ngenes = len(adata_plot.layers['velocity'][0]) - np.sum(np.isnan(adata_plot.layers['velocity'][0]))
+    # histogram
+    plt.clf()
+    plt.figure(figsize=(7, 5))
+    counts, bins, patches = plt.hist(velo_conf, bins=30, edgecolor='dimgray',color='powderblue') 
+    max_frequency = np.max(counts)
+    if text_x is None: text_x = np.quantile(velo_conf,[.05])[0]
+    if text_y is None: text_y = max_frequency/2
+    plt.axvline(np.mean(velo_conf), color='salmon', linestyle='dashed', linewidth=1.5) ## add mean
+    plt.text(text_x,text_y,'mean='+str(np.round(np.mean(velo_conf),4))+', median='+str(np.round(np.median(velo_conf),4)),color='navy',fontsize=11)
+    plt.xlabel('Velocity confidence')
+    plt.ylabel('Frequency')
+    plt.title('Histogram of velocity confidence, '+dataset+'+'+method+', Ngenes='+str(Ngenes))
+    plt.savefig(fig_folder+'velo_conf/'+dataset+'_'+method+'_veloConf_hist.png')
+    plt.clf()
+
 
 ######################################################
 # plot pseudotime
