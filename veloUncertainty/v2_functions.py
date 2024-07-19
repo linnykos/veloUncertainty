@@ -155,12 +155,12 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,datas
     # histogram
     plt.clf()
     plt.figure(figsize=(7, 5))
-    counts, bins, patches = plt.hist(cos_sim, bins=30, edgecolor='silver',color='powderblue') 
+    counts, bins, patches = plt.hist(cos_sim, bins=30, edgecolor='gainsboro',color='powderblue') 
     max_frequency = np.max(counts)
     if text_x is None: text_x = np.quantile(cos_sim,[.05])[0]
     if text_y is None: text_y = max_frequency/5
     plt.axvline(np.mean(cos_sim), color='brown', linestyle='dashed', linewidth=1.5) ## add mean
-    plt.axvline(np.median(cos_sim), color='sandybrown', linestyle='dashed', linewidth=1.5) ## add median
+    plt.axvline(np.median(cos_sim), color='peru', linestyle='dashed', linewidth=1.5) ## add median
     plt.text(text_x,text_y*3,'mean='+str(np.round(np.mean(cos_sim),4)), color='firebrick', fontsize=11)
     plt.text(text_x,text_y*2.5,'median='+str(np.round(np.median(cos_sim),4)), color='sienna', fontsize=11)
     plt.xlabel('cosine similarity')
@@ -293,12 +293,12 @@ def plot_veloConf_hist(adata_total,dataset,method,fig_folder,text_x=None,text_y=
     # histogram
     plt.clf()
     plt.figure(figsize=(7, 5))
-    counts, bins, patches = plt.hist(velo_conf, bins=30, edgecolor='silver',color='powderblue') 
+    counts, bins, patches = plt.hist(velo_conf, bins=30, edgecolor='gainsboro',color='powderblue') 
     max_frequency = np.max(counts)
     if text_x is None: text_x = np.quantile(velo_conf,[.05])[0]
     if text_y is None: text_y = max_frequency/5
     plt.axvline(np.mean(velo_conf), color='brown', linestyle='dashed', linewidth=1.5) ## add mean
-    plt.axvline(np.median(velo_conf), color='sandybrown', linestyle='dashed', linewidth=1.5) ## add median
+    plt.axvline(np.median(velo_conf), color='peru', linestyle='dashed', linewidth=1.5) ## add median
     plt.text(text_x,text_y*3,'mean='+str(np.round(np.mean(velo_conf),4)),color='firebrick',fontsize=11)
     plt.text(text_x,text_y*2.5,'median='+str(np.round(np.median(velo_conf),4)),color='sienna',fontsize=11)
     plt.xlabel('Velocity confidence')
