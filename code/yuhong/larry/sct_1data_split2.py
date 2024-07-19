@@ -10,7 +10,6 @@ import datetime
 
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
-from countsplit import *
 from sctour_misc import *
 
 method = 'sct'
@@ -29,18 +28,12 @@ data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/
 
 print_message_with_time("################## Read data")
 #raw = sc.read_h5ad(data_folder+"v2_larry/larry.h5ad")
-total = sc.read_h5ad(data_folder+'v2_larry/larry_total_allgenes.h5ad')
-adata_split1 = sc.read_h5ad(data_folder+'v2_larry/larry_split1_allgenes.h5ad')
 adata_split2 = sc.read_h5ad(data_folder+'v2_larry/larry_split2_allgenes.h5ad')
-gene_names = total.var.index.copy()
+gene_names = adata_split2.var.index.copy()
 positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
 
-S_mat_split1 = adata_split1.layers['spliced'].copy()
-U_mat_split1 = adata_split1.layers['unspliced'].copy()
 S_mat_split2 = adata_split2.layers['spliced'].copy()
 U_mat_split2 = adata_split2.layers['unspliced'].copy()
-S_mat_total = total.layers['spliced'].copy()
-U_mat_total = total.layers['unspliced'].copy()
 
 ######################################################
 
@@ -59,18 +52,6 @@ def sct_train_and_return_tnode(adata, sct_seed=615):
     adata.obsm['X_VF'] = tnode.get_vector_field(adata.obs['ptime'].values, adata.obsm['X_TNODE'])
     return tnode
 
-print_message_with_time("########### Start to train model for split1")
-tnode_split1 = sct_train_and_return_tnode(adata_split1)
-print_message_with_time("########### Start to compute velocity for split1")
-diff_mat_split1 = compute_sctour_velocity(tnode_split1, timestep=1/100)
-print_message_with_time("########### Split1 velocity computed, start to write data")
-adata_split1.layers['velocity'] = diff_mat_split1
-adata_split1.layers['spliced_original'] = adata_split1.layers['spliced'].copy()
-adata_split1.layers['unspliced_original'] = adata_split1.layers['unspliced'].copy()
-adata_split1.write(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_split1_v2.h5ad')
-tnode_split1.save_model(save_dir=data_folder+'v2_'+dataset_long+'/'+method+'/', save_prefix='tnode_'+dataset_short+'_'+method+'_split1_v2')
-print_message_with_time("########### Split1 data wrote")
-
 print_message_with_time("########### Start to train model for split2")
 tnode_split2 = sct_train_and_return_tnode(adata_split2)
 print_message_with_time("########### Start to compute velocity for split2")
@@ -82,17 +63,5 @@ adata_split2.layers['unspliced_original'] = adata_split2.layers['unspliced'].cop
 adata_split2.write(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_split2_v2.h5ad')
 tnode_split2.save_model(save_dir=data_folder+'v2_'+dataset_long+'/'+method+'/', save_prefix='tnode_'+dataset_short+'_'+method+'_split2_v2')
 print_message_with_time("########### Split2 data wrote")
-
-print_message_with_time("########### Start to train model for total")
-tnode_total = sct_train_and_return_tnode(total)
-print_message_with_time("########### Start to compute velocity for split1")
-diff_mat_total = compute_sctour_velocity(tnode_total, timestep=1/100)
-print_message_with_time("########### Total velocity computed, start to write data")
-total.layers['velocity'] = diff_mat_total
-total.layers['spliced_original'] = total.layers['spliced'].copy()
-total.layers['unspliced_original'] = total.layers['unspliced'].copy()
-total.write(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_total_v2.h5ad')
-tnode_total.save_model(save_dir=data_folder+'v2_'+dataset_long+'/'+method+'/', save_prefix='tnode_'+dataset_short+'_'+method+'_total_v2')
-print_message_with_time("########### Total data wrote")
 
 
