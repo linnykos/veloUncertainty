@@ -162,7 +162,7 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,datas
     plt.axvline(np.mean(cos_sim), color='brown', linestyle='dashed', linewidth=1.5) ## add mean
     plt.axvline(np.median(cos_sim), color='sandybrown', linestyle='dashed', linewidth=1.5) ## add median
     plt.text(text_x,text_y*3,'mean='+str(np.round(np.mean(cos_sim),4)), color='firebrick', fontsize=11)
-    plt.text(text_x,text_y*2,'median='+str(np.round(np.median(cos_sim),4)), color='chocolate', fontsize=11)
+    plt.text(text_x,text_y*2.5,'median='+str(np.round(np.median(cos_sim),4)), color='chocolate', fontsize=11)
     plt.xlabel('cosine similarity')
     plt.ylabel('Frequency')
     plt.title('Histogram of cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes))
@@ -300,7 +300,7 @@ def plot_veloConf_hist(adata_total,dataset,method,fig_folder,text_x=None,text_y=
     plt.axvline(np.mean(velo_conf), color='brown', linestyle='dashed', linewidth=1.5) ## add mean
     plt.axvline(np.median(velo_conf), color='sandybrown', linestyle='dashed', linewidth=1.5) ## add median
     plt.text(text_x,text_y*3,'mean='+str(np.round(np.mean(velo_conf),4)),color='firebrick',fontsize=11)
-    plt.text(text_x,text_y*2,'median='+str(np.round(np.median(velo_conf),4)),color='chocolate',fontsize=11)
+    plt.text(text_x,text_y*2.5,'median='+str(np.round(np.median(velo_conf),4)),color='chocolate',fontsize=11)
     plt.xlabel('Velocity confidence')
     plt.ylabel('Frequency')
     plt.title('Histogram of velocity confidence, '+dataset+'+'+method+', Ngenes='+str(Ngenes))
