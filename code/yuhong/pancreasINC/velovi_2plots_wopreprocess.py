@@ -91,7 +91,9 @@ plot_cosine_similarity_withRef(adata_split1=split1,adata_split2=split2,adata_tot
 print_message_with_time("############## Plot velo_conf")
 
 plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
-plot_veloConf_hist(adata_total=total,dataset=dataset_short,method=method,fig_folder=fig_folder,text_x=.3)
+plot_veloConf_hist(adata_total=total,dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+# scv.pl.velocity_embedding_stream(total, basis='umap', color='clusters',title="pan+velovi, total", save=fig_folder+"velocity/"+dataset_short+"_"+method+"_"+'total'+"_umapCompute_recompute.png")
 
 #######################################
 ## plot ptime
