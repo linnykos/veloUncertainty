@@ -70,44 +70,64 @@ def plot_gene_correlation_between_splits(adata1,adata2,fig_path,fig_folder):
 ######################################################
 # velocity
 ### plot velocity on umap
-def plot_velocity_scv_utv(adata_in,adata_raw,fig_folder,fig_info,dataset,method,color_label=None):
+def get_umap_sct(adata,adata_raw=None,umapOriginal=False,moments=True):
+    if moments==True:
+        scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
+    if umapOriginal==True:
+        sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
+        adata.obsm['X_umap'] = adata_raw.obsm['X_umap']
+    else:
+        sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_plot, n_neighbors=10, n_pcs=40)
+        sc.tl.umap(adata)
+    scv.tl.velocity_graph(adata)
+
+def plot_velocity_scv_utv(adata_in,adata_raw,fig_folder,fig_info,dataset,method,recompute=True,celltype_label=None):
     if dataset=="ery":
-        color_label = 'celltype'
+        celltype_label = 'celltype'
     elif "pan" in dataset:
-        color_label = 'clusters'
+        celltype_label = 'clusters'
+    elif dataset=='larry' and celltype_label==None:
+        celltype_label = 'state_info'
     data_method = dataset+"_"+method
     # umapCompute
-    scv.pl.velocity_embedding_stream(adata_in, basis='umap',color=color_label,save=fig_folder+"velocity/"+data_method+"_"+fig_info+"_umapCompute.png")
+    scv.pl.velocity_embedding_stream(adata_in, basis='umap',color=celltype_label,recompute=recompute,save=fig_folder+"velocity/"+data_method+"_"+fig_info+"_umapCompute.png")
     # umapOriginal
     adata=adata_in.copy()
     adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=color_label,save=fig_folder+"velocity/"+data_method+"_"+fig_info+"_umapOriginal.png")    
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,recompute=recompute,
+                                     save=fig_folder+"velocity/"+data_method+"_"+fig_info+"_umapOriginal.png")    
 
-def plot_velocity_sct(adata_in,adata_raw,fig_name,dataset,fig_folder,method='sct'):
+def plot_velocity_sct(adata_in,adata_raw,fig_name,dataset,fig_folder,recompute=True,method='sct',celltype_label=None):
     data_method = dataset+'_'+method
     print(data_method)
-    celltype_label = "celltype"
-    if "pan" in dataset: celltype_label = 'clusters'
+    if dataset=='ery': celltype_label = "celltype"
+    elif "pan" in dataset: celltype_label = 'clusters'
+    elif dataset=='larry' and celltype_label==None: celltype_label = 'state_info'
     if not fig_name == "total":
         # umapOriginal: for total: ValueError: Your neighbor graph seems to be corrupted. Consider recomputing via pp.neighbors.
         adata = adata_in.copy()
         adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
         scv.tl.velocity_graph(adata)
-        scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label, title='Velocity '+dataset+'+'+method+' '+fig_name,
-                                        save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapOriginal.png")
+        scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,recompute=recompute, 
+                                         title='Velocity '+dataset+'+'+method+' '+fig_name,
+                                         save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapOriginal.png")
     # umapOriginal_recomputeNbr
     adata = adata_in.copy()
-    sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # as in tutorial
-    adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
-    scv.tl.velocity_graph(adata)
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label, title='Velocity '+dataset+'+'+method+' '+fig_name,
+    get_umap_sct(adata=adata, adata_raw=adata_raw, umapOriginal=True,moments=True)
+    #sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # as in tutorial
+    #adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
+    #scv.tl.velocity_graph(adata)
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,recompute=recompute,
+                                    title='Velocity '+dataset+'+'+method+' '+fig_name,
                                      save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapOriginal_recomputeNbr.png")
     # umapCompute
     adata = adata_in.copy()
-    sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # as in tutorial
-    sc.tl.umap(adata)
-    scv.tl.velocity_graph(adata)
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label, title='Velocity '+dataset+'+'+method+' '+fig_name,
+    get_umap_sct(adata=adata, adata_raw=None, umapOriginal=False,moments=True)
+    #sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # as in tutorial
+    #sc.tl.umap(adata)
+    #scv.tl.velocity_graph(adata)
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,recompute=recompute,
+                                     title='Velocity '+dataset+'+'+method+' '+fig_name,
                                      save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapCompute.png")
 
 ######################################################
@@ -127,7 +147,7 @@ def compute_cosine_similarity(adata_split1,adata_split2,method):
     return cos_sim, common_genes_velocity.shape[0] # return cosine similarity and number of common genes in velocity computation
 
 ### plot cosine similarity
-def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,dataset,method,fig_folder,text_x=None,text_y=None):
+def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,dataset,method,fig_folder,recompute=True,text_x=None,text_y=None):
     cos_sim, Ngenes = compute_cosine_similarity(adata_split1,adata_split2,method)
     adata_total.obs['cos_sim'] = cos_sim
     dataset_method = dataset+'_'+method
@@ -137,9 +157,11 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,datas
     counts, bins, patches = plt.hist(cos_sim, bins=30, edgecolor='dimgray',color='powderblue') 
     max_frequency = np.max(counts)
     if text_x is None: text_x = np.quantile(cos_sim,[.05])[0]
-    if text_y is None: text_y = max_frequency/2
+    if text_y is None: text_y = max_frequency/5
     plt.axvline(np.mean(cos_sim), color='salmon', linestyle='dashed', linewidth=1.5) ## add mean
-    plt.text(text_x,text_y,'mean='+str(np.round(np.mean(cos_sim),4))+', median='+str(np.round(np.median(cos_sim),4)), color='navy', fontsize=11)
+    plt.axvline(np.median(cos_sim), color='sandybrown', linestyle='dashed', linewidth=1.5) ## add median
+    plt.text(text_x,text_y*3,'mean='+str(np.round(np.mean(cos_sim),4)), color='firebrick', fontsize=11)
+    plt.text(text_x,text_y*2,'median='+str(np.round(np.median(cos_sim),4)), color='chocolate', fontsize=11)
     plt.xlabel('cosine similarity')
     plt.ylabel('Frequency')
     plt.title('Histogram of cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes))
@@ -148,42 +170,47 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,datas
     # umapCompute
     adata_total_plot = adata_total.copy()
     if method=="sct":
-        sc.pp.neighbors(adata_total_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
-        sc.tl.umap(adata_total_plot)
-        scv.tl.velocity_graph(adata_total_plot)
-    scv.pl.velocity_embedding_stream(adata_total_plot, basis='umap',color="cos_sim",cmap='coolwarm',title="Velocity "+dataset+'+'+method,
-                                     perc=[1, 100],save=fig_folder+"cos_sim/"+dataset_method+"_cos_sim_umapCompute.png")
+        get_umap_sct(adata=adata_total_plot, adata_raw=None, umapOriginal=False,moments=True)
+        #sc.pp.neighbors(adata_total_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
+        #sc.tl.umap(adata_total_plot)
+        #scv.tl.velocity_graph(adata_total_plot)
+    scv.pl.velocity_embedding_stream(adata_total_plot, basis='umap',color="cos_sim",cmap='coolwarm',recompute=recompute,perc=[1, 100],
+                                     title="Velocity "+dataset+'+'+method,save=fig_folder+"cos_sim/"+dataset_method+"_cos_sim_umapCompute.png")
     scv.pl.scatter(adata_total_plot, color='cos_sim', cmap='coolwarm', title="Velocity cosine similarity "+dataset+'+'+method,
                    perc=[1, 100], save=fig_folder+"cos_sim/"+dataset_method+"_cos_sim_scatter_umapCompute.png")
     # umapOriginal
     adata_total_plot = adata_total.copy()
     if method=="sct":
-        sc.pp.neighbors(adata_total_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
-        adata_total_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
-        scv.tl.velocity_graph(adata_total_plot)
+        get_umap_sct(adata=adata_total_plot, adata_raw=adata_raw, umapOriginal=True,moments=True)
+        #scv.pp.moments(adata_total_plot, n_pcs=30, n_neighbors=30)
+        #sc.pp.neighbors(adata_total_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
+        #adata_total_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
+        #scv.tl.velocity_graph(adata_total_plot)
     else:
         adata_total_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
-    scv.pl.velocity_embedding_stream(adata_total_plot, basis='umap',color="cos_sim",cmap='coolwarm',title="Velocity "+dataset+'+'+method,
+    scv.pl.velocity_embedding_stream(adata_total_plot, basis='umap',color="cos_sim",cmap='coolwarm',recompute=recompute,
+                                     title="Velocity "+dataset+'+'+method,
                                      perc=[1, 100],save=fig_folder+"cos_sim/"+dataset_method+"_cos_sim_umapOriginal.png")
     scv.pl.scatter(adata_total_plot, color='cos_sim', cmap='coolwarm', title="Velocity cosine similarity "+dataset+'+'+method,
                    perc=[1, 100],save=fig_folder+"cos_sim/"+dataset_method+"_cos_sim_scatter_umapOriginal.png")
 
 #### plot 2 by 1 figures, left: umap of cell development with velocity estimates, right: cosine similarity of velocities
-def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_raw,dataset,method,fig_folder):
+def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_raw,dataset,method,fig_folder,recompute=True,celltype_label=None):
     cos_sim, Ngenes = compute_cosine_similarity(adata_split1,adata_split2,method)
     adata_total.obs['cos_sim'] = cos_sim
     dataset_method = dataset+'_'+method
-    celltype_label = None
     if "pan" in dataset: celltype_label = "clusters"
-    if dataset=="ery": celltype_label = "celltype"
+    elif dataset=="ery": celltype_label = "celltype"
+    elif dataset=='larry' and celltype_label==None: celltype_label = 'state_info'
     # umapCompute
     adata_plot = adata_total.copy()
     if method=="sct":
-        sc.pp.neighbors(adata_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_plot, n_neighbors=10, n_pcs=40)
-        sc.tl.umap(adata_plot)
-        scv.tl.velocity_graph(adata_plot)
+        get_umap_sct(adata=adata_plot, adata_raw=None, umapOriginal=False,moments=True)
+        #sc.pp.neighbors(adata_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_plot, n_neighbors=10, n_pcs=40)
+        #sc.tl.umap(adata_plot)
+        #scv.tl.velocity_graph(adata_plot)
     fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
-    scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
+    scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',recompute=recompute,
                                      title="Velocity "+dataset+'+'+method, frameon=False,size=100,alpha=0.5)
     scv.pl.scatter(adata_plot,color='cos_sim',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
                    title='cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes),frameon=False,size=100,alpha=0.3)
@@ -192,13 +219,14 @@ def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_r
     # umapOriginal
     adata_plot = adata_total.copy()
     if method=="sct":
-        sc.pp.neighbors(adata_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
-        adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
-        scv.tl.velocity_graph(adata_plot)
+        get_umap_sct(adata=adata_plot, adata_raw=adata_raw, umapOriginal=True,moments=True)
+        #sc.pp.neighbors(adata_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
+        #adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
+        #scv.tl.velocity_graph(adata_plot)
     else:
         adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
     fig,axs = plt.subplots(ncols=2, nrows=1, figsize=(11,4))  # figsize=(horizontal, vertical)
-    scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
+    scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',recompute=recompute,
                                      title="Velocity "+dataset+'+'+method, frameon=False,size=100,alpha=0.5)
     scv.pl.scatter(adata_plot,color='cos_sim',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
                    title='cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
@@ -207,22 +235,11 @@ def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_r
 
 ######################################################
 ## plot velo_conf
-def get_umap_sct(adata, adata_raw, umapOriginal,moments):
-    if moments==True:
-        scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
-    if umapOriginal==True:
-        sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_total_plot, n_neighbors=10, n_pcs=40)
-        adata.obsm['X_umap'] = adata_raw.obsm['X_umap']
-    else:
-        sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_plot, n_neighbors=10, n_pcs=40)
-        sc.tl.umap(adata)
-    scv.tl.velocity_graph(adata)
-
-def plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_folder,umapOriginal,Ngenes):
+def plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_folder,umapOriginal,Ngenes,recompute=True,celltype_label = None):
     adata_plot = adata_total.copy()
-    celltype_label = None
     if dataset=="ery": celltype_label="celltype"
     elif "pan" in dataset: celltype_label="clusters"
+    elif dataset=='larry' and celltype_label==None:  celltype_label = 'state_info'
     data_method = dataset+'_'+method
     fig_umap = "umapCompute"
     if method=='sct':
@@ -237,19 +254,21 @@ def plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_fol
         fig_umap = "umapOriginal"
     vmin = np.min([0, np.min(adata_plot.obs['cos_sim'])-1e-5, np.min(adata_plot.obs['velocity_confidence'])-1e-5])
     vmax = np.max([np.max(adata_plot.obs['cos_sim'])+1e-5, np.max(adata_plot.obs['velocity_confidence'])+1e-5, 1])
-    scv.pl.scatter(adata_plot, c='velocity_confidence', cmap='coolwarm', perc=[1, 100],
-                   save=fig_folder+"velo_conf/"+data_method+"_veloConf_"+fig_umap+".png")
-    plt.clf()
     fig, axs = plt.subplots(ncols=3, nrows=1, figsize=(15, 4))  # figsize=(horizontal, vertical)
-    scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',frameon=False,size=100,alpha=0.5)
+    scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
+                                     recompute=recompute,frameon=False,size=100,alpha=0.5)
     scv.pl.scatter(adata_plot,c='velocity_confidence',cmap='coolwarm',vmin=vmin,vmax=vmax,ax=axs[1],legend_loc='none',
                    title='velocity confidence, '+dataset+'+'+method,frameon=False,size=100,alpha=0.3)
     scv.pl.scatter(adata_plot,color='cos_sim',cmap='coolwarm',vmin=vmin,vmax=vmax,ax=axs[2],legend_loc='none',
                    title='velocity cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes),frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+"cos_sim/"+data_method+"_veloConf_and_cosSim_"+fig_umap+".png")
     plt.clf()
+    scv.pl.scatter(adata_plot, c='velocity_confidence', cmap='coolwarm', perc=[1, 100],
+                   save=fig_folder+"velo_conf/"+data_method+"_veloConf_"+fig_umap+".png")
+    plt.clf()
+    
 
-def plot_veloConf_and_cosSim(adata_total,adata_split1,adata_split2,adata_raw,dataset,method,fig_folder):
+def plot_veloConf_and_cosSim(adata_total,adata_split1,adata_split2,adata_raw,dataset,method,fig_folder,recompute=True):
     adata_plot = adata_total.copy()
     if method == 'sct': scv.pp.moments(adata_plot, n_pcs=30, n_neighbors=30)
     if (not method=='sct') and (not 'velocity_confidence' in adata_plot.obs.columns):
@@ -257,17 +276,14 @@ def plot_veloConf_and_cosSim(adata_total,adata_split1,adata_split2,adata_raw,dat
     cos_sim,Ngenes = compute_cosine_similarity(adata_split1,adata_split2,method=method)
     adata_plot.obs['cos_sim'] = cos_sim
     # umapCompute
-    plot_veloConf_and_cosSim_helper(adata_plot,adata_raw,dataset,method,fig_folder,umapOriginal=False,Ngenes=Ngenes)
+    plot_veloConf_and_cosSim_helper(adata_plot,adata_raw,dataset,method,fig_folder,umapOriginal=False,Ngenes=Ngenes,recompute=recompute)
     # umapOriginal
-    plot_veloConf_and_cosSim_helper(adata_plot,adata_raw,dataset,method,fig_folder,umapOriginal=True,Ngenes=Ngenes)
+    plot_veloConf_and_cosSim_helper(adata_plot,adata_raw,dataset,method,fig_folder,umapOriginal=True,Ngenes=Ngenes,recompute=recompute)
 
 def plot_veloConf_hist(adata_total,dataset,method,fig_folder,text_x=None,text_y=None):
     adata_plot = adata_total.copy()
     if method=='sct': 
-        scv.pp.moments(adata_plot, n_pcs=30, n_neighbors=30)
-        sc.pp.neighbors(adata_plot, use_rep='X_TNODE', n_neighbors=15) # sc.pp.neighbors(adata_plot, n_neighbors=10, n_pcs=40)
-        sc.tl.umap(adata_plot)
-        scv.tl.velocity_graph(adata_plot)      
+        get_umap_sct(adata=adata_plot, adata_raw=None, umapOriginal=False,moments=True) 
         scv.tl.velocity_confidence(adata_plot)
     if (not method=='sct') and (not 'velocity_confidence' in adata_plot.obs.columns):
         scv.tl.velocity_confidence(adata_plot)
@@ -279,9 +295,11 @@ def plot_veloConf_hist(adata_total,dataset,method,fig_folder,text_x=None,text_y=
     counts, bins, patches = plt.hist(velo_conf, bins=30, edgecolor='dimgray',color='powderblue') 
     max_frequency = np.max(counts)
     if text_x is None: text_x = np.quantile(velo_conf,[.05])[0]
-    if text_y is None: text_y = max_frequency/2
+    if text_y is None: text_y = max_frequency/5
     plt.axvline(np.mean(velo_conf), color='salmon', linestyle='dashed', linewidth=1.5) ## add mean
-    plt.text(text_x,text_y,'mean='+str(np.round(np.mean(velo_conf),4))+', median='+str(np.round(np.median(velo_conf),4)),color='navy',fontsize=11)
+    plt.axvline(np.median(velo_conf), color='sandybrown', linestyle='dashed', linewidth=1.5) ## add median
+    plt.text(text_x,text_y*3,'mean='+str(np.round(np.mean(velo_conf),4)),color='firebrick',fontsize=11)
+    plt.text(text_x,text_y*2,'median='+str(np.round(np.median(velo_conf),4)),color='chocolate',fontsize=11)
     plt.xlabel('Velocity confidence')
     plt.ylabel('Frequency')
     plt.title('Histogram of velocity confidence, '+dataset+'+'+method+', Ngenes='+str(Ngenes))
@@ -291,41 +309,48 @@ def plot_veloConf_hist(adata_total,dataset,method,fig_folder,text_x=None,text_y=
 
 ######################################################
 # plot pseudotime
-def plot_pseudotime(adata_in,adata_raw,fig_name,dataset,method,fig_folder):
+def plot_pseudotime(adata_in,adata_raw,fig_name,dataset,method,fig_folder,recompute=True):
     data_method = dataset+'_'+method
     fig_title = fig_name
     fig_name = data_method+'_'+fig_name
     ptime_label = 'velocity_pseudotime'
     if method == 'sct': ptime_label='ptime'
     if not ptime_label in adata_in.obs.columns: raise ValueError('No pseudotime information')
-    celltype_label = "celltype"
-    if "pan" in dataset: celltype_label="clusters"
+    celltype_label = None
+    if dataset=='ery': celltype_label = "celltype"
+    elif "pan" in dataset: celltype_label="clusters"
+    elif dataset=='larry': celltype_label = 'state_info'
     # umapCompute
     adata = adata_in.copy()
     if method=='sct': get_umap_sct(adata=adata, adata_raw=adata_raw, umapOriginal=False,moments=False)
-    scv.pl.scatter(adata, color=ptime_label, color_map="gnuplot",title='velocity pseudotime, '+dataset+'+'+method+' '+fig_title,
-                   save=fig_folder+'ptime/'+fig_name+'_ptime_umapCompute.png')
     fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',frameon=False,size=100,alpha=0.5)
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
+                                     recompute=recompute,frameon=False,size=100,alpha=0.5)
     scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='velocity pseudotime, '+dataset+'+'+method+' '+fig_title)
     plt.savefig(fig_folder+"ptime/"+fig_name+'_ptime_withRef_umapCompute.png')
+    plt.clf()
+    scv.pl.scatter(adata, color=ptime_label, color_map="gnuplot",title='velocity pseudotime, '+dataset+'+'+method+' '+fig_title,
+                   save=fig_folder+'ptime/'+fig_name+'_ptime_umapCompute.png')
     plt.clf()
     # umapOriginal
     adata = adata_in.copy()
     if method=='sct': get_umap_sct(adata=adata, adata_raw=adata_raw, umapOriginal=True,moments=False)
     else: adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
-    scv.pl.scatter(adata, color=ptime_label, color_map="gnuplot", title='velocity pseudotime, '+dataset+'+'+method+' '+fig_title,
-                   save=fig_folder+'ptime/'+fig_name+'_ptime_umapOriginal.png')
     fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',frameon=False,size=100,alpha=0.5)
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
+                                     recompute=recompute,frameon=False,size=100,alpha=0.5)
     scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='Velocity pseudotime, '+dataset+'+'+method+' '+fig_title)
     plt.savefig(fig_folder+"ptime/"+fig_name+'_ptime_withRef_umapOriginal.png')
+    plt.clf()
+    scv.pl.scatter(adata, color=ptime_label, color_map="gnuplot", title='velocity pseudotime, '+dataset+'+'+method+' '+fig_title,
+                   save=fig_folder+'ptime/'+fig_name+'_ptime_umapOriginal.png')
     plt.clf()
 
 # plot pseudotime correlation
 def ptime_correlation_scatter_plot(s1,s2,method,dataset,name,xlab,ylab,fig_folder):
-    celltype_label = "celltype"
-    if "pan" in dataset: celltype_label = "clusters"
+    if dataset=='ery': celltype_label = "celltype"
+    elif "pan" in dataset: celltype_label = "clusters"
+    elif dataset=='larry': celltype_label = 'state_info'
     cell_types = s1.obs[celltype_label]
     colors = dict(zip(s1.obs[celltype_label].cat.categories, s1.uns[celltype_label+'_colors']))
     ptime_label = 'velocity_pseudotime'
