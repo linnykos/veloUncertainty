@@ -90,11 +90,12 @@ def plot_velocity_scv_utv(adata_in,adata_raw,fig_folder,fig_info,dataset,method,
         celltype_label = 'state_info'
     data_method = dataset+"_"+method
     # umapCompute
-    scv.pl.velocity_embedding_stream(adata_in, basis='umap',color=celltype_label,recompute=recompute,save=fig_folder+"velocity/"+data_method+"_"+fig_info+"_umapCompute.png")
+    scv.pl.velocity_embedding_stream(adata_in, basis='umap',color=celltype_label,recompute=recompute,title='Velocity '+dataset+'+'+method+' '+fig_info,
+                                     save=fig_folder+"velocity/"+data_method+"_"+fig_info+"_umapCompute.png")
     # umapOriginal
     adata=adata_in.copy()
     adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,recompute=recompute,
+    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,recompute=recompute,title='Velocity '+dataset+'+'+method+' '+fig_info,
                                      save=fig_folder+"velocity/"+data_method+"_"+fig_info+"_umapOriginal.png")    
 
 def plot_velocity_sct(adata_in,adata_raw,fig_name,dataset,fig_folder,recompute=True,method='sct',celltype_label=None):
@@ -176,7 +177,7 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,datas
         #scv.tl.velocity_graph(adata_total_plot)
     scv.pl.velocity_embedding_stream(adata_total_plot, basis='umap',color="cos_sim",cmap='coolwarm',recompute=recompute,perc=[1, 100],
                                      title="Velocity "+dataset+'+'+method,save=fig_folder+"cos_sim/"+dataset_method+"_cos_sim_umapCompute.png")
-    scv.pl.scatter(adata_total_plot, color='cos_sim', cmap='coolwarm', title="Velocity cosine similarity "+dataset+'+'+method,
+    scv.pl.scatter(adata_total_plot, color='cos_sim', cmap='coolwarm', title="Cosine similarity of RNA velocity "+dataset+'+'+method,
                    perc=[1, 100], save=fig_folder+"cos_sim/"+dataset_method+"_cos_sim_scatter_umapCompute.png")
     # umapOriginal
     adata_total_plot = adata_total.copy()
@@ -191,7 +192,7 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,datas
     scv.pl.velocity_embedding_stream(adata_total_plot, basis='umap',color="cos_sim",cmap='coolwarm',recompute=recompute,
                                      title="Velocity "+dataset+'+'+method,
                                      perc=[1, 100],save=fig_folder+"cos_sim/"+dataset_method+"_cos_sim_umapOriginal.png")
-    scv.pl.scatter(adata_total_plot, color='cos_sim', cmap='coolwarm', title="Velocity cosine similarity "+dataset+'+'+method,
+    scv.pl.scatter(adata_total_plot, color='cos_sim', cmap='coolwarm', title="Cosine similarity of RNA velocity "+dataset+'+'+method,
                    perc=[1, 100],save=fig_folder+"cos_sim/"+dataset_method+"_cos_sim_scatter_umapOriginal.png")
 
 #### plot 2 by 1 figures, left: umap of cell development with velocity estimates, right: cosine similarity of velocities
@@ -213,7 +214,7 @@ def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_r
     scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',recompute=recompute,
                                      title="Velocity "+dataset+'+'+method, frameon=False,size=100,alpha=0.5)
     scv.pl.scatter(adata_plot,color='cos_sim',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
-                   title='cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes),frameon=False,size=100,alpha=0.3)
+                   title="Cosine similarity of RNA velocity "+dataset+'+'+method+', Ngenes='+str(Ngenes),frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+"cos_sim/"+dataset_method+"_cos_sim_withRef_umapCompute.png")
     plt.clf()
     # umapOriginal
@@ -229,7 +230,7 @@ def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_r
     scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',recompute=recompute,
                                      title="Velocity "+dataset+'+'+method, frameon=False,size=100,alpha=0.5)
     scv.pl.scatter(adata_plot,color='cos_sim',cmap='coolwarm',perc=[1,100],ax=axs[1],legend_loc='none',
-                   title='cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
+                   title="Cosine similarity of RNA velocity "+dataset+'+'+method+', Ngenes='+str(Ngenes), frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+"cos_sim/"+dataset_method+"_cos_sim_withRef_umapOriginal.png")
     plt.clf()
 
@@ -258,12 +259,12 @@ def plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_fol
     scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      recompute=recompute,frameon=False,size=100,alpha=0.5)
     scv.pl.scatter(adata_plot,c='velocity_confidence',cmap='coolwarm',vmin=vmin,vmax=vmax,ax=axs[1],legend_loc='none',
-                   title='velocity confidence, '+dataset+'+'+method,frameon=False,size=100,alpha=0.3)
+                   title='Velocity confidence, '+dataset+'+'+method,frameon=False,size=100,alpha=0.3)
     scv.pl.scatter(adata_plot,color='cos_sim',cmap='coolwarm',vmin=vmin,vmax=vmax,ax=axs[2],legend_loc='none',
-                   title='velocity cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes),frameon=False,size=100,alpha=0.3)
+                   title='Velocity cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes),frameon=False,size=100,alpha=0.3)
     plt.savefig(fig_folder+"cos_sim/"+data_method+"_veloConf_and_cosSim_"+fig_umap+".png")
     plt.clf()
-    scv.pl.scatter(adata_plot, c='velocity_confidence', cmap='coolwarm', perc=[1, 100],
+    scv.pl.scatter(adata_plot, c='Velocity_confidence', cmap='coolwarm', perc=[1, 100],
                    save=fig_folder+"velo_conf/"+data_method+"_veloConf_"+fig_umap+".png")
     plt.clf()
     
@@ -326,10 +327,10 @@ def plot_pseudotime(adata_in,adata_raw,fig_name,dataset,method,fig_folder,recomp
     fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      recompute=recompute,frameon=False,size=100,alpha=0.5)
-    scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='velocity pseudotime, '+dataset+'+'+method+' '+fig_title)
+    scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='pseudotime, '+dataset+'+'+method+' '+fig_title)
     plt.savefig(fig_folder+"ptime/"+fig_name+'_ptime_withRef_umapCompute.png')
     plt.clf()
-    scv.pl.scatter(adata, color=ptime_label, color_map="gnuplot",title='velocity pseudotime, '+dataset+'+'+method+' '+fig_title,
+    scv.pl.scatter(adata, color=ptime_label, color_map="gnuplot",title='pseudotime, '+dataset+'+'+method+' '+fig_title,
                    save=fig_folder+'ptime/'+fig_name+'_ptime_umapCompute.png')
     plt.clf()
     # umapOriginal
@@ -339,10 +340,10 @@ def plot_pseudotime(adata_in,adata_raw,fig_name,dataset,method,fig_folder,recomp
     fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      recompute=recompute,frameon=False,size=100,alpha=0.5)
-    scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='Velocity pseudotime, '+dataset+'+'+method+' '+fig_title)
+    scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='pseudotime, '+dataset+'+'+method+' '+fig_title)
     plt.savefig(fig_folder+"ptime/"+fig_name+'_ptime_withRef_umapOriginal.png')
     plt.clf()
-    scv.pl.scatter(adata, color=ptime_label, color_map="gnuplot", title='velocity pseudotime, '+dataset+'+'+method+' '+fig_title,
+    scv.pl.scatter(adata, color=ptime_label, color_map="gnuplot", title='pseudotime, '+dataset+'+'+method+' '+fig_title,
                    save=fig_folder+'ptime/'+fig_name+'_ptime_umapOriginal.png')
     plt.clf()
 

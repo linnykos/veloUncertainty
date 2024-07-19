@@ -60,12 +60,12 @@ def plot_velocity_velovi_pan(adata,adata_raw,dataset,method,fig_folder,fig_name,
     celltype_label = 'clusters'
     Ngenes = adata.layers['velocity'].shape[1]
     # umapCompute
-    scv.pl.velocity_embedding_stream(adata, basis='umap', color=celltype_label,title="pan+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
+    scv.pl.velocity_embedding_stream(adata, basis='umap', color=celltype_label,title="Velocity pan+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
                                      recompute=recompute,save=fig_folder+"velocity/"+dataset+"_"+method+"_"+fig_name+"_umapCompute.png")
     # umapOriginal
     adata_plot = adata.copy()
     adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
-    scv.pl.velocity_embedding_stream(adata_plot, basis='umap', color=celltype_label,title="pan+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
+    scv.pl.velocity_embedding_stream(adata_plot, basis='umap', color=celltype_label,title="Velocity pan+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
                                      recompute=recompute,save=fig_folder+"velocity/"+dataset+"_"+method+"_"+fig_name+"_umapOriginal.png")
 
 def plot_velocity_velovi_ery(adata,adata_raw,dataset,method,fig_folder,fig_name,recompute=True):
@@ -74,13 +74,13 @@ def plot_velocity_velovi_ery(adata,adata_raw,dataset,method,fig_folder,fig_name,
     # umapCompute
     adata_plot = adata.copy()
     #scv.tl.velocity_graph(adata_plot)
-    scv.pl.velocity_embedding_stream(adata_plot, basis='umap', color=celltype_label,title="ery+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
+    scv.pl.velocity_embedding_stream(adata_plot, basis='umap', color=celltype_label,title="Velocity ery+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
                                      recompute=recompute,save=fig_folder+"velocity/"+dataset+"_"+method+"_"+fig_name+"_umapCompute.png")
     # umapOriginal
     adata_plot = adata.copy()
     adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
     #scv.tl.velocity_graph(adata_plot)
-    scv.pl.velocity_embedding_stream(adata_plot, basis='umap', color=celltype_label,title="ery+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
+    scv.pl.velocity_embedding_stream(adata_plot, basis='umap', color=celltype_label,title="Velocity ery+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
                                      recompute=recompute,save=fig_folder+"velocity/"+dataset+"_"+method+"_"+fig_name+"_umapOriginal.png")
 
 def plot_velocity_velovi(adata,adata_raw,dataset,method,fig_folder,fig_name,celltype_label=None,recompute=True):
@@ -90,12 +90,14 @@ def plot_velocity_velovi(adata,adata_raw,dataset,method,fig_folder,fig_name,cell
     Ngenes = adata.layers['velocity'].shape[1]
     # umapCompute
     adata_plot = adata.copy()
-    scv.pl.velocity_embedding_stream(adata_plot,basis='umap',color=celltype_label,recompute=recompute,title=dataset+"+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
+    scv.pl.velocity_embedding_stream(adata_plot,basis='umap',color=celltype_label,recompute=recompute,
+                                     title='Velocity '+dataset+"+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
                                      save=fig_folder+"velocity/"+dataset+"_"+method+"_"+fig_name+"_umapCompute.png")
     # umapOriginal
     adata_plot = adata.copy()
     adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
-    scv.pl.velocity_embedding_stream(adata_plot,basis='umap',color=celltype_label,recompute=recompute,title=dataset+"+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
+    scv.pl.velocity_embedding_stream(adata_plot,basis='umap',color=celltype_label,recompute=recompute,
+                                     title='Velocity '+dataset+"+velovi, "+fig_name+' (Ngenes='+str(Ngenes)+')',
                                      save=fig_folder+"velocity/"+dataset+"_"+method+"_"+fig_name+"_umapOriginal.png")
 
 
