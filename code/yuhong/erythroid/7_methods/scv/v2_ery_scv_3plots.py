@@ -28,8 +28,13 @@ raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
 ######################################################
 ## plot velocity - done in 1data.py, copied (and modified variable names here)
 plot_velocity_scv_utv(adata_in=total,adata_raw=raw,fig_folder=fig_folder,fig_info='total',dataset=dataset_short,method=method)
-plot_velocity_scv_utv(adata_in=split1,adata_raw=raw,fig_folder=fig_folder,fig_info='total',dataset=dataset_short,method=method)
-plot_velocity_scv_utv(adata_in=split2,adata_raw=raw,fig_folder=fig_folder,fig_info='total',dataset=dataset_short,method=method)
+plot_velocity_scv_utv(adata_in=split1,adata_raw=raw,fig_folder=fig_folder,fig_info='split1',dataset=dataset_short,method=method)
+plot_velocity_scv_utv(adata_in=split2,adata_raw=raw,fig_folder=fig_folder,fig_info='split2',dataset=dataset_short,method=method)
+
+plot_velocity_scv_utv(adata_in=total,adata_raw=raw,fig_folder=fig_folder,fig_info='recompF_total',dataset=dataset_short,method=method,recompute=False)
+plot_velocity_scv_utv(adata_in=split1,adata_raw=raw,fig_folder=fig_folder,fig_info='recompF_split1',dataset=dataset_short,method=method,recompute=False)
+plot_velocity_scv_utv(adata_in=split2,adata_raw=raw,fig_folder=fig_folder,fig_info='recompF_split2',dataset=dataset_short,method=method,recompute=False)
+
 
 ######################################################
 ## plot cosine similarity
