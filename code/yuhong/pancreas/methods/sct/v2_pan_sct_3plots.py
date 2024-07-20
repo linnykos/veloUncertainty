@@ -64,41 +64,13 @@ plot_vf_umap(adata_in=total, adata_raw=raw, fig_name="total",data=dataset_short,
 
 ######################################################
 #### plot velocity
-def plot_velocity_sct(adata_in, adata_raw, fig_name, dataset, method='sct'):
-    data_method = dataset+'_'+method
-    print(data_method)
-    celltype_label = "celltype"
-    if dataset=="pan": celltype_label = 'clusters'
-    if not fig_name == "total":
-        # umapOriginal: for total: ValueError: Your neighbor graph seems to be corrupted. Consider recomputing via pp.neighbors.
-        adata = adata_in.copy()
-        adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
-        scv.tl.velocity_graph(adata)
-        scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label, title='Velocity '+dataset+'+'+method+' '+fig_name,
-                                        save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapOriginal.png")
-    # umapOriginal_recomputeNbr
-    adata = adata_in.copy()
-    scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
-    sc.tl.pca(adata)    
-    sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=10) # sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
-    adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()
-    scv.tl.velocity_graph(adata)
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label, title='Velocity '+dataset+'+'+method+' '+fig_name,
-                                     save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapOriginal_recomputeNbr.png")
-    # umapCompute
-    adata = adata_in.copy()
-    scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
-    sc.tl.pca(adata)    
-    sc.pp.neighbors(adata, use_rep='X_TNODE', n_neighbors=10) # sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
-    sc.tl.umap(adata)
-    scv.tl.velocity_graph(adata)
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label, title='Velocity '+dataset+'+'+method+' '+fig_name,
-                                     save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapCompute.png")
+plot_velocity_sct(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=dataset_short,fig_folder=fig_folder,recompute=True)
+plot_velocity_sct(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short,fig_folder=fig_folder,recompute=True)
+plot_velocity_sct(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short,fig_folder=fig_folder,recompute=True)
 
-
-plot_velocity_sct(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=dataset_short,fig_folder=fig_folder)
-plot_velocity_sct(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short,fig_folder=fig_folder)
-plot_velocity_sct(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short,fig_folder=fig_folder)
+plot_velocity_sct(adata_in=split1,adata_raw=raw,fig_name="recompF_split1",dataset=dataset_short,fig_folder=fig_folder,recompute=False)
+plot_velocity_sct(adata_in=split2,adata_raw=raw,fig_name="recompF_split2",dataset=dataset_short,fig_folder=fig_folder,recompute=False)
+plot_velocity_sct(adata_in=total,adata_raw=raw,fig_name="recompF_total",dataset=dataset_short,fig_folder=fig_folder,recompute=False)
 
 
 ######################################################
