@@ -104,7 +104,7 @@ def plot_velocity_sct(adata_in,adata_raw,fig_name,dataset,fig_folder,recompute=T
     if dataset=='ery': celltype_label = "celltype"
     elif "pan" in dataset: celltype_label = 'clusters'
     elif dataset=='larry' and celltype_label==None: celltype_label = 'state_info'
-    if not fig_name == "total":
+    if not "total" in fig_name:
         # umapOriginal: for total: ValueError: Your neighbor graph seems to be corrupted. Consider recomputing via pp.neighbors.
         adata = adata_in.copy()
         adata.obsm['X_umap'] = adata_raw.obsm['X_umap'].copy()

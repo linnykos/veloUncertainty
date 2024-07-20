@@ -67,6 +67,10 @@ plot_velocity_sct(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=datase
 plot_velocity_sct(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short,fig_folder=fig_folder)
 plot_velocity_sct(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short,fig_folder=fig_folder)
 
+plot_velocity_sct(adata_in=split1,adata_raw=raw,fig_name="recompF_split1",dataset=dataset_short,fig_folder=fig_folder,recompute=False)
+plot_velocity_sct(adata_in=split2,adata_raw=raw,fig_name="recompF_split2",dataset=dataset_short,fig_folder=fig_folder,recompute=False)
+plot_velocity_sct(adata_in=total,adata_raw=raw,fig_name="recompF_total",dataset=dataset_short,fig_folder=fig_folder,recompute=False)
+
 
 ######################################################
 ## plot cosine similarity
