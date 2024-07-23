@@ -91,6 +91,7 @@ plot_vf_umap(adata_in=total, adata_raw=raw, fig_name="total",data=dataset_short,
 
 ######################################################
 #### plot velocity
+"""
 def plot_velocity_sct(adata_in, adata_raw, fig_name, dataset, fig_folder, method='sct'):
     data_method = dataset+'_'+method
     print(data_method)
@@ -122,11 +123,15 @@ def plot_velocity_sct(adata_in, adata_raw, fig_name, dataset, fig_folder, method
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label, title='Velocity '+dataset+'+'+method+' '+fig_name,
                                      save=fig_folder+"velocity/"+data_method+"_"+fig_name+"_umapCompute.png")
 
+"""
 
 plot_velocity_sct(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=dataset_short,fig_folder=fig_folder)
 plot_velocity_sct(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short,fig_folder=fig_folder)
 plot_velocity_sct(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short,fig_folder=fig_folder)
 
+plot_velocity_sct(adata_in=total,adata_raw=raw,fig_name="recompF_total",dataset=dataset_short,fig_folder=fig_folder,recompute=False)
+plot_velocity_sct(adata_in=split1,adata_raw=raw,fig_name="recompF_split1",dataset=dataset_short,fig_folder=fig_folder,recompute=False)
+plot_velocity_sct(adata_in=split2,adata_raw=raw,fig_name="recompF_split2",dataset=dataset_short,fig_folder=fig_folder,recompute=False)
 
 ######################################################
 ## plot cosine similarity

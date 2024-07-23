@@ -50,6 +50,7 @@ S_raw = raw.layers['spliced'][cell_index,:]
 U_raw = raw.layers['unspliced'][cell_index,:]
 raw = create_adata_INC(S=S_raw,U=U_raw,adata_old=raw)
 
+total.uns['clusters_colors'] = split1.uns['clusters_colors'].copy()
 
 def print_message_with_time(message):
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -75,9 +76,13 @@ compute_umap_pan(total)
 ## plot velocity
 print_message_with_time("############## Plot velocity")
 
-plot_velocity_velovi_pan(adata=split1,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="split1")
-plot_velocity_velovi_pan(adata=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="split2")
-plot_velocity_velovi_pan(adata=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="total")
+plot_velocity_velovi(adata=split1,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="split1")
+plot_velocity_velovi(adata=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="split2")
+plot_velocity_velovi(adata=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="total")
+
+plot_velocity_velovi(adata=split1,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="recompF_split1",recompute=False)
+plot_velocity_velovi(adata=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="recompF_split2",recompute=False)
+plot_velocity_velovi(adata=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="recompF_total",recompute=False)
 
 #######################################
 ## plot cosine similarity
