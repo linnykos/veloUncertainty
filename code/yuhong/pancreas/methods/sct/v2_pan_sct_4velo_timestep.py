@@ -39,7 +39,7 @@ def test_timestep(adata_split1,adata_split2,adata_total,tnode1,tnode2,tnode,time
     split2.layers['velocity'] = compute_sctour_velocity(tnode2, timestep=time)
     total.layers['velocity'] = compute_sctour_velocity(tnode, timestep=time)
     cos_sim,Ngenes = compute_cosine_similarity(split1,split2,method='sct')
-    get_umap_sct(adata,moments=True)
+    get_umap_sct(total,moments=True)
     #scv.tl.velocity_graph(total)
     scv.tl.velocity_pseudotime(total)
     ptime_cor = np.corrcoef(total.obs['ptime'],total.obs['velocity_pseudotime'])
