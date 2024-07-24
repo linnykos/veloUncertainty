@@ -49,7 +49,7 @@ times = []
 means = []
 medians = []
 ptime_cors = []
-for i in range(1,100):
+for i in range(33,100):
     time = i/100
     times.append(time)
     mean_i,median_i,cor_i = test_timestep(adata_split1=split1,adata_split2=split2,adata_total=total,
