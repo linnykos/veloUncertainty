@@ -43,7 +43,7 @@ def test_timestep(adata_split1,adata_split2,adata_total,tnode1,tnode2,tnode,time
     ptime_cor = np.corrcoef(total.obs['ptime'],total.obs['velocity_pseudotime'])
     print([np.mean(cos_sim), np.median(cos_sim)])
     print(ptime_cor[0,1])
-    #return np.round(np.mean(cos_sim),6),np.round(np.median(cos_sim),6),ptime_cor[0,1]
+    return np.round(np.mean(cos_sim),6),np.round(np.median(cos_sim),6),ptime_cor[0,1]
 
 times = []
 means = []
