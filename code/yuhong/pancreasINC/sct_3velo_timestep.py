@@ -50,8 +50,8 @@ times = []
 means = []
 medians = []
 ptime_cors = []
-for i in range(1,91):
-    time = i/100
+for i in range(1,1000):
+    time = i/1000
     times.append(time)
     mean_i,median_i,cor_i = test_timestep(adata_split1=split1,adata_split2=split2,adata_total=total,
                                           tnode1=tnode_split1,tnode2=tnode_split2,tnode=tnode_total,time=time)
@@ -65,5 +65,5 @@ df['time'] = times
 df['cos_sim_mean'] = means
 df['cos_sim_median'] = medians
 df['pseudotime_corr'] = ptime_cors
-df.to_csv(data_folder+'v2_'+dataset_long+'/'+method+'/'+dataset_short+'_'+method+'velo_timestep.csv')
+df.to_csv(data_folder+'v2_'+dataset_long+'/'+method+'/'+dataset_short+'_'+method+'_velo_timestep.csv')
 print('######### Wrote data to '+data_folder+'v2_'+dataset_long+'/'+method+'/'+dataset_short+'_'+method+'velo_timestep.csv')
