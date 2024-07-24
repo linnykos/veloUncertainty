@@ -9,8 +9,6 @@ import random
 import anndata as ad
 from sklearn.metrics.pairwise import cosine_similarity
 
-import datetime
-
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from sctour_misc import *
@@ -30,6 +28,7 @@ tnode_total = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'
 tnode_split1 = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'/tnode_'+dataset_short+'_'+method+'_split1_v2.pth')
 tnode_split2 = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'/tnode_'+dataset_short+'_'+method+'_split2_v2.pth')
 
+print_message_with_time('################################ Read data done')
 
 def test_timestep(adata_split1,adata_split2,adata_total,tnode1,tnode2,tnode,time):
     split1 = adata_split1.copy()
@@ -44,13 +43,13 @@ def test_timestep(adata_split1,adata_split2,adata_total,tnode1,tnode2,tnode,time
     ptime_cor = np.corrcoef(total.obs['ptime'],total.obs['velocity_pseudotime'])
     print([np.mean(cos_sim), np.median(cos_sim)])
     print(ptime_cor[0,1])
-    return np.round(np.mean(cos_sim),6),np.round(np.median(cos_sim),6),ptime_cor[0,1]
+    #return np.round(np.mean(cos_sim),6),np.round(np.median(cos_sim),6),ptime_cor[0,1]
 
 times = []
 means = []
 medians = []
 ptime_cors = []
-for i in range(1,91):
+for i in range(1,100):
     time = i/100
     times.append(time)
     mean_i,median_i,cor_i = test_timestep(adata_split1=split1,adata_split2=split2,adata_total=total,
@@ -58,7 +57,7 @@ for i in range(1,91):
     means.append(mean_i)
     medians.append(median_i)
     ptime_cors.append(cor_i)
-    print(str(i)+' done')
+    print_message_with_time('################################ '+str(i)+' done')
 
 df = pd.DataFrame()
 df['time'] = times
@@ -67,3 +66,5 @@ df['cos_sim_median'] = medians
 df['pseudotime_corr'] = ptime_cors
 df.to_csv(data_folder+'v2_'+dataset_long+'/'+method+'/'+dataset_short+'_'+method+'velo_timestep.csv')
 
+print_message_with_time('################################ Wrote data to '+data_folder+'v2_'+dataset_long+'/'+method+'/'+dataset_short+'_'+method+'velo_timestep.csv')
+print_message_with_time('################################ All done')
