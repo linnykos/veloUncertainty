@@ -45,11 +45,11 @@ ptime_cor2 = []
 for i in range(1,1000):
     time = i/1000
     times.append(time)
-    cor1 = test_timestep_split(adata_in=split1,tnode=tnode_split1,time=time)
-    cor2 = test_timestep_split(adata_in=split2,tnode=tnode_split2,time=time)
     print('*** ptime split1: ')
-    ptime_cor1.append(cor1)
+    cor1 = test_timestep_split(adata_in=split1,tnode=tnode_split1,time=time)
     print('*** ptime split2: ')
+    cor2 = test_timestep_split(adata_in=split2,tnode=tnode_split2,time=time)
+    ptime_cor1.append(cor1)
     ptime_cor2.append(cor2)
     print_message_with_time('######### '+str(i)+' done')
 
