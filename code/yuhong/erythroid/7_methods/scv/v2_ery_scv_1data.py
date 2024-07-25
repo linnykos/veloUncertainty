@@ -41,7 +41,7 @@ def scv_compute_velocity(adata):
     sc.tl.pca(adata)
     bbknn.bbknn(adata, batch_key='sequencing.batch')
     print("Batch correction done!")
-    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+    sc.pp.neighbors(adata, n_neighbors=15, n_pcs=40) # used to be 10, saved in data folder 'scv/Nbr10/'
     sc.tl.umap(adata)
     scv.tl.recover_dynamics(adata)
     scv.tl.velocity(adata, mode="dynamical")
@@ -81,9 +81,10 @@ print('Number of overlapped genes for velocity computation in splits = '+str(com
 
 # write data
 total.write_h5ad(data_folder+'v2_erythroid/scv/adata_ery_scv_total_v2.h5ad')
-adata_split1.write_h5ad(data_folder+'v2_erythroid/scv/adata_ery_scv_seed317_split1_v2.h5ad')
-adata_split2.write_h5ad(data_folder+'v2_erythroid/scv/adata_ery_scv_seed317_split2_v2.h5ad')
+adata_split1.write_h5ad(data_folder+'v2_erythroid/scv/adata_ery_scv_split1_v2.h5ad')
+adata_split2.write_h5ad(data_folder+'v2_erythroid/scv/adata_ery_scv_split2_v2.h5ad')
 
+exit()
 ######################################################
 ## plot velocities
 raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")

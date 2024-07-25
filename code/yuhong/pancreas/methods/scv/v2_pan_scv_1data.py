@@ -38,7 +38,7 @@ def scv_compute_velocity_pancreas(adata):
     scv.pp.filter_and_normalize(adata, min_shared_counts=20, n_top_genes=2000)
     scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
     sc.tl.pca(adata, svd_solver="arpack")
-    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+    sc.pp.neighbors(adata, n_neighbors=15, n_pcs=40) # used to be n_neighbors=10, saved in 'Nbr10/'
     sc.tl.umap(adata)
     scv.tl.recover_dynamics(adata)
     scv.tl.velocity(adata, mode="dynamical")
@@ -65,8 +65,8 @@ adata_split2.layers['unspliced_original'] = U_mat_split2[:,positions_split2]
 # write data
 print_message_with_time("################## Write data")
 total.write_h5ad(data_folder+'v2_'+dataset_long+'/scv/adata_'+dataset_short+'_scv_total_v2.h5ad')
-adata_split1.write_h5ad(data_folder+'v2_'+dataset_long+'/scv/adata_'+dataset_short+'_scv_seed317_split1_v2.h5ad')
-adata_split2.write_h5ad(data_folder+'v2_'+dataset_long+'/scv/adata_'+dataset_short+'_scv_seed317_split2_v2.h5ad')
+adata_split1.write_h5ad(data_folder+'v2_'+dataset_long+'/scv/adata_'+dataset_short+'_scv_split1_v2.h5ad')
+adata_split2.write_h5ad(data_folder+'v2_'+dataset_long+'/scv/adata_'+dataset_short+'_scv_split2_v2.h5ad')
 
 print_message_with_time("################## All done with the data")
 
