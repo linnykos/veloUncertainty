@@ -83,14 +83,18 @@ split2_1_10.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=
 cos_sim_1_10,Ngenes_1_10 = compute_cosine_similarity(split1_1_10,split2_1_10,method='sct')
 
 def test_timestep_split(adata_in,tnode,time):
+    from scipy.stats import spearmanr
     adata = adata_in.copy()
     adata.layers['velocity'] = compute_sctour_velocity(tnode, timestep=time)
     scv.tl.velocity_graph(adata)
     scv.tl.velocity_pseudotime(adata)
-    ptime_cor = np.corrcoef(adata.obs['ptime'],adata.obs['velocity_pseudotime'])
-    print(ptime_cor[0,1])
+    ptime_cor = spearmanr(adata.obs['ptime'], adata.obs['velocity_pseudotime']).correlation
+    #ptime_cor = np.corrcoef(adata.obs['ptime'],adata.obs['velocity_pseudotime'])[0,1]
+    #print(ptime_cor[0,1])
+    return ptime_cor
 
 def test_timestep(adata_split1,adata_split2,adata_total,tnode1,tnode2,tnode,time):
+    from scipy.stats import spearmanr
     split1 = adata_split1.copy()
     split2 = adata_split2.copy()
     total = adata_total.copy()
@@ -100,11 +104,48 @@ def test_timestep(adata_split1,adata_split2,adata_total,tnode1,tnode2,tnode,time
     cos_sim,Ngenes = compute_cosine_similarity(split1,split2,method='sct')
     scv.tl.velocity_graph(total)
     scv.tl.velocity_pseudotime(total)
-    ptime_cor = np.corrcoef(total.obs['ptime'],total.obs['velocity_pseudotime'])
+    ptime_cor = spearmanr(total.obs['ptime'], total.obs['velocity_pseudotime']).correlation
+    #ptime_cor = np.corrcoef(total.obs['ptime'],total.obs['velocity_pseudotime'])[0,1]
     print([np.mean(cos_sim), np.median(cos_sim)])
-    print(ptime_cor[0,1])
+    print(ptime_cor)
     return cos_sim,ptime_cor
 
+# time=1/2
+test_timestep_split(adata_in=split1,tnode=tnode_split1,time=1/2) # 0.8789326531070025
+test_timestep_split(adata_in=split2,tnode=tnode_split2,time=1/2) # 0.8645179893767431
+test_timestep(split1,split2,total,tnode_split1,tnode_split2,tnode_total,time=1/2)
+"""
+[0.900714, 0.93990314]
+0.979720583163369
+"""
+
+# time=1/3
+test_timestep(split1,split2,total,tnode_split1,tnode_split2,tnode_total,time=1/3)
+test_timestep_split(adata_in=split1,tnode=tnode_split1,time=1/3) # 0.8779920829038629
+test_timestep_split(adata_in=split2,tnode=tnode_split2,time=1/3) # 0.8687887528057365
+"""
+[0.92153114, 0.96040744]
+0.9872798105619965
+"""
+# time=1/4
+test_timestep_split(adata_in=split1,tnode=tnode_split1,time=1/4) # 0.87817157685432
+test_timestep_split(adata_in=split2,tnode=tnode_split2,time=1/4) # 0.8695570715346211
+test_timestep(split1,split2,total,tnode_split1,tnode_split2,tnode_total,time=1/4)
+"""
+[0.9249223, 0.9652108]
+0.989825663689348
+"""
+# time=1/5
+test_timestep_split(adata_in=split1,tnode=tnode_split1,time=1/5) # 0.8786775841468975
+test_timestep_split(adata_in=split2,tnode=tnode_split2,time=1/5) # 0.8709092002965572
+test_timestep(split1,split2,total,tnode_split1,tnode_split2,tnode_total,time=1/5)
+"""
+[0.92421585, 0.96555763]
+0.9903905790078541
+"""
+
+########################################
+###### Pearson's correlation version
 # time=1/2
 cos_sim_1_2,ptime_cor_1_2 = test_timestep(split1,split2,total,tnode_split1,tnode_split2,tnode_total,time=1/2)
 np.quantile(cos_sim_1_2,[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1.])

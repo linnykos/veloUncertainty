@@ -3,9 +3,8 @@ import pandas as pd
 import scanpy as sc
 import scvelo as scv
 import torch
-from velovi import preprocess_data, VELOVI
+from velovi import VELOVI
 import datetime
-import anndata as ad
 
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -16,45 +15,39 @@ from v2_functions import *
 from v2_functions_velovi import *
 
 method = 'velovi'
-dataset_short = 'panINC'
-dataset_long = 'pancreasINC'
+dataset_short = 'larry'
+dataset_long = 'larry'
 
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/"
 fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v2_"+dataset_long+"/"+method+"/"
 
 split1 = sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/adata_"+dataset_short+"_"+method+"_split1_v2.h5ad")
-vae_split1 = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/vae_panINC_velovi_split1_v2.pt', split1)
+vae_split1 = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/vae_larry_velovi_split1_v2.pt', split1)
 
 split2 = sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/adata_"+dataset_short+"_"+method+"_split2_v2.h5ad")
-vae_split2 = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/vae_panINC_velovi_split2_v2.pt', split2)
+vae_split2 = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/vae_larry_velovi_split2_v2.pt', split2)
 
 total = sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/adata_"+dataset_short+"_"+method+"_total_v2.h5ad")
-vae_total = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/vae_panINC_velovi_total_v2.pt', total)
+vae_total = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/vae_larry_velovi_total_v2.pt', total)
 
-raw = sc.read_h5ad(data_folder+"Pancreas/endocrinogenesis_day15.h5ad")
-cell_index = np.array(np.where(raw.obs['clusters']!='Pre-endocrine')[0])
-def create_adata_INC(S,U,adata_old):
-    adata_new = ad.AnnData(X=S.astype(np.float32))
-    adata_new.layers["spliced"] = S
-    adata_new.layers["unspliced"] = U
-    adata_new.uns = {}
-    clusters_colors = dict(zip(adata_old.obs['clusters'].cat.categories,adata_old.uns['clusters_colors']))
-    del clusters_colors['Pre-endocrine']
-    adata_new.uns['clusters_colors'] = np.array(list(clusters_colors.values())).flatten().astype(object)
-    adata_new.obs = adata_old.obs[adata_old.obs['clusters']!='Pre-endocrine']
-    adata_new.obsm['X_pca'] = adata_old.obsm['X_pca'][cell_index,]
-    adata_new.obsm['X_umap'] = adata_old.obsm['X_umap'][cell_index,]
-    return adata_new
+raw = sc.read_h5ad(data_folder+'v2_'+dataset_long+'/larry.h5ad') # n_obs × n_vars = 49302 × 23420
+raw.obsm['X_umap']=raw.obsm['X_emb']
 
-S_raw = raw.layers['spliced'][cell_index,:]
-U_raw = raw.layers['unspliced'][cell_index,:]
-raw = create_adata_INC(S=S_raw,U=U_raw,adata_old=raw)
+import matplotlib as mpl
+def rgb2hex(rgb):
+    r = int(rgb[0]*255)
+    g = int(rgb[1]*255)
+    b = int(rgb[2]*255)
+    return "#{:02x}{:02x}{:02x}".format(r,g,b)
 
-total.uns['clusters_colors'] = split1.uns['clusters_colors'].copy()
+split1.uns['state_info_colors'] = [rgb2hex(color) for color in mpl.colormaps['twilight_shifted'].colors[40:315:25]]
+split2.uns['state_info_colors'] = [rgb2hex(color) for color in mpl.colormaps['twilight_shifted'].colors[40:315:25]]
+total.uns['state_info_colors'] = [rgb2hex(color) for color in mpl.colormaps['twilight_shifted'].colors[40:315:25]]
 
 def print_message_with_time(message):
     current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     print(f"{message} at {current_time}")
+
 
 #######################################
 ## add velovi outputs to adata
@@ -76,9 +69,9 @@ compute_umap_pan(total)
 ## plot velocity
 print_message_with_time("############## Plot velocity")
 
-plot_velocity_velovi(adata=split1,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="split1")
-plot_velocity_velovi(adata=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="split2")
-plot_velocity_velovi(adata=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="total")
+plot_velocity_velovi(adata=split1,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="split1",recompute=True)
+plot_velocity_velovi(adata=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="split2",recompute=True)
+plot_velocity_velovi(adata=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="total",recompute=True)
 
 plot_velocity_velovi(adata=split1,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="recompF_split1",recompute=False)
 plot_velocity_velovi(adata=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,fig_name="recompF_split2",recompute=False)
@@ -90,14 +83,13 @@ print_message_with_time("############## Plot cosine similarity")
 
 plot_cosine_similarity(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
 plot_cosine_similarity_withRef(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
-plot_cosine_similarity_hist_by_celltype(split1,split2,total,dataset=dataset_short,method=method,fig_folder=fig_folder)
 
 #######################################
 ## plot velo_conf
 print_message_with_time("############## Plot velo_conf")
 
 plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=split2,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
-plot_veloConf_hist(adata_total=total,dataset=dataset_short,method=method,fig_folder=fig_folder,text_x=.3)
+plot_veloConf_hist(adata_total=total,dataset=dataset_short,method=method,fig_folder=fig_folder)
 
 #######################################
 ## plot ptime
