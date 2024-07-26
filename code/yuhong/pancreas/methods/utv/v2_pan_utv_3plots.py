@@ -25,9 +25,19 @@ raw = scv.read(data_folder+"Pancreas/endocrinogenesis_day15.h5ad")
 
 ######################################################
 ## compute umap
-sc.tl.umap(total)
-sc.tl.umap(split1)
-sc.tl.umap(split2)
+#sc.tl.umap(total)
+#sc.tl.umap(split1)
+#sc.tl.umap(split2)
+def compute_umap(adata):
+    scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
+    sc.tl.pca(adata, svd_solver="arpack")
+    sc.pp.neighbors(adata, n_neighbors=15, n_pcs=40) # used to be n_neighbors=10
+    sc.tl.umap(adata)
+    scv.tl.velocity_graph(adata)
+
+compute_umap(split1)
+compute_umap(split2)
+compute_umap(total)
 
 plot_velocity_scv_utv(adata_in=total,adata_raw=raw,fig_folder=fig_folder,fig_info="total",dataset=dataset_short,method=method)
 plot_velocity_scv_utv(adata_in=split1,adata_raw=raw,fig_folder=fig_folder,fig_info="split1",dataset=dataset_short,method=method)
