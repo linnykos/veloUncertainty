@@ -41,7 +41,7 @@ def scv_compute_velocity_pancreas(adata):
     scv.pp.filter_and_normalize(adata, min_shared_counts=20, n_top_genes=2000)
     scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
     sc.tl.pca(adata, svd_solver="arpack")
-    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+    sc.pp.neighbors(adata, n_neighbors=15, n_pcs=40) # used to be n_neighbors=10
     sc.tl.umap(adata)
     scv.tl.recover_dynamics(adata)
     scv.tl.velocity(adata, mode="dynamical")
