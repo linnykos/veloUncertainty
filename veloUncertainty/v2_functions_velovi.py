@@ -35,10 +35,11 @@ def add_velovi_outputs_to_adata(adata, vae, velovi_seed=615):
     adata.var['fit_scaling'] = 1.0
 
 # compute umap
+# for pancreas and larry
 def compute_umap_pan(adata):
     scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
     sc.tl.pca(adata, svd_solver="arpack")
-    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+    sc.pp.neighbors(adata, n_neighbors=15, n_pcs=40) # used to be 10
     sc.tl.umap(adata)
     scv.tl.velocity_graph(adata)
 
@@ -50,7 +51,7 @@ def compute_umap_ery(adata):
     sc.tl.pca(adata)
     bbknn.bbknn(adata, batch_key='sequencing.batch')
     print("************ batch correction done ************")
-    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+    sc.pp.neighbors(adata, n_neighbors=15, n_pcs=40) # used to be 10
     sc.tl.umap(adata)
     scv.tl.velocity_graph(adata)
 
