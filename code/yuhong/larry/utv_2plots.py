@@ -3,17 +3,16 @@ import scanpy as sc
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import random
-import anndata as ad
 from sklearn.metrics.pairwise import cosine_similarity
+import anndata as ad
 
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v2_functions import *
 
-method = 'scv'
-dataset_long = 'pancreas'
-dataset_short = 'pan'
+method = 'utv'
+dataset_long = 'larry'
+dataset_short = 'larry'
 
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/"
 fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v2_"+dataset_long+"/"+method+"/"
@@ -21,7 +20,31 @@ fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUnce
 total = scv.read(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_total_v2.h5ad') # 
 split1 = scv.read(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_split1_v2.h5ad') # 
 split2 = scv.read(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_split2_v2.h5ad') # 
-raw = scv.read(data_folder+"Pancreas/endocrinogenesis_day15.h5ad")
+raw = sc.read_h5ad(data_folder+'v2_'+dataset_long+'/larry.h5ad') # n_obs × n_vars = 49302 × 23420
+raw.obsm['X_umap']=raw.obsm['X_emb']
+
+import matplotlib as mpl
+def rgb2hex(rgb):
+    r = int(rgb[0]*255)
+    g = int(rgb[1]*255)
+    b = int(rgb[2]*255)
+    return "#{:02x}{:02x}{:02x}".format(r,g,b)
+
+split1.uns['state_info_colors'] = [rgb2hex(color) for color in mpl.colormaps['twilight_shifted'].colors[40:315:25]]
+split2.uns['state_info_colors'] = [rgb2hex(color) for color in mpl.colormaps['twilight_shifted'].colors[40:315:25]]
+total.uns['state_info_colors'] = [rgb2hex(color) for color in mpl.colormaps['twilight_shifted'].colors[40:315:25]]
+
+def compute_umap(adata):
+    import scvelo as scv
+    scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
+    sc.tl.pca(adata, svd_solver="arpack")
+    sc.pp.neighbors(adata, n_neighbors=15, n_pcs=40) # used to be n_neighbors=10
+    sc.tl.umap(adata)
+    scv.tl.velocity_graph(adata)
+
+compute_umap(split1)
+compute_umap(split2)
+compute_umap(total)
 
 ######################################################
 ## plot velocity
@@ -51,9 +74,10 @@ plot_pseudotime(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=dataset_
 plot_pseudotime(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short,method=method,fig_folder=fig_folder)
 plot_pseudotime(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short,method=method,fig_folder=fig_folder)
 
-ptime_correlation_scatter_plot(s1=split1,s2=split2,method=method,dataset='pan',name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder)
-ptime_correlation_scatter_plot(s1=split1,s2=total,method=method,dataset='pan',name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder)
-ptime_correlation_scatter_plot(s1=split2,s2=total,method=method,dataset='pan',name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder)
+# Pearson's corr
+ptime_correlation_scatter_plot(s1=split1,s2=split2,method=method,dataset=dataset_short,name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder)
+ptime_correlation_scatter_plot(s1=split1,s2=total,method=method,dataset=dataset_short,name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder)
+ptime_correlation_scatter_plot(s1=split2,s2=total,method=method,dataset=dataset_short,name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder)
 
 # Spearman's corr
 ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder,time_label='velocity_pseudotime')
@@ -69,3 +93,4 @@ if not 'latent_time' in split1.obs.columns:
 ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder,time_label='latent_time')
 ptime_correlation_scatter_spearman(s1=split1,s2=total,method=method,dataset=dataset_short,name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder,time_label='latent_time')
 ptime_correlation_scatter_spearman(s1=split2,s2=total,method=method,dataset=dataset_short,name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder,time_label='latent_time')
+

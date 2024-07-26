@@ -34,7 +34,7 @@ def utv_compute_umap(adata):
     sc.tl.pca(adata)
     bbknn.bbknn(adata, batch_key='sequencing.batch')
     print("************ batch correction done ************")
-    sc.pp.neighbors(adata, n_neighbors=10, n_pcs=40)
+    sc.pp.neighbors(adata, n_neighbors=15, n_pcs=40) # used to be 10
     sc.tl.umap(adata)
 
 utv_compute_umap(total)

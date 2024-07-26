@@ -349,6 +349,29 @@ def plot_pseudotime(adata_in,adata_raw,fig_name,dataset,method,fig_folder,recomp
     plt.clf()
 
 # plot pseudotime correlation
+def ptime_correlation_scatter_spearman(s1,s2,method,dataset,name,xlab,ylab,fig_folder,time_label):
+    from scipy.stats import spearmanr
+    if dataset=='ery': celltype_label = "celltype"
+    elif "pan" in dataset: celltype_label = "clusters"
+    elif dataset=='larry': celltype_label = 'state_info'
+    cell_types = s1.obs[celltype_label]
+    colors = dict(zip(s1.obs[celltype_label].cat.categories, s1.uns[celltype_label+'_colors']))
+    time_type = 'pseudotime'
+    if time_label == 'latent_time': time_type = 'latent'
+    data_method = dataset+'_'+method
+    df = pd.DataFrame({'split1':s1.obs[time_label],'split2':s2.obs[time_label],'cell_types':cell_types})
+    corr = np.round(spearmanr(s1.obs[time_label], s2.obs[time_label]).correlation,3) #np.round(np.corrcoef(s1.obs[ptime_label],s2.obs[ptime_label]),3)[0,1]
+    print(corr)
+    plt.figure(figsize=(7, 5))
+    for category, color in colors.items(): plt.scatter([], [], color=color, label=category)
+    plt.scatter(df['split1'], df['split2'], c=df['cell_types'].map(colors))
+    plt.legend()
+    plt.xlabel(xlab)
+    plt.ylabel(ylab)
+    plt.title('Pseudotime correlation '+name+', '+dataset+'+'+method+' (corr='+str(corr)+')')
+    plt.savefig(fig_folder+'ptime/'+data_method+"_"+time_type+"SpearmanCorr_"+name+".png")
+    plt.close()
+
 def ptime_correlation_scatter_plot(s1,s2,method,dataset,name,xlab,ylab,fig_folder):
     if dataset=='ery': celltype_label = "celltype"
     elif "pan" in dataset: celltype_label = "clusters"
