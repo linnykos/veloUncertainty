@@ -19,8 +19,8 @@ data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/
 fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v2_erythroid/scv/" 
 
 total = scv.read(data_folder+'v2_erythroid/scv/adata_ery_scv_total_v2.h5ad')
-split1 = scv.read(data_folder+'v2_erythroid/scv/adata_ery_scv_seed317_split1_v2.h5ad')
-split2 = scv.read(data_folder+'v2_erythroid/scv/adata_ery_scv_seed317_split2_v2.h5ad')
+split1 = scv.read(data_folder+'v2_erythroid/scv/adata_ery_scv_split1_v2.h5ad')
+split2 = scv.read(data_folder+'v2_erythroid/scv/adata_ery_scv_split2_v2.h5ad')
 raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
 
 ######################################################
