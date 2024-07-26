@@ -21,6 +21,7 @@ dataset_long = 'erythroid'
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/"
 fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v2_"+dataset_long+"/"+method+"/"
 
+
 split1 = sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/adata_"+dataset_short+"_"+method+"_split1_v2.h5ad")
 vae_split1 = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/vae_ery_velovi_split1_v2.pt', split1)
 
@@ -31,10 +32,6 @@ total = sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/adata_"+dataset
 vae_total = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/vae_ery_velovi_total_v2.pt', total)
 
 raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
-
-def print_message_with_time(message):
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"{message} at {current_time}")
 
 #######################################
 ## add velovi outputs to adata
@@ -55,7 +52,18 @@ compute_umap_ery(total)
 split1.write_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/adata_"+dataset_short+"_"+method+"_split1_outputAdded_v2.h5ad")
 split2.write_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/adata_"+dataset_short+"_"+method+"_split2_outputAdded_v2.h5ad")
 total.write_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/adata_"+dataset_short+"_"+method+"_total_outputAdded_v2.h5ad")
+"""
 
+split1 = sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/adata_"+dataset_short+"_"+method+"_split1_outputAdded_v2.h5ad")
+split2 = sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/adata_"+dataset_short+"_"+method+"_split2_outputAdded_v2.h5ad")
+total = sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/adata_"+dataset_short+"_"+method+"_total_outputAdded_v2.h5ad")
+
+vae_split1 = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/vae_ery_velovi_split1_v2.pt', split1)
+vae_split2 = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/vae_ery_velovi_split2_v2.pt', split2)
+vae_total = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/vae_ery_velovi_total_v2.pt', total)
+
+raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
+"""
 #######################################
 ## plot velocity
 print_message_with_time("############## Plot velocity")
@@ -71,11 +79,6 @@ plot_velocity_velovi(adata=total,adata_raw=raw,dataset=dataset_short,method=meth
 
 #######################################
 ## plot cosine similarity
-#compute_cosine_similarity(adata_split1=split1,adata_split2=split2,method='velovi')
-
-#scv.tl.velocity_graph(split1)
-#scv.tl.velocity_graph(split2)
-#scv.tl.velocity_graph(total
 print_message_with_time("############## Plot cosine similarity")
 
 plot_cosine_similarity(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
@@ -92,6 +95,24 @@ plot_veloConf_hist(adata_total=total,dataset=dataset_short,method=method,fig_fol
 #######################################
 ## plot ptime
 # ???
+if not 'velocity_pseudotime' in split1.obs.columns:
+    scv.tl.velocity_pseudotime(total)
+    scv.tl.velocity_pseudotime(split1)
+    scv.tl.velocity_pseudotime(split2)
+
+plot_pseudotime(adata_in=split1,adata_raw=raw,fig_name="split1",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=split2,adata_raw=raw,fig_name="split2",dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_pseudotime(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_short,method=method,fig_folder=fig_folder)
+
+ptime_correlation_scatter_plot(s1=split1,s2=split2,method=method,dataset=dataset_short,name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder)
+ptime_correlation_scatter_plot(s1=split1,s2=total,method=method,dataset=dataset_short,name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder)
+ptime_correlation_scatter_plot(s1=split2,s2=total,method=method,dataset=dataset_short,name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder)
+
+# Spearman's corr
+ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder,time_label='velocity_pseudotime')
+ptime_correlation_scatter_spearman(s1=split1,s2=total,method=method,dataset=dataset_short,name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder,time_label='velocity_pseudotime')
+ptime_correlation_scatter_spearman(s1=split2,s2=total,method=method,dataset=dataset_short,name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder,time_label='velocity_pseudotime')
+
 
 #######################################
 ## intrinsic uncertainty
