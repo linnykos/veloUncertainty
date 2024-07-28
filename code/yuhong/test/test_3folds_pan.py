@@ -60,9 +60,9 @@ def countsplit_and_create_adata(S,U,total,split_seed):
     counts_adata3.layers["spliced"] = split3[0]
     counts_adata3.layers["unspliced"] = split3[1]
     print_message_with_time("########### Creating split adata objects")
-    adata1 = create_adata_erythroid(split1[0],split1[1],total)
-    adata2 = create_adata_erythroid(split2[0],split2[1],total)
-    adata3 = create_adata_erythroid(split3[0],split3[1],total)
+    adata1 = create_adata_pancreas(split1[0],split1[1],total)
+    adata2 = create_adata_pancreas(split2[0],split2[1],total)
+    adata3 = create_adata_pancreas(split3[0],split3[1],total)
     return adata1,adata2,adata3
 
 adata_split1,adata_split2,adata_split3 = countsplit_and_create_adata(S=S_mat,U=U_mat,total=adata,split_seed=317)
