@@ -50,6 +50,7 @@ times = []
 means = []
 medians = []
 ptime_cors = []
+"""
 for i in range(33,100):
     time = i/100
     times.append(time)
@@ -68,4 +69,26 @@ df['pseudotime_corr'] = ptime_cors
 df.to_csv(data_folder+'v2_'+dataset_long+'/'+method+'/'+dataset_short+'_'+method+'_spearman_velo_timestep.csv')
 
 print_message_with_time('################################ Wrote data to '+data_folder+'v2_'+dataset_long+'/'+method+'/'+dataset_short+'_'+method+'_spearman_velo_timestep.csv')
+"""
+
+for i in range(1,61):
+    time = 5*i/1000 + 0.15
+    times.append(time)
+    mean_i,median_i,cor_i = test_timestep(adata_split1=split1,adata_split2=split2,adata_total=total,
+                                          tnode1=tnode_split1,tnode2=tnode_split2,tnode=tnode_total,time=time)
+    means.append(mean_i)
+    medians.append(median_i)
+    ptime_cors.append(cor_i)
+    print_message_with_time('################################ time='+str(time)+' done')
+
+df = pd.DataFrame()
+df['time'] = times
+df['cos_sim_mean'] = means
+df['cos_sim_median'] = medians
+df['pseudotime_corr'] = ptime_cors
+df.to_csv(data_folder+'v2_'+dataset_long+'/'+method+'/'+dataset_short+'_'+method+'_spearman_velo_timestep.csv')
+
+print_message_with_time('################################ Wrote data to '+data_folder+'v2_'+dataset_long+'/'+method+'/'+dataset_short+'_'+method+'_spearman_velo_timestep_15e-2to45e-2.csv')
+
+
 print_message_with_time('################################ All done')
