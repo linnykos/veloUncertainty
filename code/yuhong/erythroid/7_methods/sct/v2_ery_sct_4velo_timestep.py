@@ -58,7 +58,7 @@ for i in range(1,91):
     means.append(mean_i)
     medians.append(median_i)
     ptime_cors.append(cor_i)
-    print(str(i)+' done')
+    print(str(time)+' done')
 
 df = pd.DataFrame()
 df['time'] = times
