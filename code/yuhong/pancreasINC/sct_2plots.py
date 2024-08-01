@@ -32,6 +32,14 @@ total = sc.read_h5ad(data_folder+'v2_pancreasINC/sct/adata_panINC_sct_total_v2.h
 split1 = sc.read_h5ad(data_folder+'v2_pancreasINC/sct/adata_panINC_sct_split1_v2.h5ad')
 split2 = sc.read_h5ad(data_folder+'v2_pancreasINC/sct/adata_panINC_sct_split2_v2.h5ad')
 
+tnode_total = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'/tnode_'+dataset_short+'_'+method+'_total_v2.pth')
+tnode_split1 = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'/tnode_'+dataset_short+'_'+method+'_split1_v2.pth')
+tnode_split2 = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'/tnode_'+dataset_short+'_'+method+'_split2_v2.pth')
+
+total.layers['velocity'] = compute_sctour_velocity(tnode_total, timestep=0.158)
+split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=0.158)
+split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=0.158)
+
 raw = sc.read_h5ad(data_folder+"Pancreas/endocrinogenesis_day15.h5ad")
 cell_index = np.array(np.where(raw.obs['clusters']!='Pre-endocrine')[0])
 def create_adata_INC(S,U,adata_old):
@@ -136,9 +144,8 @@ plot_velocity_sct(adata_in=split2,adata_raw=raw,fig_name="recompF_split2",datase
 ######################################################
 ## plot cosine similarity
 plot_cosine_similarity(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,text_x=0)
-
 plot_cosine_similarity_withRef(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
-
+plot_cosine_similarity_hist_by_celltype_pancreasINC(adata_split1=split1,adata_split2=split2,adata_total=total,dataset=dataset_short,method=method,fig_folder=fig_folder)
 
 ######################################################
 ## plot velo_conf
@@ -155,4 +162,7 @@ ptime_correlation_scatter_plot(s1=split1,s2=split2,method=method,dataset=dataset
 ptime_correlation_scatter_plot(s1=split1,s2=total,method=method,dataset=dataset_short,name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder)
 ptime_correlation_scatter_plot(s1=split2,s2=total,method=method,dataset=dataset_short,name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder)
 
-
+# Spearman's corr
+ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder,time_label='ptime')
+ptime_correlation_scatter_spearman(s1=split1,s2=total,method=method,dataset=dataset_short,name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder,time_label='ptime')
+ptime_correlation_scatter_spearman(s1=split2,s2=total,method=method,dataset=dataset_short,name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder,time_label='ptime')
