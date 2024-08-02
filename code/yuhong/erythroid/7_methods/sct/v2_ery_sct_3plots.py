@@ -11,6 +11,7 @@ import sctour as sct
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v2_functions import *
+from sctour_misc import *
 
 method = 'sct'
 dataset_long = 'erythroid'
@@ -22,6 +23,15 @@ fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUnce
 total = sc.read_h5ad(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_total_v2.h5ad') # 9815 × 2000
 split1 = sc.read_h5ad(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_seed317_split1_v2.h5ad') # 
 split2 = sc.read_h5ad(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_seed317_split2_v2.h5ad') # 
+
+tnode_total = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'/tnode_'+dataset_short+'_'+method+'_total_v2.pth')
+tnode_split1 = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'/tnode_'+dataset_short+'_'+method+'_seed317_split1_v2.pth')
+tnode_split2 = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'/tnode_'+dataset_short+'_'+method+'_seed317_split2_v2.pth')
+
+total.layers['velocity'] = compute_sctour_velocity(tnode_total, timestep=0.24) 
+split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=0.24) 
+split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=0.24) 
+
 raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad") # 9815 × 53801
 
 ######################################################
@@ -78,6 +88,7 @@ plot_cosine_similarity(adata_split1=split1,adata_split2=split2,adata_total=total
 
 plot_cosine_similarity_withRef(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
 
+plot_cosine_similarity_hist_by_celltype(split1,split2,total,dataset=dataset_short,method=method,fig_folder=fig_folder)
 
 
 ######################################################
