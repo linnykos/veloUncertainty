@@ -51,10 +51,14 @@ means = []
 medians = []
 ptime_cors = []
 for i in range(1,91):
-    time = i/100
-    times.append(time)
-    mean_i,median_i,cor_i = test_timestep(adata_split1=split1,adata_split2=split2,adata_total=total,
-                                          tnode1=tnode_split1,tnode2=tnode_split2,tnode=tnode_total,time=time)
+    try:
+        time = i/100
+        times.append(time)
+        mean_i,median_i,cor_i = test_timestep(adata_split1=split1,adata_split2=split2,adata_total=total,
+                                              tnode1=tnode_split1,tnode2=tnode_split2,tnode=tnode_total,time=time)
+    except Exception as e:
+        print('An error occurs at timestep='+str(time))
+        continue
     means.append(mean_i)
     medians.append(median_i)
     ptime_cors.append(cor_i)
