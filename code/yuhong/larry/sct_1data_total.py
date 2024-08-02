@@ -55,7 +55,7 @@ def sct_train_and_return_tnode(adata, sct_seed=615):
 print_message_with_time("########### Start to train model for total")
 tnode_total = sct_train_and_return_tnode(total)
 print_message_with_time("########### Start to compute velocity for total")
-diff_mat_total = compute_sctour_velocity(tnode_total, timestep=1/100)
+diff_mat_total = compute_sctour_velocity(tnode_total, timestep=1/100) 
 print_message_with_time("########### Total velocity computed, start to write data")
 total.layers['velocity'] = diff_mat_total
 total.layers['spliced_original'] = total.layers['spliced'].copy()

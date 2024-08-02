@@ -55,7 +55,7 @@ def sct_train_and_return_tnode(adata, sct_seed=615):
 print_message_with_time("########### Start to train model for split2")
 tnode_split2 = sct_train_and_return_tnode(adata_split2)
 print_message_with_time("########### Start to compute velocity for split2")
-diff_mat_split2 = compute_sctour_velocity(tnode_split2, timestep=1/100)
+diff_mat_split2 = compute_sctour_velocity(tnode_split2, timestep=1/100) 
 print_message_with_time("########### Split2 velocity computed, start to write data")
 adata_split2.layers['velocity'] = diff_mat_split2
 adata_split2.layers['spliced_original'] = adata_split2.layers['spliced'].copy()

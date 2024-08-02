@@ -11,6 +11,7 @@ import sctour as sct
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v2_functions import *
+from sctour_misc import *
 
 method = 'sct'
 dataset_long = 'larry'
@@ -22,6 +23,15 @@ fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUnce
 total = scv.read(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_total_v2.h5ad') # 
 split1 = scv.read(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_split1_v2.h5ad') # 
 split2 = scv.read(data_folder+'v2_'+dataset_long+'/'+method+'/adata_'+dataset_short+'_'+method+'_split2_v2.h5ad') # 
+
+tnode_total = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'/tnode_'+dataset_short+'_'+method+'_total_v2.pth')
+tnode_split1 = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'/tnode_'+dataset_short+'_'+method+'_split1_v2.pth')
+tnode_split2 = sct.predict.load_model(data_folder+'v2_'+dataset_long+'/'+method+'/tnode_'+dataset_short+'_'+method+'_split2_v2.pth')
+
+total.layers['velocity'] = compute_sctour_velocity(tnode_total, timestep=0.42)
+split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=0.42)
+split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=0.42)
+
 raw = sc.read_h5ad(data_folder+'v2_'+dataset_long+'/larry.h5ad') # n_obs × n_vars = 49302 × 23420
 raw.obsm['X_umap']=raw.obsm['X_emb']
 
@@ -35,7 +45,6 @@ def rgb2hex(rgb):
 split1.uns['state_info_colors'] = [rgb2hex(color) for color in mpl.colormaps['twilight_shifted'].colors[40:315:25]]
 split2.uns['state_info_colors'] = [rgb2hex(color) for color in mpl.colormaps['twilight_shifted'].colors[40:315:25]]
 total.uns['state_info_colors'] = [rgb2hex(color) for color in mpl.colormaps['twilight_shifted'].colors[40:315:25]]
-
 
 ######################################################
 #### plot vector field
@@ -87,8 +96,8 @@ plot_velocity_sct(adata_in=total,adata_raw=raw,fig_name="total_recompF",dataset=
 ######################################################
 ## plot cosine similarity
 plot_cosine_similarity(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder,text_x=0)
-
 plot_cosine_similarity_withRef(adata_split1=split1,adata_split2=split2,adata_total=total,adata_raw=raw,dataset=dataset_short,method=method,fig_folder=fig_folder)
+plot_cosine_similarity_hist_by_celltype(split1,split2,total,dataset=dataset_short,method=method,fig_folder=fig_folder)
 
 
 ######################################################
@@ -110,3 +119,8 @@ plot_pseudotime(adata_in=total,adata_raw=raw,fig_name="total",dataset=dataset_sh
 ptime_correlation_scatter_plot(s1=split1,s2=split2,method=method,dataset=dataset_short,name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder)
 ptime_correlation_scatter_plot(s1=split1,s2=total,method=method,dataset=dataset_short,name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder)
 ptime_correlation_scatter_plot(s1=split2,s2=total,method=method,dataset=dataset_short,name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder)
+
+# Spearman's corr
+ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name="split1vs2",xlab="split1",ylab="split2",fig_folder=fig_folder,time_label='ptime')
+ptime_correlation_scatter_spearman(s1=split1,s2=total,method=method,dataset=dataset_short,name="split1vstotal",xlab="split1",ylab="total",fig_folder=fig_folder,time_label='ptime')
+ptime_correlation_scatter_spearman(s1=split2,s2=total,method=method,dataset=dataset_short,name="split2vstotal",xlab="split2",ylab="total",fig_folder=fig_folder,time_label='ptime')
