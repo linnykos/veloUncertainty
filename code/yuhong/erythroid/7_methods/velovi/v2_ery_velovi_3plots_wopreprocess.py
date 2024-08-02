@@ -21,20 +21,25 @@ dataset_long = 'erythroid'
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/"
 fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v2_"+dataset_long+"/"+method+"/wopreprocess/"
 
+
 split1 = sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/wopreprocess/adata_"+dataset_short+"_"+method+"_split1_wopreprocess_v2.h5ad")
 vae_split1 = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/wopreprocess/vae_ery_velovi_split1_wopreprocess_v2.pt', split1)
+
+print_message_with_time("############## Read split1")
 
 split2 = sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/wopreprocess/adata_"+dataset_short+"_"+method+"_split2_wopreprocess_v2.h5ad")
 vae_split2 = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/wopreprocess/vae_ery_velovi_split2_wopreprocess_v2.pt', split2)
 
+print_message_with_time("############## Read split2")
+
 total = sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/wopreprocess/adata_"+dataset_short+"_"+method+"_total_wopreprocess_v2.h5ad")
 vae_total = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/wopreprocess/vae_ery_velovi_total_wopreprocess_v2.pt', total)
 
+print_message_with_time("############## Read total")
+
 raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
 
-def print_message_with_time(message):
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"{message} at {current_time}")
+print_message_with_time("############## Read raw")
 
 #######################################
 print_message_with_time("############## Add velovi outputs to adata")
@@ -54,6 +59,16 @@ compute_umap_ery(total)
 split1.write_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/wopreprocess/adata_"+dataset_short+"_"+method+"_split1_wopreprocess_outputAdded_v2.h5ad")
 split2.write_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/wopreprocess/adata_"+dataset_short+"_"+method+"_split2_wopreprocess_outputAdded_v2.h5ad")
 total.write_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/wopreprocess/adata_"+dataset_short+"_"+method+"_total_wopreprocess_outputAdded_v2.h5ad")
+
+split1=sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/wopreprocess/adata_"+dataset_short+"_"+method+"_split1_wopreprocess_outputAdded_v2.h5ad")
+split2=sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/wopreprocess/adata_"+dataset_short+"_"+method+"_split2_wopreprocess_outputAdded_v2.h5ad")
+total=sc.read_h5ad(data_folder+"v2_"+dataset_long+"/"+method+"/wopreprocess/adata_"+dataset_short+"_"+method+"_total_wopreprocess_outputAdded_v2.h5ad")
+
+vae_split1 = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/wopreprocess/vae_ery_velovi_split1_wopreprocess_v2.pt', split1)
+vae_split2 = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/wopreprocess/vae_ery_velovi_split2_wopreprocess_v2.pt', split2)
+vae_total = VELOVI.load(data_folder+"v2_"+dataset_long+"/"+method+'/wopreprocess/vae_ery_velovi_total_wopreprocess_v2.pt', total)
+
+raw = sc.read_h5ad(data_folder+"Gastrulation/erythroid_lineage.h5ad")
 
 #######################################
 ## plot velocity
