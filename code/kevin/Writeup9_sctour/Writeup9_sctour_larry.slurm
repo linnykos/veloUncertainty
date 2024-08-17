@@ -17,4 +17,4 @@ conda env list
 
 python --version
 conda list
-python Writeup9_sctour_larry.py > /home/users/y2564li/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
+python Writeup9_sctour_larry.py > /home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
