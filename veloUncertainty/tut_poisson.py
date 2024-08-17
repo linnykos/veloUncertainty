@@ -19,7 +19,7 @@ fig_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUnce
 np.random.seed(1)
 n = 1000
 p = 200
-lambda_param = 5
+lambda_param = 0.1
 X = np.random.poisson(lambda_param, size=(n, p)) # X.shape = (1000,200)
 
 # The naive method

@@ -54,7 +54,7 @@ def dir_mul_sample(size, folds, b):
     probs = np.full(folds, 1.0 / folds)
     # If b is not infinity, sample "probs" from a Dirichlet distribution
     if not np.isinf(b):
-        gammas = gamma.rvs(1.0 / folds * b, size=folds) # np.random.gamma(1.0 / folds * b, 1.0,size=folds)
+        gammas =  np.random.gamma(1.0 / folds * b, 1.0,size=folds) # error: gamma.rvs(1.0 / folds * b, size=folds)
         sum_gammas = np.sum(gammas)
         if sum_gammas > 0:
             probs = gammas / sum_gammas
@@ -226,9 +226,8 @@ def countsplit(X, folds=2, epsilon=None, overdisps=None):
         results = mapply_dir_mul_sample(data, folds, mapped_overdisps)
     partition = []
     for f in range(folds):
-        Xfold = X.copy()
-        Xfold.data = results[f, :].astype(float)
-        partition.append(Xfold)
+        Xfold = csr_matrix((results[f],(row,col)),shape=X.shape)
+        partition.append(Xfold.astype(float))
     return partition
 
 ################################################################
@@ -250,12 +249,19 @@ def estimate_overdisps(X):
     if X.ndim==2:
         p = X.shape[1]
         for col in range(p):
+            print(col)
             y = X[:, col]
-            data = { 'counts': y }
-            df = pd.DataFrame(data)
-            model = smf.negativebinomial('counts ~ 1', data=df)
-            result = model.fit()
-            res.append(result.params['alpha'])
-    return res
+            if np.sum(y)==0:
+                res.append(np.inf)
+            else: 
+                if hasattr(y, 'todense'):
+                    y = y.todense().A 
+                df = pd.DataFrame({'counts': y.flatten()})
+                model = smf.negativebinomial('counts ~ 1', data=df)
+                result = model.fit()
+                alpha = result.params['alpha']
+                b = 1/alpha
+                res.append(b)
+    return np.array(res)
 
 
