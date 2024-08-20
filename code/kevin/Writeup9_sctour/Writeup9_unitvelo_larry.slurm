@@ -12,7 +12,7 @@
 
 source ~/miniconda3/etc/profile.d/conda.sh
 
-conda activate sctour
+conda activate unitvelo
 conda env list
 
 python --version
