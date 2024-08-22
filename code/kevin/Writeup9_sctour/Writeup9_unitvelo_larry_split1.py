@@ -16,6 +16,7 @@ velo_config.R2_ADJUST = True
 velo_config.IROOT = None
 velo_config.FIT_OPTION = '1'
 velo_config.AGENES_R2 = 1
+velo_config.GPU = -1
 
 os.environ["TF_USE_LEGACY_KERAS"]="1"
 
