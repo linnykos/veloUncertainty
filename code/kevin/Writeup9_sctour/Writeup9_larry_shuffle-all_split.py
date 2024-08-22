@@ -1,4 +1,3 @@
-import sctour as sct
 import scanpy as sc
 import numpy as np
 import pandas as pd
