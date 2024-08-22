@@ -2,7 +2,6 @@ import scanpy as sc
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import torch
 import random
 import anndata as ad
 import datetime
@@ -20,7 +19,6 @@ def print_message_with_time(message):
 
 adata = sc.read_h5ad("/home/users/kzlin/kzlinlab/data/larry_hematopoiesis_pyro-velocity/larry.h5ad")
 
-torch.manual_seed(sct_seed)
 random.seed(sct_seed)
 np.random.seed(sct_seed)
 
