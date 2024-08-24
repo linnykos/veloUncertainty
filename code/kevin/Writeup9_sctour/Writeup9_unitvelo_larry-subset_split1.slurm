@@ -15,7 +15,9 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate unitvelo
 conda env list
 
+cd /home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/tmp2
+
 python --version
 conda list
-python Writeup9_unitvelo_larry-subset_split1.py > /home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
+python /home/users/kzlin/kzlinlab/projects/veloUncertainty/git/veloUncertainty_kevin/code/kevin/Writeup9_sctour/Writeup9_unitvelo_larry-subset_split1.py > /home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
 
