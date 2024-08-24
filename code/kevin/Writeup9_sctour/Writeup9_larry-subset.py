@@ -48,39 +48,40 @@ sc.pp.highly_variable_genes(adata,
 
 ################
 
-# shuffle the genes 
+# simplify the anndata object a lot
 
-adata.X = adata.layers['counts'].copy()
+# Calculate the number of cells to keep per state
+fraction_to_keep = 0.2  # 1/5th of the cells
+subset_indices = []
 
-# Ensure that the data matrices are dense if they are sparse
-adata_X_dense = adata.X.toarray() if not isinstance(adata.X, np.ndarray) else adata.X
-adata_spliced_dense = adata.layers['spliced'].toarray() if not isinstance(adata.layers['spliced'], np.ndarray) else adata.layers['spliced']
-adata_unspliced_dense = adata.layers['unspliced'].toarray() if not isinstance(adata.layers['unspliced'], np.ndarray) else adata.layers['unspliced']
+# Iterate over each unique state in 'state_info'
+for state in adata.obs['state_info'].unique():
+    # Get indices of the cells for the current state
+    state_indices = np.where(adata.obs['state_info'] == state)[0]
+    
+    # Determine the number of cells to sample
+    n_to_sample = int(np.ceil(fraction_to_keep * len(state_indices)))
+    
+    # Randomly sample the indices
+    sampled_indices = np.random.choice(state_indices, size=n_to_sample, replace=False)
+    
+    # Append the sampled indices to the list
+    subset_indices.extend(sampled_indices)
 
-# Step 2: Replace the original data with the shuffled data
-for i in range(adata.X.shape[1]):
-    # We shuffle along axis=0 (rows, i.e., cells)
-    shuffle_order = np.random.permutation(adata_X_dense.shape[0])  # Generate a random shuffle order for the rows (cells)
+# Subset the AnnData object using the sampled indices
+adata = adata[subset_indices, :]
 
-    # Apply the shuffle order
-    adata_X_dense[:, i] = adata_X_dense[shuffle_order, i]
-    adata_spliced_dense[:, i] = adata_spliced_dense[shuffle_order, i]
-    adata_unspliced_dense[:, i] = adata_unspliced_dense[shuffle_order, i]
+# Optionally, you can write the subsetted AnnData object to a file
+# adata_subset.write('adata_subset.h5ad')
 
-# Replace the original data with the shuffled data
-adata.X = csr_matrix(adata_X_dense)
-adata.layers['spliced'] = csr_matrix(adata_spliced_dense)
-adata.layers['unspliced'] = csr_matrix(adata_unspliced_dense)
+# Identify genes with non-zero expression in at least one cell
+non_zero_genes = (adata.X > 0).sum(axis=0) > 0
 
-# Assuming adata.X is in a sparse matrix format, convert it to a dense matrix
-adata.X = adata.X.toarray()  # Convert to dense matrix if it's sparse
+# Subset the AnnData object to keep only these genes
+adata = adata[:, non_zero_genes]
 
-# Shuffle values independently for each gene (column)
-for i in range(adata.X.shape[1]):
-    np.random.shuffle(adata.X[:, i])
-
-# If you want to convert back to a sparse matrix, you can do so (optional)
-adata.X = csr_matrix(adata.X)
+# Check the shape of the subsetted AnnData object
+print(adata)
 
 ################
 
@@ -122,6 +123,7 @@ adata_split2.var = pd.DataFrame(index=adata.var.index)
 for var_col in adata.var.columns:
     adata_split2.var[var_col] = adata.var[var_col].copy()
 
-adata_split1.write("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/Writeup9_larry_shuffle-all_split1.h5ad")
-adata_split2.write("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/Writeup9_larry_shuffle-all_split2.h5ad")
+adata.write("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/Writeup9_larry-subset.h5ad")
+adata_split1.write("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/Writeup9_larry-subset_split1.h5ad")
+adata_split2.write("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/Writeup9_larry-subset_split2.h5ad")
 print_message_with_time("########### Finish splitting")
