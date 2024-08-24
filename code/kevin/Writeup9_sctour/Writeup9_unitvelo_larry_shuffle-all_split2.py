@@ -33,6 +33,7 @@ adata = utv.run_model(adata,
                       'state_info', 
                       config_file=velo_config)
 
+print_message_with_time("########### Starting the save")
 adata.write("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/Writeup9_unitvelo_larry_shuffle-all_split2.h5ad")
 print_message_with_time("########### Total data wrote")
 
