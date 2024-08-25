@@ -5,7 +5,7 @@
 #SBATCH --time=48:00:00
 
 #SBATCH --job-name=unitvelo_larry_shuffle-all_s1
-#SBATCH --mem-per-cpu=80gb
+#SBATCH --mem-per-cpu=20gb
 
 #SBATCH --error=/home/users/%u/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/slurm/slurm_%j.err
 #SBATCH --output=/home/users/%u/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/slurm/slurm_%j.out
@@ -15,7 +15,9 @@ source ~/miniconda3/etc/profile.d/conda.sh
 conda activate unitvelo
 conda env list
 
+cd /home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/tmp5
+
 python --version
 conda list
-python Writeup9_unitvelo_larry_shuffle-all_split2.py > /home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
+python /home/users/kzlin/kzlinlab/projects/veloUncertainty/git/veloUncertainty_kevin/code/kevin/Writeup9_sctour/Writeup9_unitvelo_larry_shuffle-all_split1.py > /home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
 

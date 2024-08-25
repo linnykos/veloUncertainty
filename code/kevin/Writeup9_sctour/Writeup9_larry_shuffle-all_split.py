@@ -48,10 +48,6 @@ sc.pp.highly_variable_genes(adata,
 
 ################
 
-# shuffle the genes 
-
-adata.X = adata.layers['counts'].copy()
-
 # Ensure that the data matrices are dense if they are sparse
 adata_X_dense = adata.X.toarray() if not isinstance(adata.X, np.ndarray) else adata.X
 adata_spliced_dense = adata.layers['spliced'].toarray() if not isinstance(adata.layers['spliced'], np.ndarray) else adata.layers['spliced']
@@ -71,16 +67,6 @@ for i in range(adata.X.shape[1]):
 adata.X = csr_matrix(adata_X_dense)
 adata.layers['spliced'] = csr_matrix(adata_spliced_dense)
 adata.layers['unspliced'] = csr_matrix(adata_unspliced_dense)
-
-# Assuming adata.X is in a sparse matrix format, convert it to a dense matrix
-adata.X = adata.X.toarray()  # Convert to dense matrix if it's sparse
-
-# Shuffle values independently for each gene (column)
-for i in range(adata.X.shape[1]):
-    np.random.shuffle(adata.X[:, i])
-
-# If you want to convert back to a sparse matrix, you can do so (optional)
-adata.X = csr_matrix(adata.X)
 
 ################
 
@@ -122,6 +108,7 @@ adata_split2.var = pd.DataFrame(index=adata.var.index)
 for var_col in adata.var.columns:
     adata_split2.var[var_col] = adata.var[var_col].copy()
 
+adata.write("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/Writeup9_larry_shuffle-all.h5ad")
 adata_split1.write("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/Writeup9_larry_shuffle-all_split1.h5ad")
 adata_split2.write("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup9/Writeup9_larry_shuffle-all_split2.h5ad")
 print_message_with_time("########### Finish splitting")
