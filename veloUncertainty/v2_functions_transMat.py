@@ -49,9 +49,9 @@ def compute_celltype_transition_matrix_from_adata(adata_in, dataset, copy=True, 
     celltype_idx = compute_celltype_idx_dict(adata, celltype_label)
     return compute_celltype_transition_matrix_from_vk(vk, celltype_label, celltype_idx)
 
-def plot_transMat_heatmap(mat, celltypes, dataset, method, split_info, fig_path, prob_type,cmap='Blues'):
+def plot_transMat_heatmap(mat, celltypes, dataset, method, split_info, fig_path, prob_type,cmap='Blues',vmin=0,vmax=None):
     plt.figure(figsize=(10, 8), facecolor='w')
-    sns.heatmap(mat, annot=True,fmt=".2f", cmap=cmap, cbar=True, xticklabels=celltypes, yticklabels=celltypes, square=True)
+    sns.heatmap(mat,annot=True,fmt=".2f",cmap=cmap,cbar=True,square=True,vmax=vmax,vmin=vmin,xticklabels=celltypes,yticklabels=celltypes)
     plt.tick_params(colors='black')
     plt.xticks(rotation=45, ha='right')
     plt.title('transition matrix, prob '+prob_type+', '+dataset+'+'+method+' '+split_info)
@@ -73,22 +73,22 @@ def plot_transMat_heatmap_from_adata(split1, split2, total, method, dataset_shor
     trans_mat_mean, trans_mat_median = compute_celltype_transition_matrix_from_adata(adata_in=total, dataset=dataset_short)
     # mean
     plot_transMat_heatmap(mat=trans_mat1_mean, celltypes=celltypes, dataset=dataset_short, 
-                     method=method, split_info='split1',prob_type='mean', fig_path=fig_folder)
+                     method=method, split_info='split1',prob_type='mean', fig_path=fig_folder,vmax=1)
     plot_transMat_heatmap(mat=trans_mat2_mean, celltypes=celltypes, dataset=dataset_short, 
-                     method=method, split_info='split2',prob_type='mean', fig_path=fig_folder)
+                     method=method, split_info='split2',prob_type='mean', fig_path=fig_folder,vmax=1)
     plot_transMat_heatmap(mat=np.abs(trans_mat1_mean-trans_mat2_mean), celltypes=celltypes, dataset=dataset_short, 
-                     method=method, split_info='diff_abs',prob_type='mean', fig_path=fig_folder, cmap='Reds')
+                     method=method, split_info='diff_abs',prob_type='mean', fig_path=fig_folder, cmap='Reds',vmax=.3)
     plot_transMat_heatmap(mat=trans_mat_mean, celltypes=celltypes, dataset=dataset_short, 
-                     method=method, split_info='total',prob_type='mean', fig_path=fig_folder)
+                     method=method, split_info='total',prob_type='mean', fig_path=fig_folder,vmax=1)
     # median
     plot_transMat_heatmap(mat=trans_mat1_median, celltypes=celltypes, dataset=dataset_short, 
-                     method=method, split_info='split1',prob_type='median', fig_path=fig_folder)
+                     method=method, split_info='split1',prob_type='median', fig_path=fig_folder,vmax=1)
     plot_transMat_heatmap(mat=trans_mat2_median, celltypes=celltypes, dataset=dataset_short, 
-                     method=method, split_info='split2',prob_type='median', fig_path=fig_folder)
+                     method=method, split_info='split2',prob_type='median', fig_path=fig_folder,vmax=1)
     plot_transMat_heatmap(mat=np.abs(trans_mat1_median-trans_mat2_median), celltypes=celltypes, dataset=dataset_short, 
-                     method=method, split_info='diff_abs',prob_type='median', fig_path=fig_folder, cmap='Reds')
+                     method=method, split_info='diff_abs',prob_type='median', fig_path=fig_folder, cmap='Reds',vmax=.3)
     plot_transMat_heatmap(mat=trans_mat_median, celltypes=celltypes, dataset=dataset_short, 
-                     method=method, split_info='total',prob_type='median', fig_path=fig_folder)
+                     method=method, split_info='total',prob_type='median', fig_path=fig_folder,vmax=1)
 
 
 """
