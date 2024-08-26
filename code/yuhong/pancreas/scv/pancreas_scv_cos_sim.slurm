@@ -4,7 +4,7 @@
 #SBATCH --partition=all-12c128g
 #SBATCH --time=48:00:00
 
-#SBATCH --job-name=veloUncertaintyscvcos
+#SBATCH --job-name=panscv
 #SBATCH --mem-per-cpu=50gb
 
 #SBATCH --error=/home/users/%u/kzlinlab/projects/veloUncertainty/out/yuhong/Writeup1/slurm_scv/slurm_%j.err
