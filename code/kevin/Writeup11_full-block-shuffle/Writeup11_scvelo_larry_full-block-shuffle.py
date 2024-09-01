@@ -15,7 +15,6 @@ def print_message_with_time(message):
 
 adata = sc.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup11/Writeup11_larry_full-block.h5ad")
 
-torch.manual_seed(sct_seed)
 random.seed(sct_seed)
 np.random.seed(sct_seed)
 
