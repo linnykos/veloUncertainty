@@ -30,7 +30,7 @@ random.seed(sct_seed)
 np.random.seed(sct_seed)
 
 adata = utv.run_model(adata,
-                      'state_info', 
+                      'celltype', 
                       config_file=velo_config)
 
 print_message_with_time("########### Starting the save")

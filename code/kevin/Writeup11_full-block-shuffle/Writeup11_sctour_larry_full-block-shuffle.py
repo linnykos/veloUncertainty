@@ -20,6 +20,8 @@ torch.manual_seed(sct_seed)
 random.seed(sct_seed)
 np.random.seed(sct_seed)
 
+adata.X = adata.layers['spliced']+ adata.layers['unspliced'] # not sure how I screwed this up
+
 tnode = sct.train.Trainer(adata, 
                           loss_mode='nb', 
                           alpha_recon_lec=0.5, 
