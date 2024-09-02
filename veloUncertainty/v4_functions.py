@@ -103,7 +103,7 @@ def plot_metric(adata,metric,plot_type,fig_folder,dataset,method,basis_type,spli
 
 
 # plot cosine similarity
-def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,dataset,method,fig_folder,split_seed,recompute=True,text_x=None,text_y=None):
+def plot_cosine_similarity(adata_split1,adata_split2,adata_total,dataset,method,fig_folder,split_seed,recompute=True,text_x=None,text_y=None):
     cos_sim, Ngenes = compute_cosine_similarity_union(adata_split1,adata_split2,method)
     print('median cos_sim='+str(np.median(cos_sim))+', mean cos_sim='+str(np.mean(cos_sim)))
     adata_total.obs['cos_sim'] = cos_sim
@@ -135,7 +135,7 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,adata_raw,datas
     if method=="sct":
         get_umap_sct(adata=adata_total_plot, umapOriginal=True,moments=True)
     else:
-        adata_total_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
+        adata_total_plot.obsm['X_umap'] = adata_total_plot.obsm['X_umapOriginal']
     #scv.tl.velocity_graph(adata_total_plot)
     print('Plot umapOriginal')
     plot_metric(adata=adata_total_plot,metric='cos',plot_type='emb',fig_folder=fig_folder,dataset=dataset,method=method,basis_type='Orig',basis='umap',Ngenes=Ngenes,split_seed=split_seed)
@@ -159,7 +159,7 @@ def plot_metric_withRef(adata,metric,dataset,method,fig_folder,basis_type,split_
     plt.clf()
 
 #### plot 2 by 1 figures, left: umap of cell development with velocity estimates, right: cosine similarity of velocities
-def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_raw,dataset,method,fig_folder,split_seed,recompute=True,celltype_label=None):
+def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,dataset,method,fig_folder,split_seed,recompute=True,celltype_label=None):
     cos_sim, Ngenes = compute_cosine_similarity_union(adata_split1,adata_split2,method)
     adata_total.obs['cos_sim'] = cos_sim
     if celltype_label==None: celltype_label=get_celltype_label(dataset)
@@ -177,14 +177,14 @@ def plot_cosine_similarity_withRef(adata_split1,adata_split2,adata_total,adata_r
     if method=="sct":
         get_umap_sct(adata=adata_plot, umapOriginal=True,moments=True)
     else:
-        adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
+        adata_plot.obsm['X_umap'] = adata_plot.obsm['X_umapOriginal']
     print('Plot umapOriginal')
     plot_metric_withRef(adata=adata_plot,metric='cos',dataset=dataset,method=method,fig_folder=fig_folder,basis_type='Orig',split_seed=split_seed,celltype_label=celltype_label,Ngenes=Ngenes,recompute=recompute,basis='umap')
     
 
 ######################################################
 ## helper: plot velo_conf
-def plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_folder,umapOriginal,Ngenes,split_seed,recompute=True,celltype_label=None):
+def plot_veloConf_and_cosSim_helper(adata_total,dataset,method,fig_folder,umapOriginal,Ngenes,split_seed,recompute=True,celltype_label=None):
     adata_plot = adata_total.copy()
     if celltype_label==None:  celltype_label = get_celltype_label(dataset)
     data_method = dataset+'_'+method
@@ -197,7 +197,7 @@ def plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_fol
             get_umap_sct(adata=adata_plot, umapOriginal=False,moments=True)
         scv.tl.velocity_confidence(adata_plot)
     elif umapOriginal==True:
-        adata_plot.obsm['X_umap'] = adata_raw.obsm['X_umap']
+        adata_plot.obsm['X_umap'] = adata_plot.obsm['X_umapOriginal']
         fig_umap = "umapOriginal"
     vmin = np.min([0, np.min(adata_plot.obs['cos_sim'])-1e-5, np.min(adata_plot.obs['velocity_confidence'])-1e-5])
     vmax = np.max([np.max(adata_plot.obs['cos_sim'])+1e-5, np.max(adata_plot.obs['velocity_confidence'])+1e-5, 1])
@@ -213,7 +213,7 @@ def plot_veloConf_and_cosSim_helper(adata_total,adata_raw,dataset,method,fig_fol
     plt.clf()
     plot_metric(adata_plot,metric='conf',plot_type='scat',fig_folder=fig_folder,dataset=dataset,method=method,basis_type=fig_umap,split_seed=split_seed,Ngenes=Ngenes)
   
-def plot_veloConf_and_cosSim(adata_total,adata_split1,adata_split2,adata_raw,dataset,method,fig_folder,split_seed,recompute=True):
+def plot_veloConf_and_cosSim(adata_total,adata_split1,adata_split2,dataset,method,fig_folder,split_seed,recompute=True):
     adata_plot = adata_total.copy()
     #if method == 'sct': scv.pp.moments(adata_plot, n_pcs=30, n_neighbors=30)
     if (not method=='sct') and (not 'velocity_confidence' in adata_plot.obs.columns):
@@ -222,10 +222,10 @@ def plot_veloConf_and_cosSim(adata_total,adata_split1,adata_split2,adata_raw,dat
     adata_plot.obs['cos_sim'] = cos_sim
     # umapCompute
     print('Plot umapCompute')
-    plot_veloConf_and_cosSim_helper(adata_plot,adata_raw,dataset,method,fig_folder,umapOriginal=False,Ngenes=Ngenes,split_seed=split_seed,recompute=recompute)
+    plot_veloConf_and_cosSim_helper(adata_plot,dataset,method,fig_folder,umapOriginal=False,Ngenes=Ngenes,split_seed=split_seed,recompute=recompute)
     # umapOriginal
     print('Plot umapOriginal')
-    plot_veloConf_and_cosSim_helper(adata_plot,adata_raw,dataset,method,fig_folder,umapOriginal=True,Ngenes=Ngenes,split_seed=split_seed,recompute=recompute)
+    plot_veloConf_and_cosSim_helper(adata_plot,dataset,method,fig_folder,umapOriginal=True,Ngenes=Ngenes,split_seed=split_seed,recompute=recompute)
 
 
 def plot_veloConf_hist(adata_total,dataset,method,fig_folder,split_seed,text_x=None,text_y=None):
@@ -301,7 +301,7 @@ def ptime_correlation_scatter_spearman(s1,s2,method,dataset,name,xlab,ylab,fig_f
     plt.close()
 
 # plot latent time
-def plot_latent_time(adata_in,adata_raw,data_version,dataset,method,fig_folder,split_seed,recompute=True,celltype_label=None,time_label='latent_time'):
+def plot_latent_time(adata_in,data_version,dataset,method,fig_folder,split_seed,recompute=True,celltype_label=None,time_label='latent_time'):
     data_method = dataset+'_'+method
     fig_title = data_version+', split_seed='+str(split_seed)
     data_version = data_method+'_'+data_version
