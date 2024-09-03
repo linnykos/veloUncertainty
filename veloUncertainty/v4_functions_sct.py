@@ -9,7 +9,7 @@ import sctour as sct
 
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from sctour_misc import *
-from v4_functions import print_message_with_time,compute_cosine_similarity_union
+from v4_functions import print_message_with_time,compute_cosine_similarity_union,get_celltype_label,get_basis_type,get_metric_color_and_title,read_raw_adata
 
 import datetime
 def print_message_with_time(message):
@@ -64,7 +64,7 @@ def read_data_and_run_sct(dataset_short,dataset_long,method,data_folder,savedata
     if 'ery' in dataset_short:
         raw = sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Gastrulation/erythroid_lineage.h5ad')
     elif 'pan' in dataset_short:
-        raw = 'TBDone'
+        raw = read_raw_adata(dataset_short)
     if 'split' in split_version:
         data_path = data_folder+'seed'+str(split_seed)+'_'+dataset_short+'_'+split_version+'_allgenes.h5ad'
     if split_version=='total':
