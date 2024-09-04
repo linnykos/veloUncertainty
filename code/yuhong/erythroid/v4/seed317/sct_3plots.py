@@ -79,16 +79,7 @@ plot_cosine_similarity_withRef(split1,split2,total,dataset_short,method,fig_fold
 plot_cosine_similarity_hist_by_celltype(adata_split1=split1,adata_split2=split2,adata_total=total,dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
 plot_cosine_similarity_boxplot_by_celltype(adata_split1=split1,adata_split2=split2,adata_total=total,dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
 
-"""
->>> np.corrcoef([c2,total.obs['ptime'],total.obs['velocity_confidence']])
-array([[ 1.        ,  0.39571204,  0.39549537],
-       [ 0.39571204,  1.        , -0.2266979 ],
-       [ 0.39549537, -0.2266979 ,  1.        ]])
->>> np.corrcoef([c2,total.obs['velocity_pseudotime'],total.obs['velocity_confidence']])
-array([[ 1.        ,  0.37199716,  0.39549537],
-       [ 0.37199716,  1.        , -0.17789574],
-       [ 0.39549537, -0.17789574,  1.        ]])
-"""
+
 ######################################################
 ## plot velo_conf
 scv.tl.velocity_confidence(total)
@@ -101,6 +92,17 @@ plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_s
 
 print(np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence'])) # 0.13712638
 
+"""
+c2,n2 = compute_cosine_similarity_union(split1,split2,method)
+>>> np.corrcoef([c2,total.obs['ptime'],total.obs['velocity_confidence']])
+array([[ 1.        ,  0.39571204,  0.39549537],
+       [ 0.39571204,  1.        , -0.2266979 ],
+       [ 0.39549537, -0.2266979 ,  1.        ]])
+>>> np.corrcoef([c2,total.obs['velocity_pseudotime'],total.obs['velocity_confidence']])
+array([[ 1.        ,  0.40089462,  0.39549537],
+       [ 0.40089462,  1.        , -0.140205  ],
+       [ 0.39549537, -0.140205  ,  1.        ]])
+"""
 ######################################################
 ## ptime
 scv.tl.velocity_pseudotime(total,use_velocity_graph=False)
@@ -113,21 +115,21 @@ plot_pseudotime(adata_in=total,data_version='total',dataset=dataset_short,method
 
 ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,time_label='velocity_pseudotime',split_seed=split_seed)
 
-
+"""
 plot_pseudotime_diffusion(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
 plot_pseudotime_diffusion(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
 plot_pseudotime_diffusion(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
 
 ptime_diffusion_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,time_label='velocity_pseudotime',split_seed=split_seed)
-
+"""
 
 print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='velocity_pseudotime')
 print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='ptime')
 
 """
 >>> print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='velocity_pseudotime')
-Blood progenitors 1 0.9098
-Blood progenitors 2 0.8911
+Blood progenitors 1 0.9099
+Blood progenitors 2 0.891
 Erythroid1 0.6146
 Erythroid2 0.4917
 Erythroid3 0.5882
