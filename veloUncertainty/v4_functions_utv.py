@@ -5,9 +5,9 @@ import tf_keras
 import os
 import datetime
 
-def print_message_with_time(message):
-    current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    print(f"{message} at {current_time}")
+import sys
+sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
+from v4_functions import print_message_with_time
 
 def utv_run_model_v4(data_version,dataset,method,velo_config,data_folder,split_seed,celltype_label):
     data_path = None
