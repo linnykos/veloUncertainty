@@ -8,6 +8,7 @@ import datetime
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v2_functions import *
+from v4_functions_scv import scv_compute_velocity
 
 dataset_long = "larry"
 dataset_short = "larry"
@@ -35,31 +36,21 @@ U_mat_split2 = adata_split2.layers['unspliced'].copy()
 S_mat_total = total.layers['spliced'].copy()
 U_mat_total = total.layers['unspliced'].copy()
 
-## run model
-def scv_compute_velocity_pancreas(adata):
-    scv.pp.filter_and_normalize(adata, min_shared_counts=20, n_top_genes=2000)
-    scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
-    sc.tl.pca(adata, svd_solver="arpack")
-    sc.pp.neighbors(adata, n_neighbors=15, n_pcs=40)
-    sc.tl.umap(adata)
-    scv.tl.recover_dynamics(adata)
-    scv.tl.velocity(adata, mode="dynamical")
-    scv.tl.velocity_graph(adata)
 
 print_message_with_time("################## Run model on total")
-scv_compute_velocity_pancreas(total) 
+scv_compute_velocity(total) 
 positions_total = [positions_dict[gene] for gene in total.var.index]
 total.layers['spliced_original'] = S_mat_total[:,positions_total]
 total.layers['unspliced_original'] = U_mat_total[:,positions_total]
 
 print_message_with_time("################## Read model on split1")
-scv_compute_velocity_pancreas(adata_split1)
+scv_compute_velocity(adata_split1)
 positions_split1 = [positions_dict[gene] for gene in adata_split1.var.index]
 adata_split1.layers['spliced_original'] = S_mat_split1[:,positions_split1] 
 adata_split1.layers['unspliced_original'] = U_mat_split1[:,positions_split1]
 
 print_message_with_time("################## Read model on split2")
-scv_compute_velocity_pancreas(adata_split2)
+scv_compute_velocity(adata_split2)
 positions_split2 = [positions_dict[gene] for gene in adata_split2.var.index]
 adata_split2.layers['spliced_original'] = S_mat_split2[:,positions_split2]
 adata_split2.layers['unspliced_original'] = U_mat_split2[:,positions_split2]
