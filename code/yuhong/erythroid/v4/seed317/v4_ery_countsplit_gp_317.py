@@ -62,6 +62,10 @@ adata_split1.write(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'_'+da
 adata_split2.write(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'_'+dataset_short+'_split2_allgenes.h5ad')
 
 print_message_with_time("########### Writing total")
+adata.obsm['X_pcaOriginal'] = adata.obsm['X_pca'].copy()
+adata.obsm['X_umapOriginal'] = adata.obsm['X_umap'].copy()
+del adata.obsm['X_pca']
+del adata.obsm['X_umap']
 adata.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_total_allgenes.h5ad')
 
 print_message_with_time("########### All done")

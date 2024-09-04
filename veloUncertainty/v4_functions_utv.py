@@ -31,3 +31,17 @@ def utv_run_model_v4(data_version,dataset,method,velo_config,data_folder,split_s
     print_message_with_time("#################### Write data ")
     adata.write_h5ad(data_folder+'seed'+str(split_seed)+'/'+method+'/adata_'+dataset+'_utv_'+data_version+'_v4.h5ad')
     print_message_with_time("#################### All done for "+dataset+'+'+method+' '+data_version)
+
+def plot_velocity_scv_utv(adata_in,fig_folder,data_version,dataset,method,split_seed,recompute=True,celltype_label=None,basis='umap'):
+    if celltype_label==None: celltype_label=get_celltype_label(dataset)
+    data_method = dataset+"_"+method
+    # umapCompute
+    scv.pl.velocity_embedding_stream(adata_in, basis=basis,color=celltype_label,recompute=recompute,
+                                     title='Velocity '+dataset+'+'+method+' '+data_version+' (split_seed='+str(split_seed)+')',
+                                     save=fig_folder+"velocity/"+data_method+"_"+data_version+'_'+basis+"Compute.png")
+    # umapOriginal
+    adata = adata_in.copy()
+    adata.obsm['X_umap'] = adata.obsm['X_umapOriginal'].copy()
+    scv.pl.velocity_embedding_stream(adata, basis=basis,color=celltype_label,recompute=recompute,
+                                     title='Velocity '+dataset+'+'+method+' '+data_version+' (split_seed='+str(split_seed)+')',
+                                     save=fig_folder+"velocity/"+data_method+"_"+data_version+'_'+basis+"Original.png")    

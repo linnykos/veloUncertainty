@@ -7,5 +7,5 @@ U <- readMM(paste0(data_folder,'v2_erythroid/ery_unspliced.mtx'))
 overdisp_S <- sapply(1:ncol(S), function(i) 1/glmGamPoi::glm_gp(as.numeric(S[,i]), design = ~ 1)$overdispersions)
 overdisp_U <- sapply(1:ncol(U), function(i) 1/glmGamPoi::glm_gp(as.numeric(U[,i]), design = ~ 1)$overdispersions)
 
-write.csv(overdisp_S, file=paste0(data_folder,'v2_erythroid/ery_overdisp_S.mtx'))
-write.csv(overdisp_U, file=paste0(data_folder,'v2_erythroid/ery_overdisp_U.mtx'))
+write.csv(overdisp_S, file=paste0(data_folder,'v2_erythroid/ery_overdisp_S.csv'))
+write.csv(overdisp_U, file=paste0(data_folder,'v2_erythroid/ery_overdisp_U.csv'))

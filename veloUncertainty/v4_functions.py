@@ -12,7 +12,7 @@ def read_data_v4(dataset_long,dataset_short,method,split_seed,data_version,allge
     if (allgenes==False):
         data_path = data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_'+data_version+'_v4'
     elif 'split' in data_version:
-        data_path = data_folder+'v4_'+dataset_long+'/'+'seed'+str(split_seed)+'_'+dataset_short+'_split1_allgenes'
+        data_path = data_folder+'v4_'+dataset_long+'/'+'seed'+str(split_seed)+'_'+dataset_short+'_'+data_version+'_allgenes'
     elif data_version=='total':
         data_path = data_folder+'v4_'+dataset_long+'/'+dataset_short+'_total_allgenes'
     if outputAdded:
@@ -30,6 +30,18 @@ def get_umap_sct(adata,umapOriginal=False,moments=True,velocity_graph=True):
         sc.tl.umap(adata)
     if velocity_graph==True: 
         scv.tl.velocity_graph(adata,n_jobs=8)
+
+def compute_umap_ery(adata):
+    import bbknn
+    scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
+    bbknn.bbknn(adata, batch_key='sequencing.batch')
+    adata.X = adata.X.toarray()
+    bbknn.ridge_regression(adata, batch_key='sample', confounder_key='celltype')
+    sc.tl.pca(adata)
+    bbknn.bbknn(adata, batch_key='sequencing.batch')
+    print("************ batch correction done ************")
+    sc.pp.neighbors(adata, n_neighbors=30, n_pcs=40) 
+    sc.tl.umap(adata)
 
 ## print current time with a message
 def print_message_with_time(message):
@@ -59,9 +71,9 @@ def read_raw_adata(dataset):
     if 'ery' in dataset: 
         return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Gastrulation/erythroid_lineage.h5ad')
     elif ('pan' in dataset) and ('INC' in dataset):
-        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Pancreas/endocrinogenesis_day15.h5ad')
-    elif ('pan' in dataset) and (not 'INC' in dataset):
         return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v2_pancreasINC/pancreasINC_total_allgenes.h5ad')
+    elif ('pan' in dataset) and (not 'INC' in dataset):
+        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Pancreas/endocrinogenesis_day15.h5ad')
     elif dataset=='larry':
         return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_larry/larry.h5ad')
 
