@@ -20,6 +20,18 @@ def read_data_v4(dataset_long,dataset_short,method,split_seed,data_version,allge
     print(data_path+'.h5ad')
     return sc.read_h5ad(data_path+'.h5ad')
 
+def read_raw_adata(dataset):
+    if 'ery' in dataset: 
+        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Gastrulation/erythroid_lineage.h5ad')
+    elif ('pan' in dataset) and ('INC' in dataset):
+        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v2_pancreasINC/pancreasINC_total_allgenes.h5ad')
+    elif ('pan' in dataset) and (not 'INC' in dataset):
+        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Pancreas/endocrinogenesis_day15.h5ad')
+    elif dataset=='larry':
+        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_larry/larry.h5ad')
+    elif dataset=='larryMult':
+        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_larryMult/larry_multilineage.h5ad')
+    
 def get_umap_sct(adata,umapOriginal=False,moments=True,velocity_graph=True):
     if moments==True:
         scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
@@ -66,16 +78,6 @@ def compute_gene_correlation_between_splits(mat1,mat2):
     print("Number of valid values = "+str(cor[~np.isnan(cor)].shape[0]))
     print("Quantiles: "+str(np.quantile(cor[~np.isnan(cor)],[0,.1,.2,.3,.4,.5,.6,.7,.8,.9,1])))
     return cor
-
-def read_raw_adata(dataset):
-    if 'ery' in dataset: 
-        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Gastrulation/erythroid_lineage.h5ad')
-    elif ('pan' in dataset) and ('INC' in dataset):
-        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v2_pancreasINC/pancreasINC_total_allgenes.h5ad')
-    elif ('pan' in dataset) and (not 'INC' in dataset):
-        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Pancreas/endocrinogenesis_day15.h5ad')
-    elif dataset=='larry':
-        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_larry/larry.h5ad')
 
 def plot_method_gene_corr(split1, split2, method, dataset, fig_folder, split_seed):
     if 'ery' in dataset: 

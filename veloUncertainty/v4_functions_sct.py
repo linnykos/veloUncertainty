@@ -9,7 +9,7 @@ import sctour as sct
 
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from sctour_misc import *
-from v4_functions import print_message_with_time,compute_cosine_similarity_union,get_celltype_label,get_basis_type,get_metric_color_and_title,read_raw_adata
+from v4_functions import print_message_with_time,read_raw_adata,read_data_v4,compute_cosine_similarity_union,get_celltype_label,get_basis_type,get_metric_color_and_title,read_raw_adata
 
 import datetime
 def print_message_with_time(message):
@@ -61,15 +61,15 @@ def test_timestep(adata_split1,adata_split2,adata_total,tnode1,tnode2,tnode,time
 
 def read_data_and_run_sct(dataset_short,dataset_long,method,data_folder,savedata_folder,split_version,split_seed,sct_seed):
     print_message_with_time("################## Read data")
-    if 'ery' in dataset_short:
-        raw = sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Gastrulation/erythroid_lineage.h5ad')
-    elif 'pan' in dataset_short:
-        raw = read_raw_adata(dataset_short)
+    raw = read_raw_adata(dataset_short)
+    adata = read_data_v4(dataset_long,dataset_short,method,split_seed,split_version,allgenes=True,outputAdded=False)
+    """
     if 'split' in split_version:
         data_path = data_folder+'seed'+str(split_seed)+'_'+dataset_short+'_'+split_version+'_allgenes.h5ad'
     if split_version=='total':
         data_path = data_folder+dataset_short+'_total_allgenes.h5ad'
     adata = sc.read_h5ad(data_path)
+    """
     gene_names = adata.var.index.copy()
     positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
     #S_mat = adata.layers['spliced'].copy()
