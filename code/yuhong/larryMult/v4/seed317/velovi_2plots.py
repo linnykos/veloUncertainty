@@ -155,18 +155,3 @@ np.round(np.var(v2s_median),4)
 # paired: 0.1801 0.1876
 # shuffled: 0.1024 0.0901
 
-######################################################
-## intrinsic uncertainty
-compute_intrinisic_uncertainty(adata_in=split1,vae=vae_split1,dataset=dataset_short,fig_folder=fig_folder,data_version='split1')
-compute_intrinisic_uncertainty(adata_in=split2,vae=vae_split2,dataset=dataset_short,fig_folder=fig_folder,data_version='split2')
-compute_intrinisic_uncertainty(adata_in=total,vae=vae_total,dataset=dataset_short,fig_folder=fig_folder,data_version='total')
-
-## extrinsic uncertainty
-compute_extrinisic_uncertainty(adata_in=split1,vae=vae_split1,dataset=dataset_short,fig_folder=fig_folder,data_version='split1')
-compute_extrinisic_uncertainty(adata_in=split2,vae=vae_split2,dataset=dataset_short,fig_folder=fig_folder,data_version='split2')
-compute_extrinisic_uncertainty(adata_in=total,vae=vae_total,dataset=dataset_short,fig_folder=fig_folder,data_version='total')
-
-## permutation score
-compute_permutation_score(adata=split1,vae=vae_split1,dataset=dataset_short,fig_folder=fig_folder,data_version='split1')
-compute_permutation_score(adata=split2,vae=vae_split2,dataset=dataset_short,fig_folder=fig_folder,data_version='split2')
-compute_permutation_score(adata=total,vae=vae_total,dataset=dataset_short,fig_folder=fig_folder,data_version='total')
