@@ -55,7 +55,7 @@ if (not 'velocity_confidence' in total.obs.columns):
     scv.tl.velocity_confidence(split1)
     scv.tl.velocity_confidence(split2)
 
-plot_veloConf_and_cosSim(total,split1,split2,raw,dataset_short,method,fig_folder,split_seed)
+plot_veloConf_and_cosSim(total,split1,split2,dataset_short,method,fig_folder,split_seed)
 plot_veloConf_hist(total,dataset_short,method,fig_folder,split_seed)
 plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed,celltype_label=None)
 

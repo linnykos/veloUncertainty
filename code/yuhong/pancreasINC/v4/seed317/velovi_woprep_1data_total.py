@@ -1,11 +1,10 @@
-data_version = 'split2'
-dataset_short = 'larryMult'
-dataset_long = 'larryMult'
-method = 'velovi'
+data_version = 'total'
+dataset_short = 'panINC'
+dataset_long = 'pancreasINC'
+method = 'velovi_woprep'
 split_seed = 317
-celltype_label = 'state_info'
+celltype_label = 'clusters'
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_"+dataset_short+'/'
-
 
 import numpy as np
 import pandas as pd

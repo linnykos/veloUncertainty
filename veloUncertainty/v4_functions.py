@@ -133,6 +133,20 @@ def plot_method_gene_corr(split1, split2, method, dataset, fig_folder, split_see
     plt.savefig(fig_folder+method+'_'+dataset_short+'_gene_corr_overdisps.png') 
 
 
+def plot_velocity(adata_in,fig_folder,data_version,dataset,method,split_seed,recompute=True,celltype_label=None,basis='umap'):
+    if celltype_label==None: celltype_label=get_celltype_label(dataset)
+    data_method = dataset+"_"+method
+    # umapCompute
+    scv.pl.velocity_embedding_stream(adata_in, basis=basis,color=celltype_label,recompute=recompute,
+                                     title='Velocity '+dataset+'+'+method+' '+data_version+' (split_seed='+str(split_seed)+')',
+                                     save=fig_folder+"velocity/"+data_method+"_"+data_version+'_'+basis+"Compute.png")
+    # umapOriginal
+    adata = adata_in.copy()
+    adata.obsm['X_umap'] = adata.obsm['X_umapOriginal'].copy()
+    scv.pl.velocity_embedding_stream(adata, basis=basis,color=celltype_label,recompute=recompute,
+                                     title='Velocity '+dataset+'+'+method+' '+data_version+' (split_seed='+str(split_seed)+')',
+                                     save=fig_folder+"velocity/"+data_method+"_"+data_version+'_'+basis+"Original.png")    
+
 # compute cosine similarity
 def compute_cosine_similarity_intersect(adata_split1,adata_split2,method):
     velo_genes_split1 = adata_split1.var.index
