@@ -20,7 +20,7 @@ def scv_compute_velocity(adata,dataset):
         sc.tl.umap(adata)
         scv.tl.recover_dynamics(adata,n_jobs=8)
         scv.tl.velocity(adata, mode="dynamical")
-        scv.tl.velocity_graph(adata)
+        scv.tl.velocity_graph(adata,n_jobs=8)
 
 def scv_compute_velocity_ery(adata):
     import bbknn
@@ -37,7 +37,7 @@ def scv_compute_velocity_ery(adata):
     sc.tl.umap(adata)
     scv.tl.recover_dynamics(adata,n_jobs=8)
     scv.tl.velocity(adata, mode="dynamical")
-    scv.tl.velocity_graph(adata)
+    scv.tl.velocity_graph(adata,n_jobs=8)
 
 def plot_velocity_scv_utv(adata_in,fig_folder,data_version,dataset,method,split_seed,recompute=True,celltype_label=None,basis='umap'):
     if celltype_label==None: celltype_label=get_celltype_label(dataset)

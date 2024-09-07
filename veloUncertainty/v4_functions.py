@@ -43,6 +43,15 @@ def get_umap_sct(adata,umapOriginal=False,moments=True,velocity_graph=True):
     if velocity_graph==True: 
         scv.tl.velocity_graph(adata,n_jobs=8)
 
+def compute_umap(adata, dataset):
+    if 'ery' in dataset: compute_umap_ery(adata)
+    else:
+        scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
+        sc.tl.pca(adata, svd_solver="arpack")
+        sc.pp.neighbors(adata, n_neighbors=30, n_pcs=40) # used to be 10
+        sc.tl.umap(adata)
+        scv.tl.velocity_graph(adata)
+
 def compute_umap_ery(adata):
     import bbknn
     scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
@@ -215,13 +224,13 @@ def plot_metric(adata,metric,plot_type,fig_folder,dataset,method,basis_type,spli
     basis_type = get_basis_type(basis_type)
     Ngenes_title = ''
     if not Ngenes==None: Ngenes_title = ', Ngenes='+str(Ngenes)
-    if basis_type=='Original': scv.tl.velocity_graph(adata)
+    if basis_type=='Original': scv.tl.velocity_graph(adata,n_jobs=8)
     if 'emb' in plot_type:
         scv.pl.velocity_embedding_stream(adata, basis=basis, color=metric_color, cmap=cmap, recompute=recompute,
-                                         perc=[1, 100], title=metric_title+" "+dataset+'+'+method+Ngenes_title+', split_seed='+str(split_seed),
+                                         perc=[1, 100], title=metric_title+" "+dataset+'+'+method+'\n'+Ngenes_title+', split_seed='+str(split_seed),
                                          save=fig_folder+"metric/"+dataset+'_'+method+'_'+metric_color+'_'+basis+basis_type+'.png')
     elif 'sca' in plot_type:
-        scv.pl.scatter(adata, color=metric_color, cmap=cmap, title=metric_title+" "+dataset+'+'+method+Ngenes_title+', split_seed='+str(split_seed), perc=[0, 100], 
+        scv.pl.scatter(adata, color=metric_color, cmap=cmap, title=metric_title+" "+dataset+'+'+method+'\n'+Ngenes_title+', split_seed='+str(split_seed), perc=[0, 100], 
                        save=fig_folder+"metric/"+dataset+'_'+method+'_'+metric_color+'_'+basis+basis_type+'_scatter.png')
 
 
@@ -245,7 +254,7 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,dataset,method,
     plt.text(text_x,text_y*3,'median='+str(np.round(np.median(cos_sim),4)), color='sienna', fontsize=11)
     plt.xlabel('cosine similarity')
     plt.ylabel('Frequency')
-    plt.title('Histogram of cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes)+', split_seed='+str(split_seed))
+    plt.title('Histogram of cosine similarity, '+dataset+'+'+method+'\n Ngenes='+str(Ngenes)+', split_seed='+str(split_seed))
     plt.savefig(fig_folder+'metric/'+dataset_method+'_cos_sim_hist.png')
     plt.clf()
     # umapCompute
@@ -256,7 +265,7 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,dataset,method,
     # umapOriginal
     adata_total_plot = adata_total.copy()
     adata_total_plot.obsm['X_umap'] = adata_total_plot.obsm['X_umapOriginal']
-    scv.tl.velocity_graph(adata_total_plot)
+    scv.tl.velocity_graph(adata_total_plot,n_jobs=8)
     print('Plot umapOriginal')
     plot_metric(adata=adata_total_plot,metric='cos',plot_type='emb',fig_folder=fig_folder,dataset=dataset,method=method,basis_type='Orig',basis='umap',Ngenes=Ngenes,split_seed=split_seed)
     plot_metric(adata=adata_total_plot,metric='cos',plot_type='scat',fig_folder=fig_folder,dataset=dataset,method=method,basis_type='Orig',basis='umap',Ngenes=Ngenes,split_seed=split_seed)
@@ -274,7 +283,7 @@ def plot_metric_withRef(adata,metric,dataset,method,fig_folder,basis_type,split_
     scv.pl.velocity_embedding_stream(adata,basis=basis,color=celltype_label,ax=axs[0],legend_loc='on data',recompute=recompute,
                                      title="Velocity "+dataset+'+'+method, frameon=False, size=100, alpha=0.5)
     scv.pl.scatter(adata,color=metric_color,cmap='coolwarm',perc=[0,100],ax=axs[1],legend_loc='none',
-                   title=metric_title+" "+dataset+'+'+method+Ngenes_title+', split_seed='+str(split_seed),frameon=False,size=100,alpha=0.2)
+                   title=metric_title+" "+dataset+'+'+method+'\n'+Ngenes_title+', split_seed='+str(split_seed),frameon=False,size=100,alpha=0.2)
     plt.savefig(fig_folder+"metric/"+dataset+'_'+method+'_'+metric_color+'_withRef_'+basis+basis_type+'.png')
     plt.clf()
 
@@ -312,9 +321,9 @@ def plot_veloConf_and_cosSim_helper(adata_total,dataset,method,fig_folder,umapOr
     scv.pl.velocity_embedding_stream(adata_plot, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      recompute=recompute,frameon=False,size=100,alpha=0.5)
     scv.pl.scatter(adata_plot,c='velocity_confidence',cmap='coolwarm',vmin=vmin,vmax=vmax,ax=axs[1],legend_loc='none',
-                   title='Velocity confidence, '+dataset+'+'+method+', Ngenes='+str(Ngenes_conf),frameon=False,size=100,alpha=0.3)
+                   title='Velocity confidence, '+dataset+'+'+method+',\n Ngenes='+str(Ngenes_conf),frameon=False,size=100,alpha=0.3)
     scv.pl.scatter(adata_plot,color='cos_sim',cmap='coolwarm',vmin=vmin,vmax=vmax,ax=axs[2],legend_loc='none',frameon=False,
-                   title='Velocity cosine similarity, '+dataset+'+'+method+', Ngenes='+str(Ngenes)+', split_seed='+str(split_seed),size=100,alpha=0.3)
+                   title='Velocity cosine similarity, '+dataset+'+'+method+',\n Ngenes='+str(Ngenes)+', split_seed='+str(split_seed),size=100,alpha=0.3)
     plt.savefig(fig_folder+"metric/"+data_method+"_veloConf_and_cosSim_"+fig_umap+".png")
     plt.clf()
     plot_metric(adata_plot,metric='conf',plot_type='scat',fig_folder=fig_folder,dataset=dataset,method=method,basis_type=fig_umap,split_seed=split_seed,Ngenes=Ngenes)
@@ -352,7 +361,7 @@ def plot_veloConf_hist(adata_total,dataset,method,fig_folder,split_seed,text_x=N
     plt.text(text_x,text_y*3,'median='+str(np.round(np.median(velo_conf),4)),color='sienna',fontsize=11)
     plt.xlabel('Velocity confidence')
     plt.ylabel('Frequency')
-    plt.title('Histogram of velocity confidence, '+dataset+'+'+method+', Ngenes='+str(Ngenes)+', split_seed='+str(split_seed))
+    plt.title('Histogram of velocity confidence, '+dataset+'+'+method+',\n Ngenes='+str(Ngenes)+', split_seed='+str(split_seed))
     plt.savefig(fig_folder+'metric/'+dataset+'_'+method+'_veloConf_hist.png')
     plt.clf()
 
@@ -369,18 +378,18 @@ def plot_pseudotime(adata_in,data_version,dataset,method,fig_folder,split_seed,r
     fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      recompute=recompute,frameon=False,size=100,alpha=0.5)
-    scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='pseudotime, '+dataset+'+'+method+' '+fig_title)
+    scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='pseudotime, '+dataset+'+'+method+'\n'+fig_title)
     plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+'_ptime_withRef_'+data_version+'_umapCompute.png')
     plt.clf()
     plt.clf()
     # umapOriginal
     adata = adata_in.copy()
     adata.obsm['X_umap'] = adata.obsm['X_umapOriginal'].copy()
-    scv.tl.velocity_graph(adata)
+    scv.tl.velocity_graph(adata,n_jobs=8)
     fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      recompute=recompute,frameon=False,size=100,alpha=0.5)
-    scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='pseudotime, '+dataset+'+'+method+' '+fig_title)
+    scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='pseudotime, '+dataset+'+'+method+'\n'+fig_title)
     plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+'_ptime_withRef_'+data_version+'_umapOriginal.png')
     plt.clf()
 
@@ -401,7 +410,7 @@ def ptime_correlation_scatter_spearman(s1,s2,method,dataset,name,xlab,ylab,fig_f
     plt.legend()
     plt.xlabel(xlab)
     plt.ylabel(ylab)
-    plt.title('Pseudotime correlation '+name+', '+dataset+'+'+method+', split_seed='+str(split_seed)+' (corr='+str(corr)+')')
+    plt.title('Pseudotime correlation '+name+', '+dataset+'+'+method+'\n split_seed='+str(split_seed)+', corr='+str(corr))
     plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+'_ptime_SpearmanCorr_'+name+'.png')
     plt.close()
 
@@ -417,17 +426,17 @@ def plot_latent_time(adata_in,data_version,dataset,method,fig_folder,split_seed,
     fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      recompute=recompute,frameon=False,size=100,alpha=0.5)
-    scv.pl.scatter(adata,ax=axs[1], color=time_label, color_map="gnuplot",title='Latent time, '+dataset+'+'+method+' '+fig_title)
+    scv.pl.scatter(adata,ax=axs[1], color=time_label, color_map="gnuplot",title='Latent time, '+dataset+'+'+method+'\n'+fig_title)
     plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+"_lattime_withRef_"+data_version+'_umapCompute.png')
     plt.clf()
     # umapOriginal
     adata = adata_in.copy()
     adata.obsm['X_umap'] = adata.obsm['X_umapOriginal'].copy()
-    scv.tl.velocity_graph(adata)
+    scv.tl.velocity_graph(adata,n_jobs=8)
     fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
                                      recompute=recompute,frameon=False,size=100,alpha=0.5)
-    scv.pl.scatter(adata,ax=axs[1], color=time_label, color_map="gnuplot",title='Latent time, '+dataset+'+'+method+' '+fig_title)
+    scv.pl.scatter(adata,ax=axs[1], color=time_label, color_map="gnuplot",title='Latent time, '+dataset+'+'+method+'\n'+fig_title)
     plt.savefig(fig_folder+"ptime/"+dataset+'_'+method+"_lattime_withRef_"+data_version+'_umapOriginal.png')
     plt.clf()
 
@@ -446,7 +455,7 @@ def latent_time_correlation_scatter_spearman(s1,s2,method,dataset,name,xlab,ylab
     plt.legend()
     plt.xlabel(xlab)
     plt.ylabel(ylab)
-    plt.title('Latent time correlation '+name+', '+dataset+'+'+method+', split_seed='+str(split_seed)+' (corr='+str(corr)+')')
+    plt.title('Latent time correlation '+name+', '+dataset+'+'+method+'\n split_seed='+str(split_seed)+', corr='+str(corr))
     plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+"_latentSpearmanCorr_"+name+".png")
     plt.close()
 
@@ -477,10 +486,10 @@ def plot_cosine_similarity_hist_by_celltype_pancreas(adata_split1,adata_split2,a
         ax.text(text_x,text_y*2,'median='+str(np.round(np.median(cos_sim_celltype),4)), color='sienna', fontsize=11)
         ax.set_xlabel('cosine similarity')
         ax.set_ylabel('Frequency')
-        ax.set_title(celltype+' (Ncells='+str(Ncells)+'), '+dataset+'+'+method)
+        ax.set_title(celltype+' (Ncells='+str(Ncells)+')\n'+dataset+'+'+method)
     plt.savefig(fig_folder+'metric/'+dataset_method+'_cos_sim_hist_byCelltype.png')
     plt.clf()
-
+"""
 def plot_cosine_similarity_hist_by_celltype_pancreasINC(adata_split1,adata_split2,adata_total,dataset,method,fig_folder):
     cos_sim, Ngenes = compute_cosine_similarity_union(adata_split1,adata_split2,method)
     adata_total.obs['cos_sim'] = cos_sim
@@ -505,11 +514,11 @@ def plot_cosine_similarity_hist_by_celltype_pancreasINC(adata_split1,adata_split
         ax.text(text_x,text_y*2,'median='+str(np.round(np.median(cos_sim_celltype),4)), color='sienna', fontsize=11)
         ax.set_xlabel('cosine similarity')
         ax.set_ylabel('Frequency')
-        ax.set_title(celltype+' (Ncells='+str(Ncells)+'), '+dataset+'+'+method)
+        ax.set_title(celltype+' (Ncells='+str(Ncells)+')\n'+dataset+'+'+method)
     plt.savefig(fig_folder+'metric/'+dataset_method+'_cos_sim_hist_byCelltype.png')
     plt.clf()
 
-"""
+
 def plot_cosine_similarity_hist_by_celltype(adata_split1,adata_split2,adata_total,dataset,method,fig_folder,celltype_label_larry='state_info'):
     if dataset=='ery':
         return plot_cosine_similarity_hist_by_celltype_erythroid(adata_split1,adata_split2,adata_total,dataset,method,fig_folder)
@@ -547,7 +556,7 @@ def plot_cosine_similarity_hist_by_celltype(adata_split1,adata_split2,adata_tota
         ax.text(text_x,text_y*2,'median='+str(np.round(np.median(cos_sim_celltype),4)), color='sienna', fontsize=11)
         ax.set_xlabel('cosine similarity')
         ax.set_ylabel('Frequency')
-        ax.set_title(celltype+' (Ncells='+str(Ncells)+'), '+dataset+'+'+method)
+        ax.set_title(celltype+' (Ncells='+str(Ncells)+')\n'+dataset+'+'+method)
     plt.savefig(fig_folder+'metric/'+dataset_method+'_cos_sim_byCelltype_hist.png')
     plt.clf()
 
@@ -575,7 +584,7 @@ def plot_cosine_similarity_hist_by_celltype(adata_split1,adata_split2,adata_tota
         ax.text(text_x,text_y*2,'median='+str(np.round(np.median(cos_sim_celltype),4)), color='sienna', fontsize=11)
         ax.set_xlabel('cosine similarity')
         ax.set_ylabel('Frequency')
-        ax.set_title(celltype+' (Ncells='+str(Ncells)+'), '+dataset+'+'+method+', split_seed='+str(split_seed))
+        ax.set_title(celltype+' (Ncells='+str(Ncells)+')\n'+dataset+'+'+method+', split_seed='+str(split_seed))
     plt.savefig(fig_folder+'metric/'+dataset_method+'_cos_sim_byCelltype_hist.png')
     plt.clf()
 
@@ -599,7 +608,7 @@ def plot_cosine_similarity_boxplot_by_celltype(adata_split1, adata_split2, adata
     ax.set_xlabel('Cell Types')
     ax.set_ylabel('Cosine Similarity')
     ax.set_ylim(-1,1)
-    ax.set_title(f'Cosine Similarity by Cell Type ({dataset} + {method})'+', Ngenes='+str(Ngenes)+', split_seed='+str(split_seed))
+    ax.set_title(f'Cosine Similarity by Cell Type ({dataset} + {method})'+'\n Ngenes='+str(Ngenes)+', split_seed='+str(split_seed))
     plt.tight_layout()
     plt.savefig(fig_folder+'metric/'+dataset_method+'_cos_sim_byCelltype_boxplot.png')
     plt.clf()
@@ -626,7 +635,7 @@ def plot_velo_conf_boxplot_by_celltype(adata_plot,dataset,method,fig_folder,spli
     ax.set_xlabel('Cell Types')
     ax.set_ylabel('Velocity Confidence')
     ax.set_ylim(-1,1)
-    ax.set_title(f'Velocity Confidence by Cell Type ({dataset} + {method})'+', Ngenes='+str(Ngenes)+', split_seed='+str(split_seed))
+    ax.set_title(f'Velocity Confidence by Cell Type ({dataset} + {method})'+'\nNgenes='+str(Ngenes)+', split_seed='+str(split_seed))
     plt.tight_layout()
     plt.savefig(fig_folder+'metric/'+dataset_method+'_veloConf_byCelltype_boxplot.png')
     plt.clf()
@@ -679,7 +688,7 @@ def plot_pseudotime_diffusion(adata_in,data_version,dataset,method,fig_folder,sp
     # umapOriginal
     adata = adata_in.copy()
     adata.obsm['X_umap'] = adata.obsm['X_umapOriginal'].copy()
-    scv.tl.velocity_graph(adata)
+    scv.tl.velocity_graph(adata,n_jobs=8)
     scv.tl.velocity_pseudotime(adata,use_velocity_graph=False)
     fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
     scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',

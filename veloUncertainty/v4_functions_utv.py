@@ -26,7 +26,7 @@ def utv_run_model_v4(data_version,dataset,method,velo_config,data_folder,split_s
     ### 
     positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
     positions = [positions_dict[gene] for gene in adata.var.index]
-    adata.layers['spliced_original'] = S_mat[:,positions] # looks like i did not do this actually
+    adata.layers['spliced_original'] = S_mat[:,positions] 
     adata.layers['unspliced_original'] = U_mat[:,positions]
     print_message_with_time("#################### Write data ")
     adata.write_h5ad(data_folder+'seed'+str(split_seed)+'/'+method+'/adata_'+dataset+'_utv_'+data_version+'_v4.h5ad')

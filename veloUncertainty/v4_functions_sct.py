@@ -63,19 +63,13 @@ def read_data_and_run_sct(dataset_short,dataset_long,method,data_folder,savedata
     print_message_with_time("################## Read data")
     raw = read_raw_adata(dataset_short)
     adata = read_data_v4(dataset_long,dataset_short,method,split_seed,split_version,allgenes=True,outputAdded=False)
-    """
-    if 'split' in split_version:
-        data_path = data_folder+'seed'+str(split_seed)+'_'+dataset_short+'_'+split_version+'_allgenes.h5ad'
-    if split_version=='total':
-        data_path = data_folder+dataset_short+'_total_allgenes.h5ad'
-    adata = sc.read_h5ad(data_path)
-    """
     gene_names = adata.var.index.copy()
     positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
     #S_mat = adata.layers['spliced'].copy()
     #U_mat = adata.layers['unspliced'].copy()
-    adata.obsm['X_umapOriginal'] = raw.obsm['X_umap'].copy()
-    adata.obsm['X_pcaOriginal'] = raw.obsm['X_pca'].copy()
+    if not 'larry' in dataset_long:
+        adata.obsm['X_umapOriginal'] = raw.obsm['X_umap'].copy()
+        adata.obsm['X_pcaOriginal'] = raw.obsm['X_pca'].copy()
     print_message_with_time("########### start to train model for "+split_version+' ')
     tnode = sct_train_and_return_tnode(adata, sct_seed)
     print_message_with_time("########### start to compute velocity for "+split_version+' ')
