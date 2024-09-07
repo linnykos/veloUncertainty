@@ -2,7 +2,7 @@ split_seed = 317
 dataset_long = 'larryMult'
 dataset_short = 'larryMult'
 method = 'utv'
-data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_larry/'
+data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_'+dataset_long+'/'
 data_version = 'total'
 celltype_label = 'state_info'
 

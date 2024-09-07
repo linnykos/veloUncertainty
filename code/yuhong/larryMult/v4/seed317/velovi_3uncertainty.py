@@ -26,9 +26,9 @@ split1 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version=
 split2 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split2',allgenes=False,outputAdded=True)
 total = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='total',allgenes=False,outputAdded=True)
 
-vae_split1 = VELOVI.load(data_folder+"v4_"+dataset_long+"/"+method+'/vae_'+dataset_short+'_'+method+'_split1_v4.pt', split1)
-vae_split2 = VELOVI.load(data_folder+"v4_"+dataset_long+"/"+method+'/vae_'+dataset_short+'_'+method+'_split2_v4.pt', split2)
-vae_total = VELOVI.load(data_folder+"v4_"+dataset_long+"/"+method+'/vae_'+dataset_short+'_'+method+'_total_v4.pt', total)
+vae_split1 = VELOVI.load(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/vae_'+dataset_short+'_'+method+'_split1_v4.pt', split1)
+vae_split2 = VELOVI.load(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/vae_'+dataset_short+'_'+method+'_split2_v4.pt', split2)
+vae_total = VELOVI.load(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/vae_'+dataset_short+'_'+method+'_total_v4.pt', total)
 
 ######################################################
 ## intrinsic uncertainty
