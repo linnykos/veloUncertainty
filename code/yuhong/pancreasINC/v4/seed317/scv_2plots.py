@@ -36,11 +36,15 @@ plot_cosine_similarity_boxplot_by_celltype(adata_split1=split1,adata_split2=spli
 
 
 c1,n1 = compute_cosine_similarity_intersect(split1,split2,method)
+c2,n2 = compute_cosine_similarity_union(split1,split2,method)
+
+np.quantile(c1,[0.,.25,.5,.75,1.]) # [-0.97982052,  0.09585542,  0.4498995 ,  0.6858466 ,  0.99293604]
+np.quantile(c2,[0.,.25,.5,.75,1.]) # [-0.97272811,  0.08092503,  0.3794614 ,  0.57685559,  0.98887917]
+
 np.round(np.median(c1),4) # 0.4499
 np.round(np.mean(c1),4) # 0.4397
 np.round(np.var(c1),4) # 0.1162
 
-c2,n2 = compute_cosine_similarity_union(split1,split2,method)
 np.round(np.median(c2),4) # 0.3795
 np.round(np.mean(c2),4) # 0.3964
 np.round(np.var(c2),4) # 0.1071
