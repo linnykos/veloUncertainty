@@ -45,6 +45,9 @@ tnode_split2 = sct.predict.load_model(data_folder+tnode_prefix+'_split2_v4.pth')
 
 print_message_with_time('################################ Read data done')
 
+scv.pp.moments(total, n_pcs=30, n_neighbors=30)
+sc.tl.pca(total, svd_solver="arpack")
+sc.pp.neighbors(total, n_neighbors=30, n_pcs=40)
 
 times = []
 ptime_cors = []
