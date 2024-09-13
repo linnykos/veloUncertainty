@@ -49,11 +49,30 @@ data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/
 overdisp_S = np.array(pd.read_csv(data_folder+'v4_larryMult/larryMult_overdisp_S.csv')['x'])
 overdisp_U = np.array(pd.read_csv(data_folder+'v4_larryMult/larryMult_overdisp_U.csv')['x'])
 
-adata = ad.read_h5ad(data_folder+"v4_larryMult/larry_multilineage.h5ad") # n_obs × n_vars = 49302 × 23420
+adata = ad.read_h5ad(data_folder+"v4_larryMult/larry_multilineage.h5ad") # n_obs × n_vars = 2315 × 23420
 S_mat = adata.layers['spliced'].copy()
 U_mat = adata.layers['unspliced'].copy()
 
 print_message_with_time("########### Starting countsplit")
+split_seed = 320
+adata_split1,adata_split2 = countsplit_and_create_adata(S=S_mat,U=U_mat,total=adata,split_seed=split_seed,overdisp_S=overdisp_S,overdisp_U=overdisp_U)
+
+adata_split1.write(data_folder+'v4_larryMult/seed'+str(split_seed)+'_larryMult_split1_allgenes.h5ad')
+adata_split2.write(data_folder+'v4_larryMult/seed'+str(split_seed)+'_larryMult_split2_allgenes.h5ad')
+
+split_seed = 323
+adata_split1,adata_split2 = countsplit_and_create_adata(S=S_mat,U=U_mat,total=adata,split_seed=split_seed,overdisp_S=overdisp_S,overdisp_U=overdisp_U)
+
+adata_split1.write(data_folder+'v4_larryMult/seed'+str(split_seed)+'_larryMult_split1_allgenes.h5ad')
+adata_split2.write(data_folder+'v4_larryMult/seed'+str(split_seed)+'_larryMult_split2_allgenes.h5ad')
+
+split_seed = 326
+adata_split1,adata_split2 = countsplit_and_create_adata(S=S_mat,U=U_mat,total=adata,split_seed=split_seed,overdisp_S=overdisp_S,overdisp_U=overdisp_U)
+
+adata_split1.write(data_folder+'v4_larryMult/seed'+str(split_seed)+'_larryMult_split1_allgenes.h5ad')
+adata_split2.write(data_folder+'v4_larryMult/seed'+str(split_seed)+'_larryMult_split2_allgenes.h5ad')
+
+split_seed = 329
 adata_split1,adata_split2 = countsplit_and_create_adata(S=S_mat,U=U_mat,total=adata,split_seed=split_seed,overdisp_S=overdisp_S,overdisp_U=overdisp_U)
 
 adata_split1.write(data_folder+'v4_larryMult/seed'+str(split_seed)+'_larryMult_split1_allgenes.h5ad')
