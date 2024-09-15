@@ -139,8 +139,8 @@ def sct_larryMult_write_splits_outputAdded(split_seed):
     split2.obsm['X_umapOriginal'][:,1] = np.array(split2.obs['SPRING-y'])
     split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=timestep) 
     split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=timestep) 
-    split1.write_h5ad(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split1_v4_outputAdded.h5ad')
-    split2.write_h5ad(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split2_v4_outputAdded.h5ad')
+    split1.write_h5ad(data_folder+'adata_'+dataset_short+'_'+method+'_split1_v4_outputAdded.h5ad')
+    split2.write_h5ad(data_folder+'adata_'+dataset_short+'_'+method+'_split2_v4_outputAdded.h5ad')
 
 sct_larryMult_write_splits_outputAdded(split_seed=320)
 sct_larryMult_write_splits_outputAdded(split_seed=323)
