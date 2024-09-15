@@ -119,3 +119,18 @@ plot_velocity_confidence_boxplot_by_method(dataset='erythroid', data_to_plot=dat
 plot_cosine_similarity_boxplot_by_method(dataset='pancreas', split_seed=317, data_to_plot=None, fig_folder=None)
 plot_velocity_confidence_boxplot_by_method(dataset='pancreas', split_seed=317, data_to_plot=None)
 
+# pancreasINC
+plot_cosine_similarity_boxplot_by_method(dataset='pancreasINC', split_seed=317, data_to_plot=None, fig_folder=None)
+plot_velocity_confidence_boxplot_by_method(dataset='pancreasINC', split_seed=317, data_to_plot=None)
+
+# larryMult
+plot_velocity_confidence_boxplot_by_method(dataset='larryMult', split_seed=317, data_to_plot=None)
+
+plot_cosine_similarity_boxplot_by_method(dataset='larryMult', split_seed=317, data_to_plot=None, fig_folder=None)
+plot_cosine_similarity_boxplot_by_method(dataset='larryMult', split_seed=320, data_to_plot=None, fig_folder=None)
+plot_cosine_similarity_boxplot_by_method(dataset='larryMult', split_seed=323, data_to_plot=None, fig_folder=None)
+plot_cosine_similarity_boxplot_by_method(dataset='larryMult', split_seed=326, data_to_plot=None, fig_folder=None)
+plot_cosine_similarity_boxplot_by_method(dataset='larryMult', split_seed=329, data_to_plot=None, fig_folder=None)
+
+
+

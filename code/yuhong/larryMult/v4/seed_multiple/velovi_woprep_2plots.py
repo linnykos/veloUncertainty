@@ -15,7 +15,7 @@ from v4_functions import *
 from v4_functions_velovi import *
 
 def velovi_larryMult_plots(split_seed):
-    method = 'velovi'
+    method = 'velovi_woprep'
     dataset_short = 'larryMult'
     dataset_long = 'larryMult'
     data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/'
@@ -104,8 +104,8 @@ velovi_larryMult_plots(split_seed=329)
 
 ######################################################
 
-def velovi_larryMult_write_splits_outputAdded(split_seed):
-    method = 'velovi'
+def velovi_woprep_larryMult_write_splits_outputAdded(split_seed):
+    method = 'velovi_woprep'
     dataset_short = 'larryMult'
     dataset_long = 'larryMult'
     data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/'
@@ -135,10 +135,11 @@ def velovi_larryMult_write_splits_outputAdded(split_seed):
     split1.write_h5ad(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split1_v4_outputAdded.h5ad')
     split2.write_h5ad(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split2_v4_outputAdded.h5ad')
 
-velovi_larryMult_write_splits_outputAdded(split_seed=320)
-velovi_larryMult_write_splits_outputAdded(split_seed=323)
-velovi_larryMult_write_splits_outputAdded(split_seed=326)
-velovi_larryMult_write_splits_outputAdded(split_seed=329)
+velovi_woprep_larryMult_write_splits_outputAdded(split_seed=320)
+velovi_woprep_larryMult_write_splits_outputAdded(split_seed=323)
+velovi_woprep_larryMult_write_splits_outputAdded(split_seed=326)
+velovi_woprep_larryMult_write_splits_outputAdded(split_seed=329)
+
 
 '''
 if not 'latent_time' in split1.obs.columns:
