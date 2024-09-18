@@ -10,6 +10,7 @@ import datetime
 def read_data_v4(dataset_long,dataset_short,method,split_seed,data_version,allgenes=False,outputAdded=False):
     data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/'
     if (allgenes==False):
+        if data_version=='total': split_seed = 317
         data_path = data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_'+data_version+'_v4'
     elif 'split' in data_version:
         data_path = data_folder+'v4_'+dataset_long+'/'+'seed'+str(split_seed)+'_'+dataset_short+'_'+data_version+'_allgenes'
@@ -257,6 +258,7 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,dataset,method,
     plt.title('Histogram of cosine similarity, '+dataset+'+'+method+'\n Ngenes='+str(Ngenes)+', split_seed='+str(split_seed))
     plt.savefig(fig_folder+'metric/'+dataset_method+'_cos_sim_hist.png')
     plt.clf()
+    """
     # umapCompute
     print('Plot umapCompute')
     adata_total_plot = adata_total.copy()
@@ -269,6 +271,7 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,dataset,method,
     print('Plot umapOriginal')
     plot_metric(adata=adata_total_plot,metric='cos',plot_type='emb',fig_folder=fig_folder,dataset=dataset,method=method,basis_type='Orig',basis='umap',Ngenes=Ngenes,split_seed=split_seed)
     plot_metric(adata=adata_total_plot,metric='cos',plot_type='scat',fig_folder=fig_folder,dataset=dataset,method=method,basis_type='Orig',basis='umap',Ngenes=Ngenes,split_seed=split_seed)
+    """
 
 ### helper
 def plot_metric_withRef(adata,metric,dataset,method,fig_folder,basis_type,split_seed,celltype_label=None,Ngenes=None,recompute=True,basis='umap'):
@@ -326,7 +329,7 @@ def plot_veloConf_and_cosSim_helper(adata_total,dataset,method,fig_folder,umapOr
                    title='Velocity cosine similarity, '+dataset+'+'+method+',\n Ngenes='+str(Ngenes)+', split_seed='+str(split_seed),size=100,alpha=0.3)
     plt.savefig(fig_folder+"metric/"+data_method+"_veloConf_and_cosSim_"+fig_umap+".png")
     plt.clf()
-    plot_metric(adata_plot,metric='conf',plot_type='scat',fig_folder=fig_folder,dataset=dataset,method=method,basis_type=fig_umap,split_seed=split_seed,Ngenes=Ngenes)
+    #plot_metric(adata_plot,metric='conf',plot_type='scat',fig_folder=fig_folder,dataset=dataset,method=method,basis_type=fig_umap,split_seed=split_seed,Ngenes=Ngenes)
   
 def plot_veloConf_and_cosSim(adata_total,adata_split1,adata_split2,dataset,method,fig_folder,split_seed,recompute=True):
     adata_plot = adata_total.copy()

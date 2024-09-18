@@ -190,6 +190,12 @@ def plot_correlation_histogram(dataset, split_seed,fig_folder=None):
 
 plot_correlation_histogram(dataset='ery', split_seed=317,fig_folder=None)
 plot_correlation_histogram(dataset='pan', split_seed=317,fig_folder=None)
+plot_correlation_histogram(dataset='panINC', split_seed=317,fig_folder=None)
+plot_correlation_histogram(dataset='larryMult', split_seed=317,fig_folder=None)
+plot_correlation_histogram(dataset='larryMult', split_seed=320,fig_folder=None)
+plot_correlation_histogram(dataset='larryMult', split_seed=323,fig_folder=None)
+plot_correlation_histogram(dataset='larryMult', split_seed=326,fig_folder=None)
+plot_correlation_histogram(dataset='larryMult', split_seed=329,fig_folder=None)
 
 
 def plot_overdispersion_histogram(dataset, split_seed,fig_folder=None):
