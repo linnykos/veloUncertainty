@@ -15,8 +15,8 @@ sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloU
 from v4_functions_sct import *
 from v4_functions import *
 
-df = pd.read_csv(data_folder+dataset_short+'_sct_velo_timestep.csv')
-timestep = df.iloc[np.where(df['pseudotime_corr']==np.max(df['pseudotime_corr']))[0][0]]['time'] # 0.19
+#df = pd.read_csv(data_folder+dataset_short+'_sct_velo_timestep.csv')
+#timestep = df.iloc[np.where(df['pseudotime_corr']==np.max(df['pseudotime_corr']))[0][0]]['time'] # 0.19
 
 adata_prefix = 'adata_'+dataset_short+'_'+method
 tnode_prefix = 'tnode_'+dataset_short+'_'+method
@@ -29,10 +29,31 @@ tnode_total = sct.predict.load_model(data_folder+tnode_prefix+'_total_v4.pth')
 tnode_split1 = sct.predict.load_model(data_folder+tnode_prefix+'_split1_v4.pth')
 tnode_split2 = sct.predict.load_model(data_folder+tnode_prefix+'_split2_v4.pth')
 
-sct_add_state_info_colors(split1)
-sct_add_state_info_colors(split2)
-sct_add_state_info_colors(total)
+def compute_sct_avg_velocity(tnode,timesteps):
+    v_shape = tnode.adata.shape
+    v = np.zeros(v_shape)
+    for t in timesteps:
+        v += compute_sctour_velocity(tnode, timestep=t)
+    return v/len(timesteps)
 
+timesteps=[i/50 for i in range(1,11)]
+total.layers['velocity'] = compute_sct_avg_velocity(tnode_total, timesteps)
+split1.layers['velocity'] = compute_sct_avg_velocity(tnode_split1, timesteps) 
+split2.layers['velocity'] = compute_sct_avg_velocity(tnode_split2, timesteps)
+
+#total.layers['velocity'] = compute_sctour_velocity(tnode_total, timestep=timestep) #+
+#split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=timestep) #-
+#split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=timestep) #+
+print('Velocity computed')
+
+get_umap_sct(total)
+get_umap_sct(split1)
+get_umap_sct(split2)
+print('UMAP computed')
+
+total.write_h5ad(data_folder+adata_prefix+'_total_v4_outputAdded.h5ad') # 
+split1.write_h5ad(data_folder+adata_prefix+'_split1_v4_outputAdded.h5ad') # 
+split2.write_h5ad(data_folder+adata_prefix+'_split2_v4_outputAdded.h5ad') # 
 """
 total = sc.read_h5ad(data_folder+adata_prefix+'_total_v4_outputAdded.h5ad') # 
 split1 = sc.read_h5ad(data_folder+adata_prefix+'_split1_v4_outputAdded.h5ad') # 
@@ -50,21 +71,6 @@ ptime_sct_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset
 
 ############################################
 # velocity
-"""
-total.layers['velocity'] = compute_sctour_velocity(tnode_total, timestep=timestep) #+
-split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=timestep) #-
-split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=timestep) #+
-print('Velocity computed')
-
-get_umap_sct(total)
-get_umap_sct(split1)
-get_umap_sct(split2)
-print('UMAP computed')
-
-total.write_h5ad(data_folder+adata_prefix+'_total_v4_outputAdded.h5ad') # 
-split1.write_h5ad(data_folder+adata_prefix+'_split1_v4_outputAdded.h5ad') # 
-split2.write_h5ad(data_folder+adata_prefix+'_split2_v4_outputAdded.h5ad') # 
-"""
 plot_sct_velocity(adata_in=split1,data_version='split1',dataset=dataset_short,fig_folder=fig_folder)
 plot_sct_velocity(adata_in=split2,data_version='split2',dataset=dataset_short,fig_folder=fig_folder)
 plot_sct_velocity(adata_in=total,data_version='total',dataset=dataset_short,fig_folder=fig_folder)
@@ -90,7 +96,7 @@ plot_veloConf_and_cosSim(total,split1,split2,dataset_short,method,fig_folder,spl
 plot_veloConf_hist(total,dataset_short,method,fig_folder,split_seed)
 plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed)
 
-print(np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence'])) # 0.13712638
+print(np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence'])) # 0.13712638 (t=0.19) -> 0.13777226 (avg)
 
 """
 c2,n2 = compute_cosine_similarity_union(split1,split2,method)
@@ -126,20 +132,10 @@ ptime_diffusion_correlation_scatter_spearman(s1=split1,s2=split2,method=method,d
 print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='velocity_pseudotime')
 print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='ptime')
 
-"""
->>> print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='velocity_pseudotime')
-Blood progenitors 1 0.9099
-Blood progenitors 2 0.891
-Erythroid1 0.6146
-Erythroid2 0.4917
-Erythroid3 0.5882
->>> print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='ptime')
-Blood progenitors 1 0.9308
-Blood progenitors 2 0.9325
-Erythroid1 0.7669
-Erythroid2 0.5862
-Erythroid3 0.6855
-"""
+np.corrcoef(total.obs['ptime'],total.obs['velocity_pseudotime'])[0,1]
+# 0.7796424950753456
+np.corrcoef(total.obs['ptime'],total.obs['latent_time'])[0,1]
+# 0.6727866730850607
 
 if not 'latent_time' in split1.obs.columns:
     scv.tl.recover_dynamics(total,n_jobs=8)
@@ -152,7 +148,7 @@ if not 'latent_time' in split1.obs.columns:
     scv.tl.latent_time(split2)
     plot_latent_time(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
 
-latent_time_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,split_seed=split_seed,celltype_label='state_info')
+latent_time_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,split_seed=split_seed)
 
 
 #plot_latent_time(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,celltype_label='state_info')
@@ -170,11 +166,18 @@ v2s_mean,v2s_median = compute_cosine_similarity_shuffled(split1,split2,method=me
 np.round(np.mean(v2s_mean),5) # 0.47158
 np.round(np.mean(v2s_median),5) # 0.47913
 
+# t=0.19
 # paired: 0.6231 0.6483
 # shuffled: 0.47158 0.47913
 ### shuffled mean and median have variance approximately 0 among 100 iterations
+# avg t
+# paired: 0.7154 0.7661
+# 0.48041
+# 0.49335
 
 ####################################
 cos_sim_vf = np.diag(cosine_similarity(split1.obsm['X_VF'],split2.obsm['X_VF']))
 [np.round(np.median(cos_sim_vf),4), np.round(np.mean(cos_sim_vf),4)]
-
+# [0.0999, 0.1337]
+np.quantile(cos_sim_vf,[0.,.25,.5,.75,1.])
+# array([-0.58408761, -0.15341007,  0.09990515,  0.41382927,  0.87315518])

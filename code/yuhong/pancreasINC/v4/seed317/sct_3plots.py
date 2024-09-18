@@ -10,6 +10,8 @@ import scvelo as scv
 import sctour as sct
 import numpy as np
 import pandas as pd
+import torch
+import random
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v4_functions_sct import *
@@ -21,7 +23,7 @@ timestep = df.iloc[np.where(df['pseudotime_corr']==np.max(df['pseudotime_corr'])
 adata_prefix = 'adata_'+dataset_short+'_'+method
 tnode_prefix = 'tnode_'+dataset_short+'_'+method
 
-"""
+
 total = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='total',allgenes=False,outputAdded=False)
 split1 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split1',allgenes=False,outputAdded=False)
 split2 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split2',allgenes=False,outputAdded=False)
@@ -33,13 +35,25 @@ compute_umap(split1, dataset_short)
 compute_umap(split2, dataset_short)
 compute_umap(total, dataset_short)
 
+
+#total.layers['velocity'] = compute_sctour_velocity(tnode_total, timestep=timestep) #+
+#split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=timestep) #-
+#split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=timestep) #+
+def compute_sct_avg_velocity(tnode,timesteps):
+    v_shape = tnode.adata.shape
+    v = np.zeros(v_shape)
+    for t in timesteps:
+        v += compute_sctour_velocity(tnode, timestep=t)
+    return v/len(timesteps)
+
 sct_seed=615
 torch.manual_seed(sct_seed)
 random.seed(sct_seed)
 np.random.seed(sct_seed)
-total.layers['velocity'] = compute_sctour_velocity(tnode_total, timestep=timestep) #+
-split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=timestep) #-
-split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=timestep) #+
+timesteps=[i/50 for i in range(1,11)]
+total.layers['velocity'] = compute_sct_avg_velocity(tnode_total, timesteps)
+split1.layers['velocity'] = compute_sct_avg_velocity(tnode_split1, timesteps) 
+split2.layers['velocity'] = compute_sct_avg_velocity(tnode_split2, timesteps)
 
 raw = read_raw_adata(dataset_short)
 split1.uns['clusters_colors'] = raw.uns['clusters_colors'].copy()
@@ -54,7 +68,7 @@ split2.write(data_folder+adata_prefix+'_split2_v4_outputAdded.h5ad') #
 total = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='total',allgenes=False,outputAdded=True)
 split1 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split1',allgenes=False,outputAdded=True)
 split2 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split2',allgenes=False,outputAdded=True)
-
+"""
 ############################################
 # vector field
 plot_vf_umap(adata_in=split1, data_version="split1",data=dataset_short,method=method,fig_folder=fig_folder)
