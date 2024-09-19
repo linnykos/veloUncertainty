@@ -29,7 +29,7 @@ def sct_panINC_plots(split_seed,timesteps=[i/50 for i in range(1,11)]):
     total = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='total',allgenes=False,outputAdded=False)
     split1 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split1',allgenes=False,outputAdded=False)
     split2 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split2',allgenes=False,outputAdded=False)
-    tnode_total = sct.predict.load_model(data_folder+tnode_prefix+'_total_v4.pth')
+    tnode_total = sct.predict.load_model('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_'+dataset_long+'/seed317/'+method+'/'+tnode_prefix+'_total_v4.pth')
     tnode_split1 = sct.predict.load_model(data_folder+tnode_prefix+'_split1_v4.pth')
     tnode_split2 = sct.predict.load_model(data_folder+tnode_prefix+'_split2_v4.pth')
     compute_umap(split1, dataset_short)

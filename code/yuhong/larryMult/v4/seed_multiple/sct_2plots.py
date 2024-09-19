@@ -3,18 +3,27 @@ import scvelo as scv
 import sctour as sct
 import numpy as np
 import pandas as pd
+import torch
+import random
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v4_functions_sct import *
 from v4_functions import *
 
-def sct_larryMult_plots(split_seed):
+def compute_sct_avg_velocity(tnode,timesteps):
+    v_shape = tnode.adata.shape
+    v = np.zeros(v_shape)
+    for t in timesteps:
+        v += compute_sctour_velocity(tnode, timestep=t)
+    return v/len(timesteps)
+
+def sct_larryMult_plots(split_seed,timesteps=[i/50 for i in range(1,11)]):
     method = 'sct'
     dataset_long = 'larryMult'
     dataset_short = 'larryMult'
     data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/'
     fig_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v4_'+dataset_long+'/seed'+str(split_seed)+"/"+method+"/"
-    timestep = 0.61
+    #timestep = 0.61
     #df = pd.read_csv(data_folder+dataset_short+'_sct_velo_timestep.csv')
     #timestep = df.iloc[np.where(df['pseudotime_corr']==np.max(df['pseudotime_corr']))[0][0]]['time'] # 0.61
     adata_prefix = 'adata_'+dataset_short+'_'+method
@@ -41,9 +50,16 @@ def sct_larryMult_plots(split_seed):
     split2.obsm['X_umapOriginal'] = split2.obsm['X_umap'].copy()
     split2.obsm['X_umapOriginal'][:,0] = np.array(split2.obs['SPRING-x'])
     split2.obsm['X_umapOriginal'][:,1] = np.array(split2.obs['SPRING-y'])
-    total.layers['velocity'] = compute_sctour_velocity(tnode_total, timestep=timestep) #+
-    split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=timestep) #-
-    split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=timestep) #+
+    sct_seed=615
+    torch.manual_seed(sct_seed)
+    random.seed(sct_seed)
+    np.random.seed(sct_seed)
+    total.layers['velocity'] = compute_sct_avg_velocity(tnode_total, timesteps)
+    split1.layers['velocity'] = compute_sct_avg_velocity(tnode_split1, timesteps) 
+    split2.layers['velocity'] = compute_sct_avg_velocity(tnode_split2, timesteps) 
+    print('seed'+str(split_seed)+': write outputAdded adata')
+    split1.write_h5ad(data_folder+'adata_'+dataset_short+'_'+method+'_split1_v4_outputAdded.h5ad')
+    split2.write_h5ad(data_folder+'adata_'+dataset_short+'_'+method+'_split2_v4_outputAdded.h5ad')
     print('seed'+str(split_seed)+': plot gene correlations')
     plot_method_gene_corr(split1, split2, method, dataset_short, fig_folder, split_seed)
     # vector field
@@ -112,6 +128,8 @@ sct_larryMult_plots(split_seed=323)
 sct_larryMult_plots(split_seed=326)
 sct_larryMult_plots(split_seed=329)
 
+exit()
+
 
 def sct_larryMult_write_splits_outputAdded(split_seed):
     method = 'sct'
@@ -142,10 +160,10 @@ def sct_larryMult_write_splits_outputAdded(split_seed):
     split1.write_h5ad(data_folder+'adata_'+dataset_short+'_'+method+'_split1_v4_outputAdded.h5ad')
     split2.write_h5ad(data_folder+'adata_'+dataset_short+'_'+method+'_split2_v4_outputAdded.h5ad')
 
-sct_larryMult_write_splits_outputAdded(split_seed=320)
-sct_larryMult_write_splits_outputAdded(split_seed=323)
-sct_larryMult_write_splits_outputAdded(split_seed=326)
-sct_larryMult_write_splits_outputAdded(split_seed=329)
+#sct_larryMult_write_splits_outputAdded(split_seed=320)
+#sct_larryMult_write_splits_outputAdded(split_seed=323)
+#sct_larryMult_write_splits_outputAdded(split_seed=326)
+#sct_larryMult_write_splits_outputAdded(split_seed=329)
 
 
 """
