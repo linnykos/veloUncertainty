@@ -83,6 +83,41 @@ utv_larryMult_plots(split_seed=326)
 utv_larryMult_plots(split_seed=329)
 
 
+
+"""
+split_seed=320
+split_seed=323
+split_seed=326
+split_seed=329
+
+dataset_long = 'larryMult'
+dataset_short = 'larryMult'
+method = 'utv'
+data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_'+dataset_long+'/'
+
+
+split1 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split1',allgenes=False,outputAdded=False)
+split2 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split2',allgenes=False,outputAdded=False)
+
+colors = ["#6e8ea1","#ffab6e","#dba8bc","#a0a0a0","#c4c88a","#87c3c9"]
+split1.uns['state_info_colors'] = colors
+split2.uns['state_info_colors'] = colors
+
+compute_umap(split1, dataset_short)
+compute_umap(split2, dataset_short)
+
+split1.obsm['X_umapOriginal'] = split1.obsm['X_umap'].copy()
+split1.obsm['X_umapOriginal'][:,0] = np.array(split1.obs['SPRING-x'])
+split1.obsm['X_umapOriginal'][:,1] = np.array(split1.obs['SPRING-y'])
+
+split2.obsm['X_umapOriginal'] = split2.obsm['X_umap'].copy()
+split2.obsm['X_umapOriginal'][:,0] = np.array(split2.obs['SPRING-x'])
+split2.obsm['X_umapOriginal'][:,1] = np.array(split2.obs['SPRING-y'])
+
+split1.write_h5ad(data_folder+'seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split1_v4_outputAdded.h5ad')
+split2.write_h5ad(data_folder+'seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split2_v4_outputAdded.h5ad')
+"""
+
 #split1.write_h5ad(data_folder+'/seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split1_v4_outputAdded.h5ad')
 #split2.write_h5ad(data_folder+'/seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split2_v4_outputAdded.h5ad')
 #total.write_h5ad(data_folder+'/seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_total_v4_outputAdded.h5ad')

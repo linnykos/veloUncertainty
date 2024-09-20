@@ -171,3 +171,4 @@ def plot_cos_sim_rm_mean_allMethods(dataset,split_seed,methods=['scv','utv','sct
 
 plot_cos_sim_rm_mean_allMethods(dataset='panINC',split_seed=317)
 
+plot_cos_sim_rm_mean_allMethods(dataset='pan',split_seed=317)

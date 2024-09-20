@@ -15,8 +15,15 @@ sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloU
 from v4_functions_sct import *
 from v4_functions import *
 
-df = pd.read_csv(data_folder+dataset_short+'_sct_velo_timestep.csv')
-timestep = df.iloc[np.where(df['pseudotime_corr']==np.max(df['pseudotime_corr']))[0][0]]['time'] # 0.01
+def compute_sct_avg_velocity(tnode,timesteps):
+    v_shape = tnode.adata.shape
+    v = np.zeros(v_shape)
+    for t in timesteps:
+        v += compute_sctour_velocity(tnode, timestep=t)
+    return v/len(timesteps)
+
+#df = pd.read_csv(data_folder+dataset_short+'_sct_velo_timestep.csv')
+#timestep = df.iloc[np.where(df['pseudotime_corr']==np.max(df['pseudotime_corr']))[0][0]]['time'] # 0.01
 
 adata_prefix = 'adata_'+dataset_short+'_'+method
 tnode_prefix = 'tnode_'+dataset_short+'_'+method
@@ -33,13 +40,21 @@ compute_umap(split1, dataset_short)
 compute_umap(split2, dataset_short)
 compute_umap(total, dataset_short)
 
+import torch
+import random
 sct_seed=615
 torch.manual_seed(sct_seed)
 random.seed(sct_seed)
 np.random.seed(sct_seed)
-total.layers['velocity'] = compute_sctour_velocity(tnode_total, timestep=timestep) #+
-split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=timestep) #+
-split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=timestep) #+
+
+timesteps=[i/50 for i in range(1,11)]
+total.layers['velocity'] = compute_sct_avg_velocity(tnode_total, timesteps)
+split1.layers['velocity'] = compute_sct_avg_velocity(tnode_split1, timesteps) 
+split2.layers['velocity'] = compute_sct_avg_velocity(tnode_split2, timesteps)
+
+#total.layers['velocity'] = compute_sctour_velocity(tnode_total, timestep=timestep) #+
+#split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=timestep) #+
+#split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=timestep) #+
 
 total.write(data_folder+adata_prefix+'_total_v4_outputAdded.h5ad') # 
 split1.write(data_folder+adata_prefix+'_split1_v4_outputAdded.h5ad') # 
@@ -75,8 +90,12 @@ plot_cosine_similarity_boxplot_by_celltype(adata_split1=split1,adata_split2=spli
 
 c1,n1 = compute_cosine_similarity_intersect(split1,split2,method) # 1486
 c2,n2 = compute_cosine_similarity_union(split1,split2,method) # 2514
-np.quantile(c1,[0.,.25,.5,.75,1.]) # [-0.19761002,  0.83260471,  0.88979718,  0.92645803,  0.97551578]
-np.quantile(c2,[0.,.25,.5,.75,1.]) # [-0.19190087,  0.81103752,  0.87097793,  0.90436934,  0.95972185]
+np.quantile(c1,[0.,.25,.5,.75,1.]) 
+# [-0.19761002,  0.83260471,  0.88979718,  0.92645803,  0.97551578] ->
+# [-0.30384073,  0.88983872,  0.92698218,  0.95002908,  0.98576294]
+np.quantile(c2,[0.,.25,.5,.75,1.]) 
+# [-0.19190087,  0.81103752,  0.87097793,  0.90436934,  0.95972185] ->
+# [-0.29475145,  0.87067791,  0.90627714,  0.92791657,  0.96480789]
 
 ######################################################
 ## plot velo_conf
@@ -89,7 +108,8 @@ plot_veloConf_and_cosSim(total,split1,split2,dataset_short,method,fig_folder,spl
 plot_veloConf_hist(total,dataset_short,method,fig_folder,split_seed)
 plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed,celltype_label=None)
 
-np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence']) # 0.27310003
+np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence']) 
+# 0.27310003 -> 0.2269416
 
 
 ######################################################
@@ -103,9 +123,7 @@ plot_pseudotime(adata_in=split2,data_version='split2',dataset=dataset_short,meth
 plot_pseudotime(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
 
 ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,time_label='velocity_pseudotime',split_seed=split_seed)
-# -0.463
-
-
+# -0.463 -> -0.463
 
 if not 'latent_time' in split1.obs.columns:
     scv.tl.recover_dynamics(total,n_jobs=8)
@@ -119,18 +137,14 @@ if not 'latent_time' in split1.obs.columns:
     plot_latent_time(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
 
 latent_time_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,split_seed=split_seed)
-# -0.458
+# -0.458 -> -0.458
 
 print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='velocity_pseudotime')
 print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='ptime')
 
 """
-np.corrcoef([c2,total.obs['velocity_confidence'],total.obs['ptime'],total.obs['velocity_pseudotime'],total.obs['latent_time']])
-array([[ 1.        ,  0.31381099, -0.06183637,  0.03091665,  0.04335196],
-       [ 0.31381099,  1.        , -0.2964452 ,  0.05444068,  0.37584017],
-       [-0.06183637, -0.2964452 ,  1.        ,  0.64635625, -0.8548869 ],
-       [ 0.03091665,  0.05444068,  0.64635625,  1.        , -0.32460383],
-       [ 0.04335196,  0.37584017, -0.8548869 , -0.32460383,  1.        ]])
+print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='velocity_pseudotime')
+print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='ptime')
 """
 
 ###################################
@@ -146,6 +160,6 @@ np.round(np.mean(v2s_median),5) #
 
 np.var(v2s_mean) # 2.518031761592001e-05
 np.var(v2s_median) # 6.200052935986668e-06
-# paired: 0.8446 0.871
-# shuffled: 0.11892 -0.02414
-### shuffled mean and median have variance approximately 0 among 100 iterations
+# paired: 0.8446 0.871 -> 0.8896 0.9063
+# shuffled: 0.11892 -0.02414 -> 0.14798 -0.00877
+

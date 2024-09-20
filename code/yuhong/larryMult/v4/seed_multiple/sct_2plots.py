@@ -10,12 +10,6 @@ sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloU
 from v4_functions_sct import *
 from v4_functions import *
 
-def compute_sct_avg_velocity(tnode,timesteps):
-    v_shape = tnode.adata.shape
-    v = np.zeros(v_shape)
-    for t in timesteps:
-        v += compute_sctour_velocity(tnode, timestep=t)
-    return v/len(timesteps)
 
 def sct_larryMult_plots(split_seed,timesteps=[i/50 for i in range(1,11)]):
     method = 'sct'
@@ -130,6 +124,12 @@ sct_larryMult_plots(split_seed=329)
 
 exit()
 
+def compute_sct_avg_velocity(tnode,timesteps):
+    v_shape = tnode.adata.shape
+    v = np.zeros(v_shape)
+    for t in timesteps:
+        v += compute_sctour_velocity(tnode, timestep=t)
+    return v/len(timesteps)
 
 def sct_larryMult_write_splits_outputAdded(split_seed):
     method = 'sct'
@@ -137,8 +137,7 @@ def sct_larryMult_write_splits_outputAdded(split_seed):
     dataset_short = 'larryMult'
     data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/'
     fig_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v4_'+dataset_long+'/seed'+str(split_seed)+"/"+method+"/"
-    timestep = 0.61
-    adata_prefix = 'adata_'+dataset_short+'_'+method
+    #adata_prefix = 'adata_'+dataset_short+'_'+method
     tnode_prefix = 'tnode_'+dataset_short+'_'+method
     split1 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split1',allgenes=False,outputAdded=False)
     split2 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split2',allgenes=False,outputAdded=False)
@@ -155,8 +154,17 @@ def sct_larryMult_write_splits_outputAdded(split_seed):
     split2.obsm['X_umapOriginal'] = split2.obsm['X_umap'].copy()
     split2.obsm['X_umapOriginal'][:,0] = np.array(split2.obs['SPRING-x'])
     split2.obsm['X_umapOriginal'][:,1] = np.array(split2.obs['SPRING-y'])
-    split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=timestep) 
-    split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=timestep) 
+    # compute avg velocity
+    sct_seed=615
+    torch.manual_seed(sct_seed)
+    random.seed(sct_seed)
+    np.random.seed(sct_seed)
+    timesteps=[i/50 for i in range(1,11)]
+    #total.layers['velocity'] = compute_sct_avg_velocity(tnode_total, timesteps)
+    split1.layers['velocity'] = compute_sct_avg_velocity(tnode_split1, timesteps) 
+    split2.layers['velocity'] = compute_sct_avg_velocity(tnode_split2, timesteps)
+    #split1.layers['velocity'] = compute_sctour_velocity(tnode_split1, timestep=timestep) 
+    #split2.layers['velocity'] = compute_sctour_velocity(tnode_split2, timestep=timestep) 
     split1.write_h5ad(data_folder+'adata_'+dataset_short+'_'+method+'_split1_v4_outputAdded.h5ad')
     split2.write_h5ad(data_folder+'adata_'+dataset_short+'_'+method+'_split2_v4_outputAdded.h5ad')
 
