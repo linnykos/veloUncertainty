@@ -112,7 +112,7 @@ conf_sct = get_velocity_confidence(method='sct', dataset='erythroid')
 conf_velovi = get_velocity_confidence(method='velovi', dataset='erythroid')
 conf_velov_w = get_velocity_confidence(method='velovi_woprep', dataset='erythroid')
 data_to_plot = [conf_scv, conf_utv, conf_sct, conf_velovi, conf_velov_w]
-plot_velocity_confidence_boxplot_by_method(dataset='erythroid', data_to_plot=data_to_plot)
+plot_velocity_confidence_boxplot_by_method(dataset='erythroid', split_seed=317, data_to_plot=data_to_plot)
 
 
 # pancreas
