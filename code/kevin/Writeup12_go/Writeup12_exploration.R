@@ -10,17 +10,17 @@ head(df)
 rownames(df) <- df[,"gene_name"]
 
 # one idea: let's just count how many times a gene is highly variable
-highly_var_idx <- grep("X.*highly_variable", colnames(df))
-df_subset <- df[,highly_var_idx]
-num_highly_var <- apply(df_subset, 1, function(x){length(which(x == 1))})
-names(num_highly_var) <- df[,"gene_name"]
+velocity_var_idx <- grep("X.*velocity_genes", colnames(df))
+df_subset <- df[,velocity_var_idx]
+num_velocity_var <- apply(df_subset, 1, function(x){length(which(x == "True"))})
+names(num_velocity_var) <- df[,"gene_name"]
 
 lik_idx <- grep("lik", colnames(df)) # this is including the total
 df_subset <- df[,lik_idx]
 median_lik <- apply(df_subset, 1, function(x){stats::median(x, na.rm = TRUE)})
 names(median_lik) <- df[,"gene_name"]
 
-teststat_vec <- num_highly_var
+teststat_vec <- num_velocity_var
 teststat_vec <- sort(teststat_vec, decreasing = TRUE)
 keep_genes <- intersect(names(teststat_vec)[teststat_vec != 0],
                         names(median_lik)[!is.na(median_lik)])
@@ -53,6 +53,8 @@ gse <- clusterProfiler::gseGO(
 )
 
 gse_df <- as.data.frame(gse)
+
+gse_df[which(gse_df$p.adjust <= 0.1), "Description"]
 
 write.csv(gse_df, 
           file = paste0(csv_folder, "Writeup12_pancreas_scvelo_GSEA.csv"))
