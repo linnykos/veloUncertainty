@@ -28,3 +28,14 @@ Since we followed the default subset=True, all the non-highly-variable genes are
 9:32
 But this is different from the highly_variable_genes from the original adata object.
 ======
+
+
+pancreas_utv_gene_fitloss.csv and pancreas_velovi_gene_velocityR2.csv were provided on November 4.
+Yuhong's message:
+===v====
+For unitvelo: fit_loss, highly_variable, velocity_genes; for velovi (standard procedure with preprocess): velocity_r2, highly_variable, velocity_genes
+6:15
+VeloVI without preprocessing does not contain velocity_r2, since this is computed in the preprocess function.
+6:16
+'highly_variable' here are the computed values and are not from the raw dataset.
+===^====

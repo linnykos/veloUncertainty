@@ -15,7 +15,7 @@ df_subset <- df[,velocity_var_idx]
 num_velocity_var <- apply(df_subset, 1, function(x){length(which(x == "True"))})
 names(num_velocity_var) <- df[,"gene_name"]
 
-lik_idx <- grep("lik", colnames(df)) # this is including the total
+lik_idx <- grep("X.*lik", colnames(df)) # this is including the total
 df_subset <- df[,lik_idx]
 median_lik <- apply(df_subset, 1, function(x){stats::median(x, na.rm = TRUE)})
 names(median_lik) <- df[,"gene_name"]
