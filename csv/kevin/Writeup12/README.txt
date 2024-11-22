@@ -30,7 +30,7 @@ But this is different from the highly_variable_genes from the original adata obj
 ======
 
 
-pancreas_utv_gene_fitloss.csv and pancreas_velovi_gene_velocityR2.csv were provided on November 4.
+pancreas_utv_gene_fitloss.csv (which I renamed to be pancreas_utv_gene_fitloss_v1.csv) and pancreas_velovi_gene_velocityR2.csv were provided on November 4.
 Yuhong's message:
 ===v====
 For unitvelo: fit_loss, highly_variable, velocity_genes; for velovi (standard procedure with preprocess): velocity_r2, highly_variable, velocity_genes
@@ -39,3 +39,23 @@ VeloVI without preprocessing does not contain velocity_r2, since this is compute
 6:16
 'highly_variable' here are the computed values and are not from the raw dataset.
 ===^====
+
+========
+ON NOVEMBER 22: Yuhong gave me pancreas_utv_gene_fitloss.csv  (which I renamed to be pancreas_utv_gene_fitloss_v2.csv)
+
+Kevin Lin
+  7:24 PM
+Question: For unitvelo, you made the csv with the values from the different splits and seeds. That csv you gave me had the fit_loss column. I believe there are also fit_llf, fit_sr2, fit_ur2, and loss  (I'm not sure about loss, but maybe it's also there?) columns. Could you give me those columns also?
+7:24
+So just one big massive CSV, with fit_loss, fit_llf, fit_sr2, fit_ur2 (and loss if it exists) for each unitvelo run on the full pancreas dataset
+7:24
+Thanks!!!
+
+Yuhong Li
+  9:33 PM
+CSV
+pancreas_utv_gene_fitloss.csv
+CSV
+
+9:33
+I did not find "loss". Can it possibly be the same as "fit_loss"?

@@ -16,7 +16,7 @@ num_velocity_var <- apply(df_subset, 1, function(x){length(which(x == "True"))})
 names(num_velocity_var) <- df[,"gene_name"]
 
 lik_idx <- grep("X.*fit_loss", colnames(df)) # this is including the total
-df_subset <- df[,lik_idx]
+df_subset <- -df[,lik_idx] # this is the LOSS
 median_lik <- apply(df_subset, 1, function(x){stats::median(x, na.rm = TRUE)})
 names(median_lik) <- df[,"gene_name"]
 
@@ -54,9 +54,10 @@ gse <- clusterProfiler::gseGO(
 
 gse_df <- as.data.frame(gse)
 
-gse_df[which(gse_df$p.adjust <= 0.05), c("Description","NES","p.adjust")]
+gse_df[which(gse_df$p.adjust <= 0.1), c("Description","NES","p.adjust")]
 
-gse_df[which(gse_df$p.adjust <= 0.05), c("Description")]
+gse_df[which(gse_df$p.adjust <= 0.1), c("Description")]
+gse_df[which(gse_df$p.adjust <= 0.1),]
 
 write.csv(gse_df, 
           file = paste0(csv_folder, "Writeup12_pancreas_unitvelo_GSEA.csv"))
