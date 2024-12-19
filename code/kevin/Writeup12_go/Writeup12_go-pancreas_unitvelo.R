@@ -4,7 +4,7 @@ library(org.Mm.eg.db)
 library(clusterProfiler)
 
 csv_folder <- "/Users/kevinlin/Library/CloudStorage/Dropbox/Collaboration-and-People/yenchi-jerry_yuhong/git/veloUncertainty/csv/kevin/Writeup12/"
-df <- read.csv(paste0(csv_folder, "pancreas_utv_gene_fitloss.csv"))
+df <- read.csv(paste0(csv_folder, "pancreas_utv_gene_fitloss_v2.csv"))
 colnames(df)
 head(df)
 rownames(df) <- df[,"gene_name"]
@@ -15,8 +15,8 @@ df_subset <- df[,velocity_var_idx]
 num_velocity_var <- apply(df_subset, 1, function(x){length(which(x == "True"))})
 names(num_velocity_var) <- df[,"gene_name"]
 
-lik_idx <- grep("X.*fit_loss", colnames(df)) # this is including the total
-df_subset <- -df[,lik_idx] # this is the LOSS
+lik_idx <- grep("X.*fit_llf", colnames(df)) # this is including the total
+df_subset <- df[,lik_idx] 
 median_lik <- apply(df_subset, 1, function(x){stats::median(x, na.rm = TRUE)})
 names(median_lik) <- df[,"gene_name"]
 
