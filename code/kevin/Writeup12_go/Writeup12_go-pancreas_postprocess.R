@@ -42,7 +42,7 @@ go_intersect <- intersect(
 )
 
 # find what go terms these are
-gsea_velovi[go_intersect, "Description"]
+gsea_velovi[go_intersect, c("ID", "Description")]
 
 gsea_velovi[go_intersect, c("NES", "p.adjust")]
 gsea_unitvelo[go_intersect, c("NES", "p.adjust")]
@@ -56,15 +56,15 @@ gsea_unitvelo[which(gsea_unitvelo$p.adjust == min(gsea_unitvelo$p.adjust)),
 
 df <- data.frame(id = gsea_velovi[go_intersect, "ID"],
                  Description = gsea_velovi[go_intersect, "Description"],
-                 scvelo = -log10(gsea_scvelo[go_intersect, "p.adjust"]),
-                 unitvelo = -log10(gsea_unitvelo[go_intersect, "p.adjust"]),
-                 velovi = -log10(gsea_velovi[go_intersect, "p.adjust"]))
+                 scVelo = -log10(gsea_scvelo[go_intersect, "p.adjust"]),
+                 UniTVelo = -log10(gsea_unitvelo[go_intersect, "p.adjust"]),
+                 VeloVI = -log10(gsea_velovi[go_intersect, "p.adjust"]))
 
 library(tidyr)
 
 df_long <- df %>%
   pivot_longer(
-    cols = c(scvelo, unitvelo, velovi),
+    cols = c(scVelo, UniTVelo, VeloVI),
     names_to = "method",
     values_to = "logpvalue"
   )
@@ -76,14 +76,14 @@ df_long <- df %>%
 #F0E442 - Yellow
 #CC79A7 - Pink
 
-df_long$method <- factor(df_long$method, levels = c("scvelo", "unitvelo", "velovi"))
+df_long$method <- factor(df_long$method, levels = c("scVelo", "UniTVelo", "VeloVI"))
 plot1 <- ggplot(df_long, aes(x = Description, y = logpvalue, fill = method)) +
   geom_bar(stat = "identity", position = "dodge") +  # "dodge" to compare side-by-side bars
   labs(x = "Pathways", y = "-log10(p-adjust)", 
        title = "-log10(p-adjust) of Gene Pathways") + scale_fill_manual(values = c(
-         "scvelo" = "#E69F00",  
-         "unitvelo" = "#56B4E9",  
-         "velovi" = "#009E73"   
+         "scVelo" = "#E69F00",  
+         "UniTVelo" = "#56B4E9",  
+         "VeloVI" = "#009E73"   
        )) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
@@ -143,8 +143,8 @@ df_top <- df %>% slice(1:50) %>%
 plot1 <- ggplot(df_top, aes(x = median_lik, y = reorder(gene, median_lik), fill = marked)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = c("TRUE" = "red", "FALSE" = "darkgray")) +
-  labs(x = "Median likelihood", y = "Gene", 
-       title = "Top 50 Genes by Median Likelihood") +
+  labs(x = "Median likelihood", y = "Gene (Top 50 by likelihood)", 
+       title = "scVelo") +
   theme_minimal() +
   theme(
     axis.text.y = element_text(color = ifelse(rev(df_top$marked), "red", "darkgray")),
@@ -191,8 +191,8 @@ df_top <- df %>% slice(1:50) %>%
 plot1 <- ggplot(df_top, aes(x = median_lik, y = reorder(gene, median_lik), fill = marked)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = c("TRUE" = "red", "FALSE" = "darkgray")) +
-  labs(x = "Median likelihood", y = "Gene", 
-       title = "Top 50 Genes by Median Likelihood") +
+  labs(x = "Median likelihood", y = "Gene (Top 50 by likelihood)", 
+       title = "VeloVI") +
   theme_minimal() +
   theme(
     axis.text.y = element_text(color = ifelse(rev(df_top$marked), "red", "darkgray")),
@@ -207,15 +207,17 @@ ggplot2::ggsave(plot1,
 ###########
 
 # unitvelo
-df <- read.csv(paste0(csv_folder, "pancreas_utv_gene_fitloss.csv"))
+df <- read.csv(paste0(csv_folder, "pancreas_utv_gene_fitloss_v2.csv"))
 velocity_var_idx <- grep("X.*velocity_genes", colnames(df))
 df_subset <- df[,velocity_var_idx]
 num_velocity_var <- apply(df_subset, 1, function(x){length(which(x == "True"))})
 names(num_velocity_var) <- df[,"gene_name"]
 
-lik_idx <- grep("X.*fit_loss", colnames(df)) # this is including the total
+lik_idx <- grep("X.*fit_llf", colnames(df)) # this is including the total
 df_subset <- df[,lik_idx]
+num_cells <- 3696
 median_lik <- apply(df_subset, 1, function(x){stats::median(x, na.rm = TRUE)})
+median_lik <- median_lik/num_cells
 names(median_lik) <- df[,"gene_name"]
 
 teststat_vec <- num_velocity_var
@@ -239,8 +241,8 @@ df_top <- df %>% slice(1:50) %>%
 plot1 <- ggplot(df_top, aes(x = median_lik, y = reorder(gene, median_lik), fill = marked)) +
   geom_bar(stat = "identity") +
   scale_fill_manual(values = c("TRUE" = "red", "FALSE" = "darkgray")) +
-  labs(x = "Median likelihood", y = "Gene", 
-       title = "Top 50 Genes by Median Likelihood") +
+  labs(x = "Median likelihood", y = "Gene (Top 50 by likelihood)", 
+       title = "UniTVelo") +
   theme_minimal() +
   theme(
     axis.text.y = element_text(color = ifelse(rev(df_top$marked), "red", "darkgray")),
