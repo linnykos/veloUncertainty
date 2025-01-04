@@ -102,6 +102,9 @@ def plot_method_gene_corr(split1, split2, method, dataset, fig_folder, split_see
     elif 'larry' in dataset:
         dataset_short = 'larry'
         dataset_long = 'larry'
+    elif dataset=='glf' or dataset=='greenleaf':
+        dataset_short = 'glf'
+        dataset_long = 'greenleaf'
     celltype_label = get_celltype_label(dataset_short)
     common_genes = np.intersect1d(np.array(split1.var.index[np.where(~np.isnan(split1.layers['velocity'][0]))]), np.array(split2.var.index[np.where(~np.isnan(split2.layers['velocity'][0]))]))
     gene_names_split1 = split1.var.index.copy()
@@ -199,6 +202,7 @@ def get_celltype_label(dataset):
     if 'ery' in dataset: celltype_label = 'celltype'
     elif 'pan' in dataset: celltype_label = 'clusters'
     elif 'larry' in dataset: celltype_label = 'state_info'
+    elif dataset=='glf' or dataset=='greenleaf': celltype_label = 'cluster_name'
     return celltype_label
 
 ### helper
