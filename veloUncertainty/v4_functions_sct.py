@@ -67,7 +67,7 @@ def read_data_and_run_sct(dataset_short,dataset_long,method,data_folder,savedata
     positions_dict = {gene: pos for pos, gene in enumerate(gene_names)}
     #S_mat = adata.layers['spliced'].copy()
     #U_mat = adata.layers['unspliced'].copy()
-    if not 'larry' in dataset_long:
+    if (not 'larry' in dataset_long) and (not dataset_long=='greenleaf'):
         adata.obsm['X_umapOriginal'] = raw.obsm['X_umap'].copy()
         adata.obsm['X_pcaOriginal'] = raw.obsm['X_pca'].copy()
     print_message_with_time("########### start to train model for "+split_version+' ')
