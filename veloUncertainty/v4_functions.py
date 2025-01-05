@@ -32,6 +32,8 @@ def read_raw_adata(dataset):
         return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_larry/larry.h5ad')
     elif dataset=='larryMult':
         return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_larryMult/larry_multilineage.h5ad')
+    elif dataset=='greenleaf' or dataset=='glf':
+        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/glf_total_allgenes.h5ad')
     
 def get_umap_sct(adata,umapOriginal=False,moments=True,velocity_graph=True):
     if moments==True:
