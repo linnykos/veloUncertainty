@@ -54,9 +54,9 @@ scv.tl.velocity_confidence(split2)
 
 plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=split2,dataset=dataset_short,method=method,fig_folder=fig_folder, split_seed=split_seed)
 plot_veloConf_hist(total,dataset_short,method,fig_folder,split_seed)
-plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed,celltype_label=None)
+plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed,celltype_label=celltype_label)
 
-np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence']) # 0.33600016
+np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence']) 
 
 
 ## ptime

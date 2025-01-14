@@ -137,9 +137,11 @@ adata_subset.var.index.name = str(adata_subset.var.index.name)
 #sc.pl.embedding(adata_subset, basis="X_umap_greenleaf", color="cluster_name",legend_loc="on data",
 #                save='/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v4_greenleaf/umap_subset.png')
 
-adata_subset.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/greenleaf_total_allgenes.h5ad')
+sc.pl.embedding(adata_subset, basis="X_umap_greenleaf", color="cluster_name",legend_loc="on data") # get the colors
+adata_subset.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/glf_total_allgenes.h5ad')
 
 adata.var.index = adata.var.index.astype(str)
 adata.var.index.name = str(adata.var.index.name)
 adata.write_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/greenleaf/greenleaf_full.h5ad')
+
 
