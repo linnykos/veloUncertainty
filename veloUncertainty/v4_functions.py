@@ -166,7 +166,7 @@ def plot_velocity(adata_in,fig_folder,data_version,dataset,method,split_seed,rec
 def compute_cosine_similarity_intersect(adata_split1,adata_split2,method):
     velo_genes_split1 = adata_split1.var.index
     velo_genes_split2 = adata_split2.var.index
-    if method=="scv":
+    if "scv" in method:
         velo_genes_split1 = adata_split1.var.index[~np.isnan(adata_split1.layers['velocity'][0])]
         velo_genes_split2 = adata_split2.var.index[~np.isnan(adata_split2.layers['velocity'][0])]
     common_genes_velocity = np.intersect1d(np.array(velo_genes_split1), np.array(velo_genes_split2))
@@ -181,7 +181,7 @@ def compute_cosine_similarity_union(adata_split1,adata_split2,method):
     velo_genes_split2 = adata_split2.var.index
     velo_split1 = pd.DataFrame(adata_split1.layers['velocity'], columns=velo_genes_split1)
     velo_split2 = pd.DataFrame(adata_split2.layers['velocity'], columns=velo_genes_split2)
-    if method=='scv':
+    if 'scv' in method:
         velo_genes_split1 = velo_genes_split1[~np.isnan(velo_split1.loc[0])] #adata_split1.var.index[~np.isnan(adata_split1.layers['velocity'][0])]
         velo_genes_split2 = velo_genes_split2[~np.isnan(velo_split2.loc[0])] #adata_split2.var.index[~np.isnan(adata_split2.layers['velocity'][0])]
     union_genes_velo = np.union1d(np.array(velo_genes_split1), np.array(velo_genes_split2))
