@@ -66,9 +66,9 @@ ptime_sct_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset
 ############################################
 # velocity
 print('############# velocity')
-plot_sct_velocity(adata_in=split1,data_version='split1',dataset=dataset_short,fig_folder=fig_folder)
-plot_sct_velocity(adata_in=split2,data_version='split2',dataset=dataset_short,fig_folder=fig_folder)
-plot_sct_velocity(adata_in=total,data_version='total',dataset=dataset_short,fig_folder=fig_folder)
+plot_sct_velocity(adata_in=split1,data_version='split1',dataset=dataset_short,fig_folder=fig_folder,method=method)
+plot_sct_velocity(adata_in=split2,data_version='split2',dataset=dataset_short,fig_folder=fig_folder,method=method)
+plot_sct_velocity(adata_in=total,data_version='total',dataset=dataset_short,fig_folder=fig_folder,method=method)
 
 ######################################################
 ## plot cosine similarity
