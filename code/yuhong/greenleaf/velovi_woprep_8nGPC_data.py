@@ -1,6 +1,7 @@
 dataset_short = 'glf'
 dataset_long = 'greenleaf'
-method = 'velovi_GPC'
+method = 'velovi_woprep_nGPC227'
+split_seed = 317
 celltype_label = 'cluster_name'
 data_folder = "/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_"+dataset_long+'/'
 
@@ -40,22 +41,16 @@ def velovi_run_model(adata,data_version,dataset_long,dataset_short,method,data_f
     adata.write(filename=savedata_folder+'adata_'+dataset_short+'_'+method+'_'+data_version+'_GPC.h5ad')
     print("#################### "+data_version+": All done for "+dataset_short+'_'+method+'_'+data_version)
 
-"""
-for split_seed in [320,323,326]:
-    split1 = sc.read(data_folder+'seed'+str(split_seed)+'_glf_split1_GPC.h5ad')
-    split2 = sc.read(data_folder+'seed'+str(split_seed)+'_glf_split2_GPC.h5ad')
-    data_version = 'split1'
-    velovi_run_model(adata=split1,data_version=data_version,dataset_long=dataset_long,dataset_short=dataset_short,method=method,data_folder=data_folder,split_seed=split_seed)
+total = sc.read(data_folder+'glf_total_nGPC227.h5ad')
+split1 = sc.read(data_folder+'seed'+str(split_seed)+'_'+dataset_short+'_split1_nGPC227.h5ad')
+split2 = sc.read(data_folder+'seed'+str(split_seed)+'_'+dataset_short+'_split2_nGPC227.h5ad')
 
-    data_version = 'split2'
-    velovi_run_model(adata=split2,data_version=data_version,dataset_long=dataset_long,dataset_short=dataset_short,method=method,data_folder=data_folder,split_seed=split_seed)
-"""
+data_version = 'split1'
+velovi_run_model(adata=split1,data_version=data_version,dataset_long=dataset_long,dataset_short=dataset_short,method=method,data_folder=data_folder,split_seed=split_seed)
 
-for split_seed in [329]:
-    split1 = sc.read(data_folder+'seed'+str(split_seed)+'_glf_split1_GPC.h5ad')
-    split2 = sc.read(data_folder+'seed'+str(split_seed)+'_glf_split2_GPC.h5ad')
-    data_version = 'split1'
-    velovi_run_model(adata=split1,data_version=data_version,dataset_long=dataset_long,dataset_short=dataset_short,method=method,data_folder=data_folder,split_seed=split_seed)
+data_version = 'split2'
+velovi_run_model(adata=split2,data_version=data_version,dataset_long=dataset_long,dataset_short=dataset_short,method=method,data_folder=data_folder,split_seed=split_seed)
 
-    data_version = 'split2'
-    velovi_run_model(adata=split2,data_version=data_version,dataset_long=dataset_long,dataset_short=dataset_short,method=method,data_folder=data_folder,split_seed=split_seed)
+data_version = 'total'
+velovi_run_model(adata=total,data_version=data_version,dataset_long=dataset_long,dataset_short=dataset_short,method=method,data_folder=data_folder,split_seed=split_seed)
+
