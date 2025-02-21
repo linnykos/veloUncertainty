@@ -72,7 +72,7 @@ w = 1.0  # Standard deviation for normal distribution
 bins1 = np.linspace(np.min(df_GPC['fnzS']), np.max(df_GPC['fnzS']), bs)
 bins2 = np.linspace(np.min(df_GPC['fnzU']), np.max(df_GPC['fnzU']), bs)
 bins3 = np.linspace(np.min(df_GPC['r2']), np.max(df_GPC['r2']), bs)
-bin_data = np.array([[b1, b2, b3] for b1 in bins1 for b2 in bins2 for b3 in bins3]) # Create bin_data (similar to R's `do.call(rbind, ...)`)
+bin_data = np.array([[b1, b2, b3] for b1 in bins1 for b2 in bins2 for b3 in bins3]) 
 # Step 2: Compute Euclidean distances
 bin_dist = cdist(bin_data, bin_data, metric='euclidean')  # Pairwise distances
 # Step 3: Compute bin probabilities using normal distribution
@@ -87,41 +87,44 @@ unique, counts = np.unique(membership_GPC, return_counts=True)
 freq_GPC = dict(zip(unique, counts))
 
 n_sample_scale = 2
-genes_select = np.array([])
-np.random.seed(227)
-for lab in freq_GPC.keys():
-    print(lab)
-    n_sample = freq_GPC[lab]*n_sample_scale
-    idx_nGPC = (np.where( membership_nGPC==lab )[0])
-    idx_nGPC = idx_nGPC[~np.isin(idx_nGPC, genes_select)]
-    if (len(idx_nGPC) <= n_sample):
-        genes_select = np.append( genes_select, idx_nGPC ) 
-        n_sample -= len(idx_nGPC)
-        while (n_sample>0):
-            print('n_sample='+str(n_sample))
-            val = bin_dist[lab,]
-            val[lab] = np.Inf
-            lab = (np.random.choice( np.where(val==np.min(val))[0], size=1 )[0]) # sample a nbr bin to be sampled from, if there are multiple
-            idx_nGPC = (np.where( membership_nGPC==lab )[0])
-            idx_nGPC = idx_nGPC[~np.isin(idx_nGPC, genes_select)]
-            if len(idx_nGPC)==0:
-                print('->' + str(lab)+', case 1')
-                continue
-            elif len(idx_nGPC) <= n_sample:
-                print('->' + str(lab)+', case 2')
-                genes_select = np.append(genes_select, idx_nGPC)
-                n_sample -= len(idx_nGPC)
-            else:
-                print('->' + str(lab)+', case 3')
-                idx_sample = np.random.choice(idx_nGPC, size=n_sample, replace=False, p=None)
-                genes_select = np.append(genes_select, idx_sample)
-                n_sample = 0
-    else:
-        idx_sample = np.random.choice(idx_nGPC, size=n_sample, replace=False, p=None)
-        genes_select = np.append(genes_select, idx_sample)
-    #print('N(genes=0): '+str(np.sum(genes_select==0))+', Nduplicated: '+str(len(genes_select) - len(np.unique(genes_select))))
+def select_genes_v0(n_sample_scale, grid_seed=227):
+    np.random.seed(grid_seed)
+    genes_select = np.array([])
+    for lab in freq_GPC.keys():
+        print(lab)
+        n_sample = freq_GPC[lab]*n_sample_scale
+        idx_nGPC = (np.where( membership_nGPC==lab )[0])
+        idx_nGPC = idx_nGPC[~np.isin(idx_nGPC, genes_select)]
+        if (len(idx_nGPC) <= n_sample):
+            genes_select = np.append( genes_select, idx_nGPC ) 
+            n_sample -= len(idx_nGPC)
+            while (n_sample>0):
+                print('n_sample='+str(n_sample))
+                val = bin_dist[lab,]
+                val[lab] = np.Inf
+                lab = (np.random.choice( np.where(val==np.min(val))[0], size=1 )[0]) # sample a nbr bin to be sampled from, if there are multiple
+                idx_nGPC = (np.where( membership_nGPC==lab )[0])
+                idx_nGPC = idx_nGPC[~np.isin(idx_nGPC, genes_select)]
+                if len(idx_nGPC)==0:
+                    print('->' + str(lab)+', case 1')
+                    continue
+                elif len(idx_nGPC) <= n_sample:
+                    print('->' + str(lab)+', case 2')
+                    genes_select = np.append(genes_select, idx_nGPC)
+                    n_sample -= len(idx_nGPC)
+                else:
+                    print('->' + str(lab)+', case 3')
+                    idx_sample = np.random.choice(idx_nGPC, size=n_sample, replace=False, p=None)
+                    genes_select = np.append(genes_select, idx_sample)
+                    n_sample = 0
+        else:
+            idx_sample = np.random.choice(idx_nGPC, size=n_sample, replace=False, p=None)
+            genes_select = np.append(genes_select, idx_sample)
+        #print('N(genes=0): '+str(np.sum(genes_select==0))+', Nduplicated: '+str(len(genes_select) - len(np.unique(genes_select))))
+    return genes_select
 
-genes_select = np.unique(genes_select)   
+#genes_select = np.unique(genes_select)   
+
 
 import scanpy as sc
 adata = sc.read_h5ad(data_folder+'v4_greenleaf/glf_total_allgenes.h5ad') 
@@ -131,6 +134,9 @@ genes_GPC = np.intersect1d(adata.var.index, genes_GPC_all) # 184 genes
 genes_nGPC = genes[~genes.isin(genes_GPC)] # 32464 genes
 
 adata_nGPC = adata[:, genes_nGPC]
+
+
+genes_select = select_genes(n_sample_scale=2, grid_seed=227)
 adata_nGPC_subset = adata_nGPC[:, [int(x) for x in genes_select]]
 
 split_seed = 317
@@ -149,12 +155,5 @@ split2_nGPC_subset.var['highly_variable'] = True
 adata_nGPC_subset.write(data_folder+'v4_greenleaf/glf_total_nGPCgrid.h5ad')
 split1_nGPC_subset.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split1_nGPCgrid.h5ad')
 split2_nGPC_subset.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split2_nGPCgrid.h5ad')
-
-"""
-# Step 5: Compute bin density (equivalent to tabulate2)
-density_GPC = np.bincount(membership_GPC, minlength=bs**3)
-density_nGPC = np.bincount(membership_nGPC, minlength=bs**3)
-"""
-
 
 
