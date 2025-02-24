@@ -7,7 +7,7 @@ import pandas as pd
 
 
 ## functions
-def select_genes_blk(n_sample_scale, grid_seed=227):
+def select_genes_blk(freq_GPC, n_sample_scale, grid_seed=227):
     np.random.seed(grid_seed)
     genes_select = np.array([])
     for lab in freq_GPC.keys():
@@ -45,8 +45,8 @@ def select_genes_blk(n_sample_scale, grid_seed=227):
         #print('N(genes=0): '+str(np.sum(genes_select==0))+', Nduplicated: '+str(len(genes_select) - len(np.unique(genes_select))))
     return genes_select
 
-def get_adata_nGPCblk(adata_nGPC, split_seed, grid_seed, n_sample_scale):
-    genes_select = select_genes_blk(n_sample_scale=n_sample_scale, grid_seed=grid_seed)
+def get_adata_nGPCblk(genes_nGPC, freq_GPC, adata_nGPC, split_seed, grid_seed, n_sample_scale):
+    genes_select = select_genes_blk(freq_GPC, n_sample_scale=n_sample_scale, grid_seed=grid_seed)
     adata_nGPC_subset = adata_nGPC[:, [int(x) for x in genes_select]]
     split1 = sc.read(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'_'+dataset_short+'_split1_allgenes.h5ad')
     split2 = sc.read(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'_'+dataset_short+'_split2_allgenes.h5ad')
@@ -80,33 +80,40 @@ genes = adata.var.index
 genes_GPC_all = pd.read_csv(data_folder+'v4_'+dataset_long+'/glf_GPC.csv')
 genes_GPC = np.intersect1d(adata.var.index, genes_GPC_all) # 184 genes
 
+"""
 genes_blk = pd.read_csv(data_folder+'v4_greenleaf/Writeup13_blacklist_gsea_gpc_genes.csv', header=None)
-ensembl_ids = {gene: get_ensembl_id(gene) for gene in genes_blk.values.flatten()}.values
+ensembl_ids = {gene: get_ensembl_id(gene) for gene in genes_blk.values.flatten()}.values()
+pd.DataFrame({'gene_id': ensembl_ids, 'gene_name': genes_blk.values.flatten()}).to_csv(data_folder+'v4_greenleaf/genes_blacklist_gsea_gpc.csv')
 genes_blk_ids = np.array(list( {gene: get_ensembl_id(gene) for gene in genes_blk.values.flatten()}.values() ), dtype=genes_GPC.dtype)
-genes_nGPC = genes[~genes.isin( np.union1d(genes_GPC, genes_blk_ids) )] # 32464 genes
+"""
+
+genes_blk_ids = pd.read_csv(data_folder+'v4_greenleaf/genes_blacklist_gsea_gpc.csv')['gene_id']
+genes_ctrl = genes[~genes.isin( np.union1d(genes_GPC, genes_blk_ids) )] # 
 print('nGPCgrid: 32464 genes')
-print('nGPCblk: '+str(len(genes_nGPC))+' genes')
-adata_nGPC = adata[:, genes_nGPC]
+print('nGPCblk: '+str(len(genes_ctrl))+' genes') # 32031
+adata_nGPC = adata[:, genes_ctrl]
 
 ## R2
-indicator_GPC = genes.isin( np.union1d(genes_GPC, genes_blk_ids) )
+indicator_GPC = genes.isin( genes_GPC )
+indicator_ctrl = ~genes.isin( np.union1d(genes_GPC, genes_blk_ids) )
 ## The likelihood computation requires recover_dynamics and is not available in stochastic or deterministic mode.
 ## to compute gene R2, it is unavoidable to filter out a few genes
 fnzS_all = np.asarray(np.mean(adata.layers["spliced"] > 0, axis=0))[0]
 fnzU_all = np.asarray(np.mean(adata.layers["unspliced"] > 0, axis=0))[0]
 
 import scvelo as scv
-scv.pp.normalize_per_cell(adata)
-scv.pp.log1p(adata)
-scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
-scv.tl.velocity(adata, mode='deterministic')
-r2_all = np.array(adata.var.velocity_r2)
+adata_r2 = adata.copy()
+scv.pp.normalize_per_cell(adata_r2)
+scv.pp.log1p(adata_r2)
+scv.pp.moments(adata_r2, n_pcs=30, n_neighbors=30)
+scv.tl.velocity(adata_r2, mode='deterministic')
+r2_all = np.array(adata_r2.var.velocity_r2)
 
-df = pd.DataFrame( {'GPC': indicator_GPC, 'fnzS': fnzS_all, 'fnzU': fnzU_all, 'r2': r2_all} )
+df = pd.DataFrame( {'gene_id':adata_r2.var.index, 'isGPC': indicator_GPC, 'ctrl': indicator_ctrl, 'fnzS': fnzS_all, 'fnzU': fnzU_all, 'r2': r2_all} )
 df.to_csv(data_folder+'v4_greenleaf/glf_r2_df_GPCblk.csv')
 # df = pd.read_csv(data_folder+'v4_greenleaf/glf_r2_df_blkrm.csv')
-df_GPC = df[df['GPC']]
-df_nGPC = df[~df['GPC']]
+df_GPC = df[df['isGPC']]
+df_nGPC = df[df['ctrl']]
 
 # Parameters
 bs = 4  # Adjust as needed
@@ -130,65 +137,18 @@ freq_GPC = dict(zip(unique, counts))
 
 
 gene_set_name = 'nGPCblk'
-# 1. select genes using countsplit_seed=317, grid_seed=227
-split_seed = 317
-grid_seed = 227
 n_sample_scale = 2
-total_nGPC, split1_nGPC, split2_nGPC = get_adata_nGPCblk(adata_nGPC=adata_nGPC, split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
 
-total_nGPC.write(data_folder+'v4_greenleaf/glf_total_'+gene_set_name+str(grid_seed)+'.h5ad')
-split1_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
-split2_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
+for i in range(5):
+    split_seed = [317,320,323,326,329][i]
+    grid_seed = [227,230,233,236,239][i]
+    total_nGPC, split1_nGPC, split2_nGPC = get_adata_nGPCblk(genes_nGPC=genes_ctrl, freq_GPC=freq_GPC, adata_nGPC=adata_nGPC, 
+                                                             split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
+    total_nGPC.write(data_folder+'v4_greenleaf/glf_total_'+gene_set_name+str(grid_seed)+'.h5ad')
+    split1_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
+    split2_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
+    print('##################### '+str(split_seed)+' done')
 
-genes227 = total_nGPC.var.indices
-
-# 2. select genes using countsplit_seed=320, grid_seed=230
-split_seed = 320
-grid_seed = 230
-n_sample_scale = 2
-total_nGPC, split1_nGPC, split2_nGPC = get_adata_nGPCblk(adata_nGPC=adata_nGPC, split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
-
-total_nGPC.write(data_folder+'v4_greenleaf/glf_total_'+gene_set_name+str(grid_seed)+'.h5ad')
-split1_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
-split2_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
-
-genes230 = total_nGPC.var.indices
-
-# 3. select genes using countsplit_seed=323, grid_seed=233
-split_seed = 323
-grid_seed = 233
-n_sample_scale = 2
-total_nGPC, split1_nGPC, split2_nGPC = get_adata_nGPCblk(adata_nGPC=adata_nGPC, split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
-
-total_nGPC.write(data_folder+'v4_greenleaf/glf_total_'+gene_set_name+str(grid_seed)+'.h5ad')
-split1_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
-split2_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
-
-genes233= total_nGPC.var.indices
-
-# 4. select genes using countsplit_seed=326, grid_seed=236
-split_seed = 326
-grid_seed = 236
-n_sample_scale = 2
-total_nGPC, split1_nGPC, split2_nGPC = get_adata_nGPCblk(adata_nGPC=adata_nGPC, split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
-
-total_nGPC.write(data_folder+'v4_greenleaf/glf_total_'+gene_set_name+str(grid_seed)+'.h5ad')
-split1_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
-split2_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
-
-genes236 = total_nGPC.var.indices
-
-# 5. select genes using countsplit_seed=329, grid_seed=239
-split_seed = 329
-grid_seed = 239
-n_sample_scale = 2
-total_nGPC, split1_nGPC, split2_nGPC = get_adata_nGPCblk(adata_nGPC=adata_nGPC, split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
-
-total_nGPC.write(data_folder+'v4_greenleaf/glf_total_'+gene_set_name+str(grid_seed)+'.h5ad')
-split1_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
-split2_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
-
-genes239 = total_nGPC.var.indices
 
 # save the control genes
 df_genes_ctrl = pd.DataFrame({'genes227': np.array(sc.read(data_folder+'v4_'+dataset_long+'/glf_seed317_split1_nGPCblk227.h5ad').var.index),
@@ -200,14 +160,26 @@ df_genes_ctrl = pd.DataFrame({'genes227': np.array(sc.read(data_folder+'v4_'+dat
 df_genes_ctrl.to_csv(data_folder+'v4_'+dataset_long+'/glf_nGPCblk_genes_ctrl.csv')
 
 print('Number of intersected genes')
-print('227 & 230: '+str(len(np.intersect1d(genes227, genes230))))
-print('227 & 233: '+str(len(np.intersect1d(genes227, genes233))))
-print('227 & 236: '+str(len(np.intersect1d(genes227, genes236))))
-print('227 & 239: '+str(len(np.intersect1d(genes227, genes239))))
-print('230 & 233: '+str(len(np.intersect1d(genes230, genes233))))
-print('230 & 236: '+str(len(np.intersect1d(genes230, genes236))))
-print('230 & 239: '+str(len(np.intersect1d(genes230, genes239))))
-print('233 & 236: '+str(len(np.intersect1d(genes233, genes236))))
-print('233 & 239: '+str(len(np.intersect1d(genes233, genes239))))
-print('236 & 239: '+str(len(np.intersect1d(genes236, genes239))))
+print('227 & 230: '+str(len(np.intersect1d(df_genes_ctrl['genes227'], df_genes_ctrl['genes230']))))
+print('227 & 233: '+str(len(np.intersect1d(df_genes_ctrl['genes227'], df_genes_ctrl['genes233']))))
+print('227 & 236: '+str(len(np.intersect1d(df_genes_ctrl['genes227'], df_genes_ctrl['genes236']))))
+print('227 & 239: '+str(len(np.intersect1d(df_genes_ctrl['genes227'], df_genes_ctrl['genes239']))))
+print('230 & 233: '+str(len(np.intersect1d(df_genes_ctrl['genes230'], df_genes_ctrl['genes233']))))
+print('230 & 236: '+str(len(np.intersect1d(df_genes_ctrl['genes230'], df_genes_ctrl['genes236']))))
+print('230 & 239: '+str(len(np.intersect1d(df_genes_ctrl['genes230'], df_genes_ctrl['genes239']))))
+print('233 & 236: '+str(len(np.intersect1d(df_genes_ctrl['genes233'], df_genes_ctrl['genes236']))))
+print('233 & 239: '+str(len(np.intersect1d(df_genes_ctrl['genes233'], df_genes_ctrl['genes239']))))
+print('236 & 239: '+str(len(np.intersect1d(df_genes_ctrl['genes236'], df_genes_ctrl['genes239']))))
 
+"""
+227 & 230: 65
+227 & 233: 64
+227 & 236: 60
+227 & 239: 55
+230 & 233: 61
+230 & 236: 64
+230 & 239: 64
+233 & 236: 70
+233 & 239: 61
+236 & 239: 69
+"""
