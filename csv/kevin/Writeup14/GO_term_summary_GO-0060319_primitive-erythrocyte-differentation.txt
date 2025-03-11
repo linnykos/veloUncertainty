@@ -1,0 +1,11 @@
+MGI Gene/Marker ID	Symbol	Name	Chr	Qualifier	Annotated Term	Context	Proteoform	Evidence	Inferred From	Reference(s)
+MGI:95661	Gata1	GATA binding protein 1	X		primitive erythrocyte differentiation	happens in extraembryonic component,results in the differentiation of primitive red blood cell		IMP	MGI:3038080 	J:40321 	
+MGI:95661	Gata1	GATA binding protein 1	X		regulation of primitive erythrocyte differentiation			IGI	MGI:95662 	J:87696 	
+MGI:95662	Gata2	GATA binding protein 2	6		regulation of primitive erythrocyte differentiation			IGI	MGI:95661 	J:87696 	
+MGI:2141135	Hscb	HscB iron-sulfur cluster co-chaperone	5		primitive erythrocyte differentiation			IMP		J:290037 	
+MGI:1196256	Kdm1a	lysine (K)-specific demethylase 1A	4		regulation of primitive erythrocyte differentiation			IMP		J:175166 	
+MGI:894762	Ldb1	LIM domain binding 1	19		primitive erythrocyte differentiation			TAS		J:164497 	
+MGI:88192	Smarca4	SWI/SNF related, matrix associated, actin dependent regulator of chromatin, subfamily a, member 4	9		primitive erythrocyte differentiation	results in the differentiation of primitive red blood cell		IMP	MGI:3611933 	J:103896 	
+MGI:103178	Vegfa	vascular endothelial growth factor A	17		primitive erythrocyte differentiation	happens in yolk sac		IMP	MGI:2383985 	J:96898 	
+MGI:1095400	Zfpm1	zinc finger protein, multitype 1	8		primitive erythrocyte differentiation			IMP	MGI:1857554 	J:47281 	
+
