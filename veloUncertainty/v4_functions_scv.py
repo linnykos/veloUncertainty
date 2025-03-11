@@ -33,6 +33,7 @@ def scv_compute_velocity_ery(adata):
     sc.tl.pca(adata)
     bbknn.bbknn(adata, batch_key='sequencing.batch')
     print("Batch correction done!")
+    del sys.modules['bbknn']
     sc.pp.neighbors(adata, n_neighbors=30, n_pcs=40) 
     sc.tl.umap(adata)
     scv.tl.recover_dynamics(adata,n_jobs=8)
