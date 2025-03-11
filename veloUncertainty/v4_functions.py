@@ -56,6 +56,7 @@ def compute_umap(adata, dataset):
         scv.tl.velocity_graph(adata)
 
 def compute_umap_ery(adata):
+    import sys
     import bbknn
     scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
     bbknn.bbknn(adata, batch_key='sequencing.batch')
@@ -64,6 +65,7 @@ def compute_umap_ery(adata):
     sc.tl.pca(adata)
     bbknn.bbknn(adata, batch_key='sequencing.batch')
     print("************ batch correction done ************")
+    del sys.modules['bbknn']
     sc.pp.neighbors(adata, n_neighbors=30, n_pcs=40) 
     sc.tl.umap(adata)
 
