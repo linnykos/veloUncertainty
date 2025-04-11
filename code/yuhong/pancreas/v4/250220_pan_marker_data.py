@@ -106,6 +106,8 @@ fnzS_all = np.asarray(np.mean(adata.layers["spliced"] > 0, axis=0))[0]
 fnzU_all = np.asarray(np.mean(adata.layers["unspliced"] > 0, axis=0))[0]
 
 import scvelo as scv
+total = adata.copy()
+"""
 scv.pp.normalize_per_cell(adata)
 scv.pp.log1p(adata)
 scv.pp.moments(adata, n_pcs=30, n_neighbors=30)
@@ -114,100 +116,56 @@ r2_all = np.array(adata.var.velocity_r2)
 
 df = pd.DataFrame( {'gene_name': genes, 'mark': indicator_mark, 'fnzS': fnzS_all, 'fnzU': fnzU_all, 'r2': r2_all} )
 df.to_csv(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_r2_df_mark.csv')
-# df = pd.read_csv(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_r2_df_mark.csv')
+"""
+df = pd.read_csv(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_r2_df_mark.csv')
 df_mark = df[df['mark']]
 df_nmark = df[~df['mark']]
 
-gene_set_name = 'nMark'
-# 1. select genes using countsplit_seed=317, grid_seed=227
-split_seed = 317
-grid_seed = 227
 n_sample_scale = 1
-total_nMark, split1_nMark, split2_nMark = get_adata_ctrl(df_tgt=df_mark, df_ctrl=df_nmark,
-                                                         adata_ctrl=adata[:, df[~df['mark']]['gene_name']], 
-                                                         split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
+gene_set_name = 'nMark'
+for i in range(5):
+    split_seed = [317,320,323,326,329][i]
+    grid_seed = [227,230,233,236,239][i]
+    total_nMark, split1_nMark, split2_nMark = get_adata_ctrl(df_tgt=df_mark, df_ctrl=df_nmark,
+                                                             adata_ctrl=total[:, df[~df['mark']]['gene_name']], 
+                                                             split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
+    total_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_total_'+gene_set_name+str(grid_seed)+'.h5ad')
+    split1_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
+    split2_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
+    print('################ '+str(split_seed)+' done')
 
-total_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_total_'+gene_set_name+str(grid_seed)+'.h5ad')
-split1_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed'+str(split_seed)+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
-split2_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed'+str(split_seed)+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
-
-genes227 = total_nMark.var.index
-print('################ 317 done')
-
-# 2. select genes using countsplit_seed=320
-split_seed = 320
-grid_seed = 230
-total_nMark, split1_nMark, split2_nMark = get_adata_ctrl(df_tgt=df_mark, df_ctrl=df_nmark,
-                                                         adata_ctrl=adata[:, df[~df['mark']]['gene_name']], 
-                                                         split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
-
-total_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_total_'+gene_set_name+str(grid_seed)+'.h5ad')
-split1_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed'+str(split_seed)+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
-split2_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed'+str(split_seed)+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
-
-genes230 = total_nMark.var.index
-print('################ 320 done')
-
-# 3. select genes using countsplit_seed=323
-split_seed = 323
-grid_seed = 233
-total_nMark, split1_nMark, split2_nMark = get_adata_ctrl(df_tgt=df_mark, df_ctrl=df_nmark,
-                                                         adata_ctrl=adata[:, df[~df['mark']]['gene_name']], 
-                                                         split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
-
-total_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_total_'+gene_set_name+str(grid_seed)+'.h5ad')
-split1_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed'+str(split_seed)+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
-split2_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed'+str(split_seed)+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
-
-genes233 = total_nMark.var.index
-print('################ 323 done')
-
-# 4. select genes using countsplit_seed=320
-split_seed = 326
-grid_seed = 236
-total_nMark, split1_nMark, split2_nMark = get_adata_ctrl(df_tgt=df_mark, df_ctrl=df_nmark,
-                                                         adata_ctrl=adata[:, df[~df['mark']]['gene_name']], 
-                                                         split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
-
-total_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_total_'+gene_set_name+str(grid_seed)+'.h5ad')
-split1_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed'+str(split_seed)+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
-split2_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed'+str(split_seed)+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
-
-genes236 = total_nMark.var.index
-print('################ 326 done')
-
-# 5. select genes using countsplit_seed=320
-split_seed = 329
-grid_seed = 239
-total_nMark, split1_nMark, split2_nMark = get_adata_ctrl(df_tgt=df_mark, df_ctrl=df_nmark,
-                                                         adata_ctrl=adata[:, df[~df['mark']]['gene_name']], 
-                                                         split_seed=split_seed, grid_seed=grid_seed, n_sample_scale=n_sample_scale)
-
-total_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_total_'+gene_set_name+str(grid_seed)+'.h5ad')
-split1_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed'+str(split_seed)+'_split1_'+gene_set_name+str(grid_seed)+'.h5ad')
-split2_nMark.write(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed'+str(split_seed)+'_split2_'+gene_set_name+str(grid_seed)+'.h5ad')
-
-genes239 = total_nMark.var.index
-print('################ 329 done')
 
 #######
 # save the control genes
-df_genes_ctrl = pd.DataFrame({'genes227': np.array(sc.read(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed317_split1_'+gene_set_name+'227.h5ad').var.index),
-              'genes230': np.array(sc.read(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed320_split1_'+gene_set_name+'230.h5ad').var.index ),
-              'genes233': np.array(sc.read(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed323_split1_'+gene_set_name+'233.h5ad').var.index ),
-              'genes236': np.array(sc.read(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed326_split1_'+gene_set_name+'236.h5ad').var.index ),
-              'genes239': np.array(sc.read(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_seed329_split1_'+gene_set_name+'239.h5ad').var.index ) })
+df_genes_ctrl = pd.DataFrame({'genes227': np.array(sc.read(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_split1_'+gene_set_name+'227.h5ad').var.index),
+              'genes230': np.array(sc.read(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_split1_'+gene_set_name+'230.h5ad').var.index ),
+              'genes233': np.array(sc.read(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_split1_'+gene_set_name+'233.h5ad').var.index ),
+              'genes236': np.array(sc.read(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_split1_'+gene_set_name+'236.h5ad').var.index ),
+              'genes239': np.array(sc.read(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_split1_'+gene_set_name+'239.h5ad').var.index ) })
 
 df_genes_ctrl.to_csv(data_folder+'v4_'+dataset_long+'/'+dataset_short+'_'+gene_set_name+'_genes_ctrl.csv')
 
 print('Number of intersected genes')
-print('227 & 230: '+str(len(np.intersect1d(genes227, genes230))))
-print('227 & 233: '+str(len(np.intersect1d(genes227, genes233))))
-print('227 & 236: '+str(len(np.intersect1d(genes227, genes236))))
-print('227 & 239: '+str(len(np.intersect1d(genes227, genes239))))
-print('230 & 233: '+str(len(np.intersect1d(genes230, genes233))))
-print('230 & 236: '+str(len(np.intersect1d(genes230, genes236))))
-print('230 & 239: '+str(len(np.intersect1d(genes230, genes239))))
-print('233 & 236: '+str(len(np.intersect1d(genes233, genes236))))
-print('233 & 239: '+str(len(np.intersect1d(genes233, genes239))))
-print('236 & 239: '+str(len(np.intersect1d(genes236, genes239))))
+print('227 & 230: '+str(len(np.intersect1d(df_genes_ctrl['genes227'], df_genes_ctrl['genes230']))))
+print('227 & 233: '+str(len(np.intersect1d(df_genes_ctrl['genes227'], df_genes_ctrl['genes233']))))
+print('227 & 236: '+str(len(np.intersect1d(df_genes_ctrl['genes227'], df_genes_ctrl['genes236']))))
+print('227 & 239: '+str(len(np.intersect1d(df_genes_ctrl['genes227'], df_genes_ctrl['genes239']))))
+print('230 & 233: '+str(len(np.intersect1d(df_genes_ctrl['genes230'], df_genes_ctrl['genes233']))))
+print('230 & 236: '+str(len(np.intersect1d(df_genes_ctrl['genes230'], df_genes_ctrl['genes236']))))
+print('230 & 239: '+str(len(np.intersect1d(df_genes_ctrl['genes230'], df_genes_ctrl['genes239']))))
+print('233 & 236: '+str(len(np.intersect1d(df_genes_ctrl['genes233'], df_genes_ctrl['genes236']))))
+print('233 & 239: '+str(len(np.intersect1d(df_genes_ctrl['genes233'], df_genes_ctrl['genes239']))))
+print('236 & 239: '+str(len(np.intersect1d(df_genes_ctrl['genes236'], df_genes_ctrl['genes239']))))
+
+"""
+227 & 230: 86
+227 & 233: 100
+227 & 236: 87
+227 & 239: 89
+230 & 233: 92
+230 & 236: 96
+230 & 239: 105
+233 & 236: 101
+233 & 239: 101
+236 & 239: 95
+"""

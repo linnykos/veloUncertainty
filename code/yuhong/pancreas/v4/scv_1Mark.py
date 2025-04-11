@@ -11,7 +11,9 @@ from v4_functions_scv import *
 
 dataset_long = 'pancreas'
 dataset_short = 'pan'
+celltype_label = 'clusters'
 data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_'+dataset_long+'/'
+gene_set_prefix = 'Mark'
 
 def run_scv_Mark(split_seed, grid_seed, gene_set_prefix):
     gene_set_name = gene_set_prefix+str(grid_seed)
@@ -41,7 +43,6 @@ sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloU
 from v4_functions_scv import *
 from v4_functions import *
 
-celltype_label = 'cluster_name'
 
 def plot_scv_Mark(split_seed, grid_seed, gene_set_prefix):
     gene_set_name = gene_set_prefix+str(grid_seed)
@@ -83,24 +84,24 @@ def plot_scv_Mark(split_seed, grid_seed, gene_set_prefix):
     print('############### velocity confidence done')
 
 
-run_scv_Mark(split_seed=317, grid_seed=227, gene_set_prefix='Mark')
-plot_scv_Mark(split_seed=317, grid_seed=227, gene_set_prefix='Mark')
+run_scv_Mark(split_seed=317, grid_seed=227, gene_set_prefix=gene_set_prefix)
+plot_scv_Mark(split_seed=317, grid_seed=227, gene_set_prefix=gene_set_prefix)
 print('##################### 317 done')
 
-run_scv_Mark(split_seed=320, grid_seed=230, gene_set_prefix='Mark')
-plot_scv_Mark(split_seed=320, grid_seed=230, gene_set_prefix='Mark')
+run_scv_Mark(split_seed=320, grid_seed=230, gene_set_prefix=gene_set_prefix)
+plot_scv_Mark(split_seed=320, grid_seed=230, gene_set_prefix=gene_set_prefix)
 print('##################### 320 done')
 
-run_scv_Mark(split_seed=323, grid_seed=233, gene_set_prefix='Mark')
-plot_scv_Mark(split_seed=323, grid_seed=233, gene_set_prefix='Mark')
+run_scv_Mark(split_seed=323, grid_seed=233, gene_set_prefix=gene_set_prefix)
+plot_scv_Mark(split_seed=323, grid_seed=233, gene_set_prefix=gene_set_prefix)
 print('##################### 323 done')
 
-run_scv_Mark(split_seed=326, grid_seed=236, gene_set_prefix='Mark')
-plot_scv_Mark(split_seed=326, grid_seed=236, gene_set_prefix='Mark')
+run_scv_Mark(split_seed=326, grid_seed=236, gene_set_prefix=gene_set_prefix)
+plot_scv_Mark(split_seed=326, grid_seed=236, gene_set_prefix=gene_set_prefix)
 print('##################### 326 done')
 
-run_scv_Mark(split_seed=329, grid_seed=239, gene_set_prefix='Mark')
-plot_scv_Mark(split_seed=329, grid_seed=239, gene_set_prefix='Mark')
+run_scv_Mark(split_seed=329, grid_seed=239, gene_set_prefix=gene_set_prefix)
+plot_scv_Mark(split_seed=329, grid_seed=239, gene_set_prefix=gene_set_prefix)
 print('##################### 329 done')
 
 

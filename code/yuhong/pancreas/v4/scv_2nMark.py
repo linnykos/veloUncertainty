@@ -11,6 +11,7 @@ from v4_functions_scv import *
 
 dataset_long = 'pancreas'
 dataset_short = 'pan'
+celltype_label = 'clusters'
 data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_'+dataset_long+'/'
 gene_set_prefix = 'nMark'
 
@@ -42,7 +43,7 @@ sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloU
 from v4_functions_scv import *
 from v4_functions import *
 
-celltype_label = 'cluster_name'
+
 
 def plot_scv_Mark(split_seed, grid_seed, gene_set_prefix):
     gene_set_name = gene_set_prefix+str(grid_seed)
