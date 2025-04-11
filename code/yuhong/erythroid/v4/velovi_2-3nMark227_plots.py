@@ -50,12 +50,11 @@ def plot_velovi_ery_Mark(method_prefix, gene_set_name, split_seed, plot_total=Tr
     plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed)
     print_message_with_time("############## all done")
 
-plot_total = True
-for i in range(2):
+for i in range(5):
     grid_seed = [227, 230, 233, 236, 239][i]
+    #grid_seed = [230, 233, 236, 239][i]
     gene_set_name = 'nMark' + str(grid_seed)
     split_seed = [317, 320, 323, 326, 329][i]
-    plot_velovi_ery_Mark(method_prefix=method_prefix, gene_set_name=gene_set_name, split_seed=split_seed, plot_total=plot_total)
-    plot_total = False
-
+    #split_seed = [320, 323, 326, 329][i]
+    plot_velovi_ery_Mark(method_prefix=method_prefix, gene_set_name=gene_set_name, split_seed=split_seed, plot_total=True)
 

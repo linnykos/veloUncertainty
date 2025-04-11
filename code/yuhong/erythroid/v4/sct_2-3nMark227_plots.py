@@ -2,6 +2,7 @@
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v4_functions import *
+from v4_functions_sct import *
 from sctour_misc import *
 
 def plot_sct_ery_nMark(gene_set_name, split_seed, plot_total=True):
@@ -40,14 +41,10 @@ def plot_sct_ery_nMark(gene_set_name, split_seed, plot_total=True):
     plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed)
     print('########################### All done for '+method+', seed'+str(split_seed))
 
-plot_total = True
 for i in range(5):
     split_seed = [317, 320, 323, 326, 329][i]
     grid_seed = [227, 230, 233, 236, 239][i]
     gene_set_name = 'nMark' + str(grid_seed)
-    plot_sct_ery_nMark(gene_set_name=gene_set_name, split_seed=split_seed, plot_total=plot_total)
-    plot_sct_ery_nMark(gene_set_name=gene_set_name, split_seed=split_seed, plot_total=plot_total)
-    plot_sct_ery_nMark(gene_set_name=gene_set_name, split_seed=split_seed, plot_total=plot_total)
-    plot_total = False
+    plot_sct_ery_nMark(gene_set_name=gene_set_name, split_seed=split_seed, plot_total=True)
 
 

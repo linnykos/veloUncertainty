@@ -8,7 +8,6 @@ sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloU
 from v4_functions_utv import *
 from v4_functions import *
 
-
 velo_config = utv.config.Configuration()
 velo_config.R2_ADJUST = True
 velo_config.IROOT = None
@@ -25,13 +24,7 @@ os.environ["TF_USE_LEGACY_KERAS"]="1"
 # Tried this but did not work:
 ## velo_config.TF_USE_LEGACY_KERAS=True
 
-
-
-
 #fig_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v4_'+dataset_long+'/'+'seed'+str(split_seed)+'/'+method+'/'
-
-data_version = 'split1'
-split_seed = 317
 
 def utv_run_model_ery_Mark(gene_set_name, split_seed, data_version, velo_config):
     dataset_long = 'erythroid'
@@ -58,6 +51,16 @@ def utv_run_model_ery_Mark(gene_set_name, split_seed, data_version, velo_config)
     adata.write_h5ad(data_folder+'seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_'+data_version+'.h5ad')
     print_message_with_time("#################### All done for "+dataset_short+'+'+method+' '+data_version)
 
-utv_run_model_ery_Mark(gene_set_name='Mark', split_seed=317, data_version='total', velo_config=velo_config)
-utv_run_model_ery_Mark(gene_set_name='Mark', split_seed=317, data_version='split1', velo_config=velo_config)
-utv_run_model_ery_Mark(gene_set_name='Mark', split_seed=317, data_version='split2', velo_config=velo_config)
+"""
+split_seed = 317
+utv_run_model_ery_Mark(gene_set_name='Mark', split_seed=split_seed, data_version='total', velo_config=velo_config)
+utv_run_model_ery_Mark(gene_set_name='Mark', split_seed=split_seed, data_version='split1', velo_config=velo_config)
+utv_run_model_ery_Mark(gene_set_name='Mark', split_seed=split_seed, data_version='split2', velo_config=velo_config)
+"""
+for i in range(3):
+    split_seed = [323,326,329][i]
+    #split_seed = [320,323,326,329][i]
+    utv_run_model_ery_Mark(gene_set_name='Mark', split_seed=split_seed, data_version='split1', velo_config=velo_config)
+    utv_run_model_ery_Mark(gene_set_name='Mark', split_seed=split_seed, data_version='split2', velo_config=velo_config)
+
+print('#################### All done.')

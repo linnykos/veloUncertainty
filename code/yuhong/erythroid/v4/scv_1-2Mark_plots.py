@@ -6,6 +6,7 @@ import numpy as np
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v4_functions_scv import *
+from v4_functions import *
 
 dataset_long = 'erythroid'
 dataset_short = 'ery'
@@ -16,32 +17,6 @@ fig_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUnce
 method_prefix = 'scv'
 gene_set_name = 'Mark'
 method = method_prefix + '_' + gene_set_name
-split_seed = 317
-
-total = sc.read_h5ad(data_folder+'adata_'+dataset_short+'_'+gene_set_name+'_total_allgenes.h5ad')
-split1 = sc.read_h5ad(data_folder+'adata_'+dataset_short+'_'+gene_set_name+'_seed'+str(split_seed)+'_split1_allgenes.h5ad')
-split2 = sc.read_h5ad(data_folder+'adata_'+dataset_short+'_'+gene_set_name+'_seed'+str(split_seed)+'_split2_allgenes.h5ad')
-
-scv_compute_velocity_ery(total) 
-scv_compute_velocity_ery(split1) 
-scv_compute_velocity_ery(split2) 
-
-total.write_h5ad(data_folder+'seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_total.h5ad')
-split1.write_h5ad(data_folder+'seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split1.h5ad')
-split2.write_h5ad(data_folder+'seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split2.h5ad')
-
-
-####################### 
-## plots
-import scanpy as sc
-import pandas as pd
-import scvelo as scv
-import numpy as np
-
-import sys
-sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
-from v4_functions_scv import *
-from v4_functions import *
 
 def plot_scv_ery_Mark(split_seed, gene_set_name='Mark', plot_total=True):
     dataset_long = 'erythroid'
@@ -70,5 +45,8 @@ def plot_scv_ery_Mark(split_seed, gene_set_name='Mark', plot_total=True):
     plot_veloConf_hist(total,dataset_short,method,fig_folder,split_seed)
     plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed,celltype_label=celltype_label)
 
-plot_scv_ery_Mark(split_seed=317, gene_set_name='Mark', plot_total=True)
 
+plot_total = True
+for split_seed in [317,320,323,326,329]:
+    plot_scv_ery_Mark(split_seed=split_seed, gene_set_name='Mark', plot_total=plot_total)
+    plot_total = False

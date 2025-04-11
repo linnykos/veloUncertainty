@@ -1,6 +1,5 @@
 method_prefix = 'velovi'
 
-
 import numpy as np
 import pandas as pd
 import scanpy as sc
@@ -26,6 +25,8 @@ def save_adata_outputAdded(method_prefix, gene_set_name, split_seed):
     vae_split1 = VELOVI.load(savedata_folder+'vae_'+dataset_short+'_'+method+'_'+'split1.pt', split1)
     vae_split2 = VELOVI.load(savedata_folder+'vae_'+dataset_short+'_'+method+'_'+'split2.pt', split2)
     vae_total = VELOVI.load(savedata_folder+'vae_'+dataset_short+'_'+method+'_'+'total.pt', total)
+    total.obsm['X_umapOriginal'] = total.obsm['X_umap'].copy() 
+    del total.obsm['X_umap']
     ## add velovi outputs to adata
     print_message_with_time("############## Add velovi outputs to adata")
     add_velovi_outputs_to_adata(split1, vae_split1)
@@ -51,7 +52,7 @@ def save_adata_outputAdded(method_prefix, gene_set_name, split_seed):
     print('######################## output added!')
 
 
-for i in range(2):
+for i in range(5):
     grid_seed = [227, 230, 233, 236, 239][i]
     gene_set_name = 'nMark' + str(grid_seed)
     split_seed = [317, 320, 323, 326, 329][i]
