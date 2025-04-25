@@ -2,6 +2,7 @@ import anndata as ad
 import numpy as np
 import scipy.sparse as sp
 import mygene
+import pandas as pd
 
 def directed_laplacian_score(A, x):
     """
@@ -15,7 +16,6 @@ def directed_laplacian_score(A, x):
     Returns:
         Normalized directed Laplacian score (float)
     """
-    # Do NOT call .tocsr() here anymore
     x_i_squared = A.multiply(x[:, None] ** 2).sum()
     x_j_squared = A.multiply(x[None, :] ** 2).sum()
     x_cross = A.multiply(np.outer(x, x)).sum()
@@ -99,7 +99,6 @@ scores_df = pd.DataFrame({
     'symbol': gene_symbols,
     'score': scores
 })
-
 
 # Save to CSV
 output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/Writeup15_greenleaf_gene_laplacian_scores.csv"
