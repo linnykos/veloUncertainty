@@ -22,6 +22,7 @@ Seurat::DimPlot(seurat_obj,
 library(princurve)
 
 # do a simple principle curve analysis
+pca_mat <- seurat_obj[["pca"]]@cell.embeddings
 princurve_res <- princurve::principal_curve(pca_mat[,1:30])
 seurat_obj$pseudotime <- princurve_res$lambda
 
