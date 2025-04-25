@@ -49,7 +49,7 @@ velocity_graph_normalized = velocity_graph_normalized.tocsr()
 n_genes = adata.n_vars  # This is 2000 genes in your case
 scores = []
 
-for gene_idx in range(10):
+for gene_idx in range(n_genes):
     print(f"Working on gene {gene_idx + 1} out of {n_genes}")
     
     # Get the gene expression vector x (for all cells, single gene)

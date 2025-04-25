@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --account=biostat
-#SBATCH --partition=all-12c128g
+#SBATCH --partition=all-20c96g
 #SBATCH --time=48:00:00
 
 #SBATCH --job-name=greenleaf
