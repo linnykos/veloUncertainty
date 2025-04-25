@@ -32,7 +32,7 @@ def directed_laplacian_score(A, x):
 
 
 # Load the AnnData object
-adata = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/scv/adata_glf_scv_total_v4.h5ad")
+adata = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/velovi_woprep/adata_glf_velovi_woprep_total_v4_outputAdded.h5ad")
 
 # Step 1: Check all values are non-negative
 velocity_graph = adata.uns['velocity_graph']
@@ -101,7 +101,7 @@ scores_df = pd.DataFrame({
 })
 
 # Save to CSV
-output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/Writeup15_greenleaf_gene_laplacian_scores.csv"
+output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/Writeup15_greenleaf_gene_laplacian_scores_velovi-woprep.csv"
 scores_df.to_csv(output_path, index=False)
 
 print(f"Saved scores to {output_path}")
