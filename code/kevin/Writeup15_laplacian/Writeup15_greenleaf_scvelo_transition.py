@@ -1,8 +1,22 @@
+# https://github.com/linnykos/veloUncertainty/blob/main/veloUncertainty/v4_functions_transMat.py
+
+import scvelo as scv
+import numpy as np
+import collections
+
+import numpy as np
+import cellrank as cr
+import scanpy as sc
+import scvelo as scv
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 import anndata as ad
 import numpy as np
 import scipy.sparse as sp
 import mygene
 import pandas as pd
+
 
 def directed_laplacian_score(A, x):
     """
@@ -26,16 +40,21 @@ def directed_laplacian_score(A, x):
     
     if var_x == 0:
         return np.nan
-    normalized_score = score / var_x
     
+    n = len(x)
+    total_squared_diffs = 2 * n * np.var(x, ddof=0)  # ddof=0 for population variance
+    normalized_score = score / total_squared_diffs
+
     return normalized_score
 
 
 # Load the AnnData object
 adata = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/scv/adata_glf_scv_total_v4.h5ad")
+vk = cr.kernels.VelocityKernel(adata)
+vk.compute_transition_matrix()
 
 # Step 1: Check all values are non-negative
-velocity_graph = adata.uns['velocity_graph']
+velocity_graph = vk.transition_matrix
 
 # Step 2: Normalize each row to sum to 1
 # Normalize the velocity graph rows first (you already have this)
