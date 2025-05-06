@@ -41,9 +41,8 @@ def directed_laplacian_score(A, x):
     
     return numerator / var_x
 
-
 # Load the AnnData object
-adata = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/scv/adata_glf_scv_total_v4.h5ad")
+adata = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/velovi_woprep/adata_glf_velovi_woprep_total_v4_outputAdded.h5ad")
 vk = cr.kernels.VelocityKernel(adata)
 vk.compute_transition_matrix()
 
@@ -82,7 +81,6 @@ scores = np.array(scores)
 
 print("Finished computing all scores!", flush=True)
 
-
 # Initialize
 mg = mygene.MyGeneInfo()
 # List of all 2000 gene IDs from your dataset
@@ -115,7 +113,7 @@ scores_df = pd.DataFrame({
 })
 
 # Save to CSV
-output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/Writeup15_greenleaf_gene_laplacian_scores_scvelo_transition.csv"
+output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/Writeup15_greenleaf_gene_laplacian_scores_velovi-woprep_transition.csv"
 scores_df.to_csv(output_path, index=False)
 
 print(f"Saved scores to {output_path}", flush=True)
