@@ -7,7 +7,7 @@ set.seed(10)
 
 out_folder <- "~/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/"
 
-velovi_woprep <- read.csv(paste0(out_folder, "Writeup15_greenleaf_gene_laplacian_scores_velovi-woprep_transition_neu4.csv"))
+velovi_woprep <- read.csv(paste0(out_folder, "Writeup15_greenleaf_gene_laplacian_scores_velovi-woprep_chung_neu4.csv"))
 
 # Prepare input for GSEA
 teststat_vec <- velovi_woprep$score
@@ -36,11 +36,20 @@ gsea_velovi_df <- as.data.frame(gsea_velovi)
 dim(gsea_velovi_df)
 gsea_velovi_df <- gsea_velovi_df[order(gsea_velovi_df$pvalue, decreasing = FALSE),]
 gsea_velovi_df[which(gsea_velovi_df$p.adjust <= 0.05),c("Description", "NES")]
-gsea_velovi_df[which(gsea_velovi_df$pvalue <= 0.05),c("Description", "NES", "pvalue")]
+gsea_velovi_df[intersect(which(gsea_velovi_df$pvalue <= 0.05),
+                         which(gsea_velovi_df$NES <= 0)),
+               c("Description", "NES", "pvalue")]
+# GO:0051932                                    synaptic transmission, GABAergic
+# GO:0051932 -1.702567 0.024487020
+
+gsea_velovi_df["GO:0051932",]
+gsea_velovi_df["GO:1990266",]
+GO:0051932
+
 
 ######
 
-scvelo <- read.csv(paste0(out_folder, "Writeup15_greenleaf_gene_laplacian_scores_scvelo.csv"))
+scvelo <- read.csv(paste0(out_folder, "Writeup15_greenleaf_gene_laplacian_scores_scv_chung_neu4.csv"))
 
 # Prepare input for GSEA
 teststat_vec <- scvelo$score
@@ -60,12 +69,21 @@ gsea_scvelo <- clusterProfiler::gseGO(
   keyType = "SYMBOL",
   OrgDb = "org.Hs.eg.db",
   minGSSize = 10,
-  maxGSSize = 500
+  maxGSSize = 500,
+  pvalueCutoff = 1
 )
 
 gsea_scvelo_df <- as.data.frame(gsea_scvelo)
 
 dim(gsea_scvelo_df)
-gsea_scvelo_df[,c("Description", "NES")]
+gsea_scvelo_df <- gsea_scvelo_df[order(gsea_scvelo_df$pvalue, decreasing = FALSE),]
+gsea_scvelo_df[which(gsea_scvelo_df$p.adjust <= 0.05),c("Description", "NES")]
+gsea_scvelo_df[intersect(which(gsea_scvelo_df$pvalue <= 0.05),
+                         which(gsea_scvelo_df$NES <= 0)),
+               c("Description", "NES", "pvalue")]
+
+# GO:1990266                            neutrophil migration -2.051542
+# GO:1990266 0.004489973
 
 
+gsea_scvelo_df["GO:0051932",]
