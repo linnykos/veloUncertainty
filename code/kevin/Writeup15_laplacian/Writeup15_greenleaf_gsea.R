@@ -8,9 +8,16 @@ set.seed(10)
 out_folder <- "~/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/"
 
 velovi_woprep <- read.csv(paste0(out_folder, "Writeup15_greenleaf_gene_laplacian_scores_velovi-woprep_chung_neu4.csv"))
+velovi_woprep_nonGPC <- read.csv(paste0(out_folder, "Writeup15_greenleaf_gene_laplacian_scores_velovi-woprep_chung_neu4_nonGPC.csv"))
+
+rownames(velovi_woprep) <- velovi_woprep$symbol
+rownames(velovi_woprep_nonGPC) <- velovi_woprep_nonGPC$symbol
+gene_vec <- intersect(rownames(velovi_woprep), rownames(velovi_woprep_nonGPC))
+velovi_woprep <- velovi_woprep[gene_vec,]
+velovi_woprep_nonGPC <- velovi_woprep_nonGPC[gene_vec,]
 
 # Prepare input for GSEA
-teststat_vec <- velovi_woprep$score
+teststat_vec <- velovi_woprep$score/velovi_woprep_nonGPC$score
 names(teststat_vec) <- velovi_woprep$symbol
 teststat_vec <- teststat_vec[!is.na(teststat_vec)]
 teststat_vec <- sort(teststat_vec, decreasing = TRUE) # Sort in decreasing order
