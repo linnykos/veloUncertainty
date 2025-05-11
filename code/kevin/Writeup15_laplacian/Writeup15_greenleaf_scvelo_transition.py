@@ -1,41 +1,54 @@
+# https://github.com/linnykos/veloUncertainty/blob/main/veloUncertainty/v4_functions_transMat.py
+
+import scvelo as scv
+import numpy as np
+import collections
+
+import numpy as np
+import cellrank as cr
+import scanpy as sc
+import scvelo as scv
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 import anndata as ad
 import numpy as np
 import scipy.sparse as sp
 import mygene
 import pandas as pd
 
+
 def directed_laplacian_score(A, x):
     """
-    Compute the normalized directed Laplacian score for a given vector x and adjacency matrix A.
-    Assumes A is already a CSR sparse matrix!
-    
-    Args:
-        A: scipy sparse matrix (n x n), non-negative, possibly asymmetric (already in CSR format).
-        x: 1D numpy array (length n)
-    
-    Returns:
-        Normalized directed Laplacian score (float)
+    Compute the normalized directed Laplacian score for a given vector x and sparse matrix A.
+    This version avoids creating dense matrices like np.outer(x, x).
     """
-    x_i_squared = A.multiply(x[:, None] ** 2).sum()
-    x_j_squared = A.multiply(x[None, :] ** 2).sum()
-    x_cross = A.multiply(np.outer(x, x)).sum()
+    if not sp.issparse(A):
+        raise ValueError("A must be a sparse matrix.")
     
-    score = x_i_squared + x_j_squared - 2 * x_cross
+    # Get nonzero entries of A
+    A_coo = A.tocoo()
+    xi = x[A_coo.row]
+    xj = x[A_coo.col]
+    diff_sq = (xi - xj) ** 2
     
-    var_x = np.var(x)
+    numerator = np.sum(A_coo.data * diff_sq)
     
+    # Compute denominator (total unweighted pairwise squared differences)
+    var_x = np.sum(x ** 2)
     if var_x == 0:
         return np.nan
-    normalized_score = score / var_x
     
-    return normalized_score
+    return numerator / var_x
 
 
 # Load the AnnData object
 adata = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/scv/adata_glf_scv_total_v4.h5ad")
+vk = cr.kernels.VelocityKernel(adata)
+vk.compute_transition_matrix()
 
 # Step 1: Check all values are non-negative
-velocity_graph = adata.uns['velocity_graph']
+velocity_graph = vk.transition_matrix
 
 # Step 2: Normalize each row to sum to 1
 # Normalize the velocity graph rows first (you already have this)
@@ -55,9 +68,10 @@ for gene_idx in range(n_genes):
     # Get the gene expression vector x (for all cells, single gene)
     x = adata[:, gene_idx].X
     if sp.issparse(x):
-        x = np.array(x.todense()).flatten()
+        x = x.todense().A1  # converts to 1D numpy array
     else:
-        x = np.array(x).flatten()
+        x = np.asarray(x).flatten()
+    
     
     # Compute the normalized directed Laplacian score
     score = directed_laplacian_score(velocity_graph_normalized, x)
@@ -101,7 +115,7 @@ scores_df = pd.DataFrame({
 })
 
 # Save to CSV
-output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/Writeup15_greenleaf_gene_laplacian_scores_scvelo.csv"
+output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/Writeup15_greenleaf_gene_laplacian_scores_scvelo_transition.csv"
 scores_df.to_csv(output_path, index=False)
 
 print(f"Saved scores to {output_path}", flush=True)

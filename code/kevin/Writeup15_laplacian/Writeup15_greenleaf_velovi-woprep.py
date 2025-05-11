@@ -50,7 +50,7 @@ n_genes = adata.n_vars  # This is 2000 genes in your case
 scores = []
 
 for gene_idx in range(n_genes):
-    print(f"Working on gene {gene_idx + 1} out of {n_genes}")
+    print(f"Working on gene {gene_idx + 1} out of {n_genes}", flush=True)
     
     # Get the gene expression vector x (for all cells, single gene)
     x = adata[:, gene_idx].X
@@ -66,7 +66,7 @@ for gene_idx in range(n_genes):
 # Convert list to numpy array
 scores = np.array(scores)
 
-print("Finished computing all scores!")
+print("Finished computing all scores!", flush=True)
 
 
 # Initialize
@@ -86,7 +86,7 @@ n_missing = sum(1 for symbol in id_to_symbol.values() if symbol is None)
 # Total number of genes
 n_total = len(id_to_symbol)
 # Print summary
-print(f"{n_missing} out of {n_total} Ensembl IDs did not have a gene symbol ({n_missing/n_total:.2%}).")
+print(f"{n_missing} out of {n_total} Ensembl IDs did not have a gene symbol ({n_missing/n_total:.2%}).", flush=True)
 
 
 # Get gene names from adata
@@ -104,4 +104,4 @@ scores_df = pd.DataFrame({
 output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/Writeup15_greenleaf_gene_laplacian_scores_velovi-woprep.csv"
 scores_df.to_csv(output_path, index=False)
 
-print(f"Saved scores to {output_path}")
+print(f"Saved scores to {output_path}", flush=True)

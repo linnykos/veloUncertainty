@@ -17,4 +17,4 @@ conda env list
 
 python --version
 conda list
-python Writeup15_greenleaf_scvelo.py > /home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
+python -u Writeup15_greenleaf_scvelo.py > /home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/slurm/$SLURM_JOB_NAME-$SLURM_JOB_ID.txt
