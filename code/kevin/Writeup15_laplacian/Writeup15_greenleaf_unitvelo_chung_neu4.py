@@ -68,30 +68,27 @@ scores = []
 for gene_idx in range(n_genes):
     print(f"Working on gene {gene_idx + 1} out of {n_genes}", flush=True)
     
-    # x : sparse column vector (CSR gives fast dot with L)
-    x = adata2[:, gene_idx].X
-    if not sp.issparse(x):
-        x = sp.csr_matrix(x)          # handle the degenerate dense column
-    else:
-        x = x.tocsr()                 # make sure CSR for fast mat‑vec
-    
     # ---- numerator  xᵀ L x  -------------------------------------------
-    y      = laplacian @ x            # sparse (n×1)
-    numer  = x.multiply(y).sum()      # element‑wise product, then sum
+    vec = adata2[:, gene_idx].X         
+    if sp.issparse(vec):
+        x_dense = vec.toarray().ravel()  
+    else:
+        x_dense = np.asarray(vec).ravel()
     
-    # ---- π‑weighted mean / variance -----------------------------------
-    idx_nz = x.indices                # positions of non‑zeros
-    data   = x.data                   # the actual non‑zero values
+    y = laplacian.dot(x_dense)                      # L x
+    numer   = x_dense.dot(y)                              # xᵀ L x
+    
+    nonzero_mask = x_dense != 0
     
     # mean_π = Σ π_i x_i  (zeros contribute nothing)
-    mean_pi  = np.dot(pi[idx_nz], data)
+    mean_pi      = np.dot(pi[nonzero_mask], x_dense[nonzero_mask])
     
     # variance: split into “non‑zero” and “zero” parts
     # (π sums to 1, so π_zero = 1 - Σₙₖ π_k where k are non‑zeros)
-    pi_nz_sum   = pi[idx_nz].sum()
+    pi_nz_sum   = pi[nonzero_mask].sum()
     pi_zero_sum = 1.0 - pi_nz_sum
     
-    var_pi = np.dot(pi[idx_nz], (data - mean_pi) ** 2) + pi_zero_sum * (mean_pi ** 2)
+    var_pi = np.dot(pi[nonzero_mask], (x_dense[nonzero_mask] - mean_pi) ** 2) + pi_zero_sum * (mean_pi ** 2)
     
     # guard against genes that are constant under π
     if var_pi < 1e-12:

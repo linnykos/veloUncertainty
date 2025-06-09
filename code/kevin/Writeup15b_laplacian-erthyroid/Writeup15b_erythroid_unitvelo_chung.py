@@ -62,19 +62,19 @@ for gene_idx in range(n_genes):
     x_dense = np.asarray(adata2[:, gene_idx].X).ravel()   # 1-D vector
     y       = laplacian.dot(x_dense)                      # L x
     numer   = x_dense.dot(y)                              # xᵀ L x
-
+    
     nonzero_mask = x_dense != 0
-
+    
     # mean_π = Σ π_i x_i  (zeros contribute nothing)
     mean_pi      = np.dot(pi[nonzero_mask], x_dense[nonzero_mask])
-
+    
     # variance: split into “non‑zero” and “zero” parts
     # (π sums to 1, so π_zero = 1 - Σₙₖ π_k where k are non‑zeros)
-    pi_nz_sum   = pi[idx_nz].sum()
+    pi_nz_sum   = pi[nonzero_mask].sum()
     pi_zero_sum = 1.0 - pi_nz_sum
-
-    var_pi = np.dot(pi[idx_nz], (data - mean_pi) ** 2) + pi_zero_sum * (mean_pi ** 2)
-
+    
+    var_pi = np.dot(pi[nonzero_mask], (data - mean_pi) ** 2) + pi_zero_sum * (mean_pi ** 2)
+    
     # guard against genes that are constant under π
     if var_pi < 1e-12:
         scores.append(np.nan)

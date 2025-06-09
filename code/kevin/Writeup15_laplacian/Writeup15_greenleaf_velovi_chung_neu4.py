@@ -34,14 +34,14 @@ def chung_laplacian(A_csr):
 
 
 # Load the AnnData object
-adata = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/velovi_woprep_GPC/adata_glf_velovi_woprep_GPC_total_GPC_outputAdded.h5ad")
+adata = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/velovi_GPC/adata_glf_velovi_GPC_total_GPC_outputAdded.h5ad")
 vk = cr.kernels.VelocityKernel(adata)
 vk.compute_transition_matrix()
 
 # Step 1: Check all values are non-negative
 velocity_graph = vk.transition_matrix
 
-adata2 = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/velovi_woprep/adata_glf_velovi_woprep_total_v4_outputAdded.h5ad")
+adata2 = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/velovi/adata_glf_velovi_total_v4_outputAdded.h5ad")
 # Get intersecting cell barcodes
 shared_cells = np.intersect1d(adata.obs_names, adata2.obs_names)
 # Subset both AnnData objects to only shared cells, and **sort them in the same order**
@@ -49,15 +49,8 @@ adata = adata[shared_cells].copy()
 adata2 = adata2[shared_cells].copy()
 
 # Subset
-# Create the mask
-keep_types = [
-    "excitatory neuron 2",
-    "excitatory neuron 4",
-    "excitatory neuron 5",
-    "excitatory neuron 6",
-    "excitatory neuron 7"
-]
-mask = adata.obs['cluster_name'].isin(keep_types)
+# Get boolean mask for cells of interest
+mask = adata.obs['cluster_name'] == 'excitatory neuron 4'
 # Subset the AnnData object
 adata = adata[mask].copy()
 adata2 = adata2[mask].copy()
@@ -75,30 +68,27 @@ scores = []
 for gene_idx in range(n_genes):
     print(f"Working on gene {gene_idx + 1} out of {n_genes}", flush=True)
     
-    # x : sparse column vector (CSR gives fast dot with L)
-    x = adata2[:, gene_idx].X
-    if not sp.issparse(x):
-        x = sp.csr_matrix(x)          # handle the degenerate dense column
-    else:
-        x = x.tocsr()                 # make sure CSR for fast mat‑vec
-    
     # ---- numerator  xᵀ L x  -------------------------------------------
-    y      = laplacian @ x            # sparse (n×1)
-    numer  = x.multiply(y).sum()      # element‑wise product, then sum
+    vec = adata2[:, gene_idx].X         
+    if sp.issparse(vec):
+        x_dense = vec.toarray().ravel()  
+    else:
+        x_dense = np.asarray(vec).ravel()
     
-    # ---- π‑weighted mean / variance -----------------------------------
-    idx_nz = x.indices                # positions of non‑zeros
-    data   = x.data                   # the actual non‑zero values
+    y = laplacian.dot(x_dense)                      # L x
+    numer   = x_dense.dot(y)                              # xᵀ L x
+    
+    nonzero_mask = x_dense != 0
     
     # mean_π = Σ π_i x_i  (zeros contribute nothing)
-    mean_pi  = np.dot(pi[idx_nz], data)
+    mean_pi      = np.dot(pi[nonzero_mask], x_dense[nonzero_mask])
     
     # variance: split into “non‑zero” and “zero” parts
     # (π sums to 1, so π_zero = 1 - Σₙₖ π_k where k are non‑zeros)
-    pi_nz_sum   = pi[idx_nz].sum()
+    pi_nz_sum   = pi[nonzero_mask].sum()
     pi_zero_sum = 1.0 - pi_nz_sum
     
-    var_pi = np.dot(pi[idx_nz], (data - mean_pi) ** 2) + pi_zero_sum * (mean_pi ** 2)
+    var_pi = np.dot(pi[nonzero_mask], (x_dense[nonzero_mask] - mean_pi) ** 2) + pi_zero_sum * (mean_pi ** 2)
     
     # guard against genes that are constant under π
     if var_pi < 1e-12:
@@ -146,7 +136,7 @@ scores_df = pd.DataFrame({
 })
 
 # Save to CSV
-output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/Writeup15_greenleaf_gene_laplacian_scores_velovi-woprep_chung_subset.csv"
+output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/Writeup15_greenleaf_gene_laplacian_scores_velovi_chung_neu4.csv"
 scores_df.to_csv(output_path, index=False)
 
 print(f"Saved scores to {output_path}", flush=True)
