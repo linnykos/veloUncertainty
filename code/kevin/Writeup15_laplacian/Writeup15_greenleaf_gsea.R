@@ -26,7 +26,7 @@ for(kk in 1:length(file_names)){
   csv_results <- read.csv(paste0(out_folder, file_name))
   
   # Prepare input for GSEA
-  teststat_vec <- csv_results$score
+  teststat_vec <- 1/csv_results$score
   names(teststat_vec) <- csv_results$symbol
   teststat_vec <- teststat_vec[!is.na(teststat_vec)]
   teststat_vec <- sort(teststat_vec, decreasing = TRUE) # Sort in decreasing order
@@ -44,7 +44,8 @@ for(kk in 1:length(file_names)){
     OrgDb = "org.Hs.eg.db",
     minGSSize = 10,
     maxGSSize = 500,
-    pvalueCutoff = 1
+    pvalueCutoff = 1,
+    scoreType = "pos"
   )
   
   gsea_df_list[[method_name]] <- as.data.frame(gsea_results)
@@ -56,8 +57,7 @@ for(i in 1:length(gsea_df_list)){
   print(paste0("Printing: ", names(gsea_df_list)[i]))
   
   gsea_df <- gsea_df_list[[i]]
-  idx <- intersect(which(gsea_df$p.adjust <= 0.05),
-                   which(gsea_df$NES <= 0))
+  idx <- which(gsea_df$p.adjust <= 0.05)
   print(paste0(length(idx), " number of significant pathways"))
   if(length(idx) > 0){
     print(paste0("Top ", min(length(idx),20), " pathways:"))

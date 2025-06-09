@@ -35,30 +35,19 @@ def chung_laplacian(A_csr):
 
 
 # Load the AnnData object
-adata = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/scv_GPC/adata_glf_scv_GPC_total_GPC.h5ad")
+adata = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_pancreas/seed317/scv_Mark227/adata_pan_scv_Mark227_total.h5ad")
 vk = cr.kernels.VelocityKernel(adata)
 vk.compute_transition_matrix()
 
 # Step 1: Check all values are non-negative
 velocity_graph = vk.transition_matrix
 
-adata2 = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/scv/adata_glf_scv_total_v4.h5ad")
+adata2 = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_pancreas/seed317/scv/adata_pan_scv_total_v4.h5ad")
 # Get intersecting cell barcodes
 shared_cells = np.intersect1d(adata.obs_names, adata2.obs_names)
 # Subset both AnnData objects to only shared cells, and **sort them in the same order**
 adata = adata[shared_cells].copy()
 adata2 = adata2[shared_cells].copy()
-
-# Subset
-# Get boolean mask for cells of interest
-mask = adata.obs['cluster_name'] == 'excitatory neuron 4'
-# Subset the AnnData object
-adata = adata[mask].copy()
-adata2 = adata2[mask].copy()
-# Get indices of the cells you kept
-indices = np.where(mask)[0]
-# Subset velocity graph using those indices (preserve sparse structure)
-velocity_graph = velocity_graph[indices, :][:, indices]
 
 laplacian, pi = chung_laplacian(velocity_graph)
 
@@ -109,38 +98,16 @@ scores = np.array(scores)
 
 print("Finished computing all scores!", flush=True)
 
-# Initialize
-mg = mygene.MyGeneInfo()
-# List of all 2000 gene IDs from your dataset
-ensembl_ids = adata2.var_names.tolist()  # Get all gene IDs from your AnnData object
-# Query the mapping
-out = mg.querymany(ensembl_ids, scopes='ensembl.gene', fields='symbol', species='human')
-# Build a mapping: Ensembl ID -> gene symbol
-id_to_symbol = {entry['query']: entry.get('symbol', None) for entry in out}
-# Print a few mappings to check
-for k, v in list(id_to_symbol.items())[:10]:
-    print(f"{k} → {v}")
-
-# Count how many genes had no symbol
-n_missing = sum(1 for symbol in id_to_symbol.values() if symbol is None)
-# Total number of genes
-n_total = len(id_to_symbol)
-# Print summary
-print(f"{n_missing} out of {n_total} Ensembl IDs did not have a gene symbol ({n_missing/n_total:.2%}).", flush=True)
-
 # Get gene names from adata
 gene_names = adata2.var_names.tolist()
-# Map Ensembl IDs to gene symbols
-gene_symbols = [id_to_symbol.get(gene, None) for gene in gene_names]
 # Create a DataFrame
 scores_df = pd.DataFrame({
     'gene': gene_names,
-    'symbol': gene_symbols,
     'score': scores
 })
 
 # Save to CSV
-output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/Writeup15_greenleaf_gene_laplacian_scores_scv_chung_neu4.csv"
+output_path = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15c/Writeup15c_pancreas_gene_laplacian_scores_scv_chung.csv"
 scores_df.to_csv(output_path, index=False)
 
 print(f"Saved scores to {output_path}", flush=True)
