@@ -58,7 +58,7 @@ def prepare_adata_laplacian(
     adata_kernel: ad.AnnData,
     adata_full: ad.AnnData,
     subset_key: Optional[str] = None,
-    subset_value: Optional[str | list[str] | set[str]] = None,
+    subset_value: Optional[Union[str, list[str], set[str]]] = None,
 ) -> Tuple[ad.AnnData, sp.csr_matrix]:
     """
     Align cell order, optionally subset, and return the trimmed AnnData
