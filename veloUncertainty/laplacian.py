@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.sparse as sp
 import anndata as ad
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union    
 import cellrank as cr
 
 
