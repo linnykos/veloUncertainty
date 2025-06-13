@@ -2,6 +2,7 @@ import numpy as np
 import scipy.sparse as sp
 import anndata as ad
 from typing import Optional, Tuple
+import cellrank as cr
 
 
 # ---------------------------------------------------------------------
@@ -56,7 +57,6 @@ def chung_laplacian(
 def prepare_adata_laplacian(
     adata_kernel: ad.AnnData,
     adata_full: ad.AnnData,
-    velocity_graph: sp.csr_matrix,
     subset_key: Optional[str] = None,
     subset_value: Optional[str | list[str] | set[str]] = None,
 ) -> Tuple[ad.AnnData, sp.csr_matrix]:
@@ -70,9 +70,6 @@ def prepare_adata_laplacian(
         The AnnData used to build the CellRank/VelocityKernel.
     adata_full
         The AnnData holding all genes to be scored.
-    velocity_graph
-        csr_matrix from `vk.transition_matrix` **in the same order as
-        `adata_kernel.obs_names`**.
     subset_key, subset_value
         If provided, keep only cells where
         `adata_kernel.obs[subset_key] ∈ subset_value`.
@@ -89,10 +86,11 @@ def prepare_adata_laplacian(
     shared = np.intersect1d(adata_kernel.obs_names, adata_full.obs_names)
     adata_kernel = adata_kernel[shared].copy()
     adata_full   = adata_full[shared].copy()
-
-    # --- FIX: make velocity_graph match the (possibly re-ordered) AnnData
-    reorder = adata_kernel.obs_names.get_indexer(shared)
-    velocity_graph = velocity_graph[reorder, :][:, reorder]
+    
+    # 2) Compute the velocity graph
+    vk = cr.kernels.VelocityKernel(adata_kernel)
+    vk.compute_transition_matrix()
+    velocity_graph = vk.transition_matrix
 
     # 2) optional sub-selection
     if subset_key is not None and subset_value is not None:

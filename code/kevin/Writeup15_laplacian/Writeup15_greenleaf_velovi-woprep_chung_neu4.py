@@ -17,47 +17,14 @@ import scipy.sparse as sp
 import mygene
 import pandas as pd
 
-def chung_laplacian(A_csr):
-    d_out = np.asarray(A_csr.sum(1)).ravel()
-    P = sp.diags(1/np.maximum(d_out,1e-32)) @ A_csr      # row‑stochastic
-    # power iteration for πᵀ
-    pi = np.ones(A_csr.shape[0]) / A_csr.shape[0]
-    for _ in range(10000):
-        new = pi @ P
-        if np.linalg.norm(new-pi,1) < 1e-12:
-            break
-        pi = new
-    S  = sp.diags(np.sqrt(pi)) @ P @ sp.diags(1/np.sqrt(pi))
-    H  = 0.5*(S + S.T)
-    L  = sp.eye(A_csr.shape[0]) - H
-    return L, pi
-
+import sys
+sys.path.append('/home/users/kzlin/kzlinlab/projects/veloUncertainty/git/veloUncertainty_kevin/veloUncertainty')
+from laplacian import *
 
 # Load the AnnData object
-adata = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/velovi_woprep_GPC/adata_glf_velovi_woprep_GPC_total_GPC_outputAdded.h5ad")
-vk = cr.kernels.VelocityKernel(adata)
-vk.compute_transition_matrix()
-
-# Step 1: Check all values are non-negative
-velocity_graph = vk.transition_matrix
-
-adata2 = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/velovi_woprep/adata_glf_velovi_woprep_total_v4_outputAdded.h5ad")
-# Get intersecting cell barcodes
-shared_cells = np.intersect1d(adata.obs_names, adata2.obs_names)
-# Subset both AnnData objects to only shared cells, and **sort them in the same order**
-adata = adata[shared_cells].copy()
-adata2 = adata2[shared_cells].copy()
-
-# Subset
-# Get boolean mask for cells of interest
-mask = adata.obs['cluster_name'] == 'excitatory neuron 4'
-# Subset the AnnData object
-adata = adata[mask].copy()
-adata2 = adata2[mask].copy()
-# Get indices of the cells you kept
-indices = np.where(mask)[0]
-# Subset velocity graph using those indices (preserve sparse structure)
-velocity_graph = velocity_graph[indices, :][:, indices]
+adata_kernel = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/velovi_woprep_GPC/adata_glf_velovi_woprep_GPC_total_GPC_outputAdded.h5ad")
+adata_full = ad.read_h5ad("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/seed317/velovi_woprep/adata_glf_velovi_woprep_total_v4_outputAdded.h5ad")
+adata_full, velocity_graph = prepare_adata_laplacian(adata_kernel=adata_kernel, adata_full=adata_full, subset_key='cluster_name', subset_value='excitatory neuron 4')
 
 laplacian, pi = chung_laplacian(velocity_graph)
 
