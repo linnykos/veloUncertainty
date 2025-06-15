@@ -5,6 +5,7 @@ library(org.Mm.eg.db)
 
 set.seed(10)
 
+plot_folder <- "~/kzlinlab/projects/veloUncertainty/git/veloUncertainty_kevin/fig/kevin/Writeup15b/"
 out_folder <- "~/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15b/"
 
 file_names <- c(
@@ -13,7 +14,7 @@ file_names <- c(
 
 gsea_df_list <- vector("list", length = length(file_names))
 names(gsea_df_list) <- names(file_names)
-  
+
 for(kk in 1:length(file_names)){
   method_name <- names(gsea_df_list)[kk]
   file_name <- file_names[kk]
@@ -44,7 +45,7 @@ for(kk in 1:length(file_names)){
     scoreType = "pos"
   )
   
-  gsea_df_list[[method_name]] <- as.data.frame(gsea_results)
+  gsea_df_list[[method_name]] <- gsea_results
 }
 
 #######
@@ -57,7 +58,7 @@ for(i in 1:length(gsea_df_list)){
     length(strsplit(x, split = "/")[[1]])
   })
   idx <- intersect(which(gsea_df$pvalue <= 0.05),
-                   which(gsea_df$num_core > 3))
+                   which(gsea_df$num_core > 5))
   print(paste0(length(idx), " number of significant pathways"))
   if(length(idx) > 0){
     print(paste0("Top ", min(length(idx),20), " pathways:"))
@@ -65,6 +66,31 @@ for(i in 1:length(gsea_df_list)){
     gsea_df_subset <- gsea_df_subset[order(gsea_df_subset$p.adjust, decreasing = FALSE),]
     print(gsea_df_subset[1:(min(20,length(idx))), "Description"])
   }
-
+  
   print("====")
 }
+
+########
+
+gsea_results <- gsea_df_list[[1]]
+
+res_tbl <- gsea_results@result %>%                     # pull out the result slot
+  mutate(coreSize = str_count(core_enrichment, "/") + 1) %>%   # genes per set
+  filter(pvalue <= 0.05, coreSize > 5) %>%             # your two rules
+  arrange(pvalue) %>%                                  # optional: sort
+  slice_head(n = 20)                                   # keep top-20 after filter
+
+gsea_top20 <- gsea_results          # shallow copy
+gsea_top20@result <- res_tbl        # replace the internal table
+
+plot1 <- clusterProfiler::dotplot(gsea_top20,                # still a gseaResult object
+                                  showCategory = 20,         # number of rows now in @result
+                                  orderBy      = "pvalue") +
+  ggtitle("Top 20 filtered GSEA pathways\n(Erythroid, scVelo)")
+
+ggplot2::ggsave(plot1, 
+                filename = paste0(plot_folder, "Writeup15b_erythroid_gsea_dotplot.png"),
+                height = 12, 
+                width = 10)
+
+
