@@ -12,7 +12,7 @@ file_names <- c(
   scvelo = "Writeup15_greenleaf_gene_laplacian_scores_scv_chung_neu4.csv",
   utv = "Writeup15_greenleaf_gene_laplacian_scores_utv_chung_neu4.csv",
   velovi = "Writeup15_greenleaf_gene_laplacian_scores_velovi_chung_neu4.csv",
-  velovi_woprep = "Writeup15_greenleaf_gene_laplacian_scores_velovi-woprep_chung.csv"
+  velovi_woprep = "Writeup15_greenleaf_gene_laplacian_scores_velovi-woprep_chung_neu4.csv"
 )
 
 gsea_df_list <- vector("list", length = length(file_names))
@@ -57,7 +57,11 @@ for(i in 1:length(gsea_df_list)){
   print(paste0("Printing: ", names(gsea_df_list)[i]))
   
   gsea_df <- gsea_df_list[[i]]
-  idx <- which(gsea_df$p.adjust <= 0.05)
+  gsea_df$num_core <- sapply(gsea_df$core_enrichment, function(x){
+    length(strsplit(x, split = "/")[[1]])
+  })
+  idx <- intersect(which(gsea_df$pvalue <= 0.05),
+                   which(gsea_df$num_core > 5))
   print(paste0(length(idx), " number of significant pathways"))
   if(length(idx) > 0){
     print(paste0("Top ", min(length(idx),20), " pathways:"))
@@ -68,6 +72,12 @@ for(i in 1:length(gsea_df_list)){
 
   print("====")
 }
+
+gsea_df <- gsea_df_list[[5]]
+idx <- intersect(which(gsea_df$pvalue <= 0.05),
+                 which(gsea_df$num_core > 5))
+gsea_df_subset <- gsea_df[idx,]
+gsea_df_subset[,c("Description", "core_enrichment")]
 
 ####################
 
