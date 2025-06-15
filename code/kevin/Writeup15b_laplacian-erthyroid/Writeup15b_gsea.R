@@ -53,7 +53,7 @@ for(kk in 1:length(file_names)){
 for(i in 1:length(gsea_df_list)){
   print(paste0("Printing: ", names(gsea_df_list)[i]))
   
-  gsea_df <- gsea_df_list[[i]]
+  gsea_df <- data.frame(gsea_df_list[[i]])
   gsea_df$num_core <- sapply(gsea_df$core_enrichment, function(x){
     length(strsplit(x, split = "/")[[1]])
   })
