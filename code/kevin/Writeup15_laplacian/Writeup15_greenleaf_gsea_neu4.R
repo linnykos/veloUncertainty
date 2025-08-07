@@ -130,6 +130,8 @@ pvalue_df_positive <- data.frame(sapply(gsea_df_list, function(gsea_df){
     }
   })
 }))
+pvalue_df_positive2 <- pvalue_df_positive
+pvalue_df_positive2$Description <- gsea_df_list[["scvelo"]][rownames(pvalue_df_positive), "Description"]
 
 pvalue_df_negative <- data.frame(sapply(gsea_df_list, function(gsea_df){
   vec <- sapply(go_terms_negative, function(x){
@@ -140,6 +142,9 @@ pvalue_df_negative <- data.frame(sapply(gsea_df_list, function(gsea_df){
     }
   })
 }))
+pvalue_df_negative2 <- pvalue_df_negative
+pvalue_df_negative2$Description <- gsea_df_list[["scvelo"]][rownames(pvalue_df_negative), "Description"]
+
 
 #############
 
@@ -189,5 +194,3 @@ ggplot2::ggsave(plot1,
                 filename = paste0(plot_folder, "Writeup15_greenleaf_gsea_barplot.png"),
                 height = 6, 
                 width = 3)
-
-

@@ -75,7 +75,6 @@ for(i in 1:length(gsea_df_list)){
 
 gsea_results <- gsea_df_list[[1]]
 
-
 res_tbl <- gsea_results@result %>%                    
   mutate(coreSize = str_count(core_enrichment, "/") + 1) %>%          # genes / set
   filter(
