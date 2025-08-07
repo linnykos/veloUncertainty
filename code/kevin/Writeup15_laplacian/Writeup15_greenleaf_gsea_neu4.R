@@ -163,8 +163,15 @@ negative_df <- pvalue_df_negative %>%
          pathway   = factor(pathway, levels = rownames(pvalue_df_negative))) # keep order
 
 plot_df <- bind_rows(positive_df, negative_df) %>% 
-  mutate(direction = factor(direction,          # ← make it a factor
-                            levels = c("Positive", "Negative")))
+  mutate(
+    direction = factor(direction, levels = c("Positive", "Negative")),
+    method    = fct_relevel(method,
+                            "scvelo",          # will appear bottom-most
+                            "velovi",
+                            "velovi_woprep",
+                            "sct",
+                            "utv")             # will appear top-most
+  )
 
 method_cols <- c(
   sct            = "#1B9E77",  # teal-green  (unchanged)
