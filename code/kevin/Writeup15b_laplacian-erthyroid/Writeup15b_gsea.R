@@ -53,7 +53,7 @@ for(kk in 1:length(file_names)){
 for(i in 1:length(gsea_df_list)){
   print(paste0("Printing: ", names(gsea_df_list)[i]))
   
-  gsea_df <- gsea_df_list[[i]]
+  gsea_df <- data.frame(gsea_df_list[[i]])
   gsea_df$num_core <- sapply(gsea_df$core_enrichment, function(x){
     length(strsplit(x, split = "/")[[1]])
   })
@@ -85,12 +85,12 @@ gsea_top20@result <- res_tbl        # replace the internal table
 
 plot1 <- clusterProfiler::dotplot(gsea_top20,                # still a gseaResult object
                                   showCategory = 20,         # number of rows now in @result
-                                  orderBy      = "pvalue") +
+                                  orderBy      = "pvalue",
+                                  color = "pvalue") +
   ggtitle("Top 20 filtered GSEA pathways\n(Erythroid, scVelo)")
 
 ggplot2::ggsave(plot1, 
                 filename = paste0(plot_folder, "Writeup15b_erythroid_gsea_dotplot.png"),
                 height = 12, 
-                width = 10)
-
+                width = 8)
 

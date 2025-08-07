@@ -5,6 +5,7 @@ library(org.Mm.eg.db)
 
 set.seed(10)
 
+plot_folder <- "~/kzlinlab/projects/veloUncertainty/git/veloUncertainty_kevin/fig/kevin/Writeup15c/"
 out_folder <- "~/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15c/"
 
 file_names <- c(
@@ -44,7 +45,7 @@ for(kk in 1:length(file_names)){
     scoreType = "pos"
   )
   
-  gsea_df_list[[method_name]] <- as.data.frame(gsea_results)
+  gsea_df_list[[method_name]] <- gsea_results
 }
 
 #######
@@ -52,12 +53,12 @@ for(kk in 1:length(file_names)){
 for(i in 1:length(gsea_df_list)){
   print(paste0("Printing: ", names(gsea_df_list)[i]))
   
-  gsea_df <- gsea_df_list[[i]]
+  gsea_df <- data.frame(gsea_df_list[[i]])
   gsea_df$num_core <- sapply(gsea_df$core_enrichment, function(x){
     length(strsplit(x, split = "/")[[1]])
   })
   idx <- intersect(which(gsea_df$pvalue <= 0.05),
-                   which(gsea_df$num_core > 3))
+                   which(gsea_df$num_core > 5))
   print(paste0(length(idx), " number of significant pathways"))
   if(length(idx) > 0){
     print(paste0("Top ", min(length(idx),20), " pathways:"))
@@ -68,3 +69,34 @@ for(i in 1:length(gsea_df_list)){
 
   print("====")
 }
+
+
+########
+
+gsea_results <- gsea_df_list[[1]]
+
+res_tbl <- gsea_results@result %>%                    
+  mutate(coreSize = str_count(core_enrichment, "/") + 1) %>%          # genes / set
+  filter(
+    pvalue <= 0.05,
+    coreSize > 5,
+    !str_detect(Description, regex("heart|blood|synaptic", ignore_case = TRUE))
+  ) %>%                                                               
+  arrange(pvalue) %>%                                                
+  slice_head(n = 20)            
+
+gsea_top20 <- gsea_results          # shallow copy
+gsea_top20@result <- res_tbl        # replace the internal table
+
+plot1 <- clusterProfiler::dotplot(gsea_top20,                # still a gseaResult object
+                                  showCategory = 20,         # number of rows now in @result
+                                  orderBy      = "pvalue",
+                                  color = "pvalue") +
+  ggtitle("Top 20 filtered GSEA pathways\n(Pancreas, scVelo)")
+
+ggplot2::ggsave(plot1, 
+                filename = paste0(plot_folder, "Writeup15b_pancreas_gsea_dotplot.png"),
+                height = 12, 
+                width = 8)
+
+
