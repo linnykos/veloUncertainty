@@ -42,8 +42,8 @@ def save_adata_outputAdded(method_prefix, gene_set_name, split_seed):
     ## velocity graph
     print_message_with_time("############## Compute velocity graph")
     scv.tl.velocity_graph(total)
-    scv.tl.velocity_graph(split1)
-    scv.tl.velocity_graph(split2)
+    #scv.tl.velocity_graph(split1)
+    #scv.tl.velocity_graph(split2)
     ######################################################
     ## save adata with velocity
     split1.write(savedata_folder+'adata_'+dataset_short+'_'+method+'_'+'split1'+'_outputAdded.h5ad')
@@ -57,5 +57,4 @@ for i in range(5):
     gene_set_name = 'nMark' + str(grid_seed)
     split_seed = [317, 320, 323, 326, 329][i]
     save_adata_outputAdded(method_prefix=method_prefix, gene_set_name=gene_set_name, split_seed=split_seed)
-
 

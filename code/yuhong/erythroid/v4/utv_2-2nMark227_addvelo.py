@@ -19,10 +19,11 @@ def compute_umap_utv_ery_nMark(gene_set_name, split_seed):
     data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_'+dataset_long+'/'
     fig_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/'
     total = sc.read_h5ad(data_folder+'seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_total.h5ad')
+    #print('########################## read total for seed'+str(split_seed))
     total.obsm['X_umapOriginal'] = total.obsm['X_umap'].copy()
-    total.obsm['X_pcaOriginal'] = total.obsm['X_pca'].copy()
+    #total.obsm['X_pcaOriginal'] = total.obsm['X_pca'].copy()
     del total.obsm['X_umap']
-    del total.obsm['X_pca']
+    #del total.obsm['X_pca']
     split1 = sc.read_h5ad(data_folder+'seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split1.h5ad')
     split2 = sc.read_h5ad(data_folder+'seed'+str(split_seed)+'/'+method+'/adata_'+dataset_short+'_'+method+'_split2.h5ad')
     ## compute umap
@@ -43,5 +44,4 @@ for i in range(5):
     grid_seed = [227, 230, 233, 236, 239][i]
     gene_set_name = 'nMark' + str(grid_seed)
     compute_umap_utv_ery_nMark(gene_set_name=gene_set_name, split_seed=split_seed)
-    
 

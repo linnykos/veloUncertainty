@@ -1,18 +1,12 @@
 import sctour as sct
 import scanpy as sc
 import numpy as np
-import torch
 
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v4_functions import *
-from sctour_misc import *
+from v4_functions_sct import *
 
-## plot
-import sys
-sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
-from v4_functions import *
-from sctour_misc import *
 
 def plot_sct_ery_Mark(gene_set_name, split_seed, plot_total=True):
     import scvelo as scv

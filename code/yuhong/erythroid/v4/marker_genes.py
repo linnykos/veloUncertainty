@@ -97,7 +97,6 @@ df_genes_selected = pd.DataFrame( { 'gene': np.array(list(genes_selected), dtype
 
 df_genes_selected.to_csv(data_folder+'ery_marker_genes_wilcoxon.csv')
 
-
 ###########################################################
 ## create data
 import numpy as np

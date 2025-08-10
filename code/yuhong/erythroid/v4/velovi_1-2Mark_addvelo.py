@@ -43,6 +43,7 @@ def addvelo_velovi_ery_Mark(method_prefix, gene_set_name, split_seed):
     
 
 for split_seed in [317,320,323,326,329]:
+#for split_seed in [323,326,329]:
     addvelo_velovi_ery_Mark(method_prefix=method_prefix, gene_set_name=gene_set_name, split_seed=split_seed)
 
 print('####################### All done.')

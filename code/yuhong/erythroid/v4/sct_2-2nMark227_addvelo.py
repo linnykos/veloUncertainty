@@ -1,4 +1,5 @@
 ## plot
+import sctour as sct
 import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v4_functions import *
@@ -49,4 +50,3 @@ for i in range(5):
     grid_seed = [227, 230, 233, 236, 239][i]
     gene_set_name = 'nMark' + str(grid_seed)
     addvelo_sct_ery_nMark(gene_set_name, split_seed)
-    
