@@ -156,6 +156,15 @@ split2_nGPC.write(data_folder+'v4_'+dataset_long+'/glf_seed'+str(split_seed)+'_s
 
 genes239 = total_nGPC.var.indices
 
+# fix the problem that total.X are normalized
+adata = sc.read_h5ad(data_folder+'v4_greenleaf/glf_total_allgenes.h5ad') 
+for i in range(5):
+    split_seed = [317,320,323,326,329][i]
+    grid_seed = [227,230,233,236,239][i]
+    genes_total = sc.read(data_folder+'v4_greenleaf/glf_total_nGPCgrid'+str(grid_seed)+'.h5ad').var.index
+    adata[:,genes_total].write(data_folder+'v4_greenleaf/glf_total_nGPCgrid'+str(grid_seed)+'.h5ad')
+
+
 # save the control genes
 df_genes_ctrl = pd.DataFrame({'genes227': np.array(sc.read(data_folder+'v4_'+dataset_long+'/glf_seed317_split1_nGPCgrid227.h5ad').var.index),
               'genes230': np.array(sc.read(data_folder+'v4_'+dataset_long+'/glf_seed320_split1_nGPCgrid230.h5ad').var.index ),

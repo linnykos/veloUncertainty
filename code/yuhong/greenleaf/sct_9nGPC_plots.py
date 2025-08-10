@@ -18,7 +18,6 @@ from v4_functions import *
 adata_prefix = 'adata_'+dataset_short+'_'+method
 tnode_prefix = 'tnode_'+dataset_short+'_'+method
 
-
 total = sc.read_h5ad(data_folder+adata_prefix+'_total_v4.h5ad') # 
 split1 = sc.read_h5ad(data_folder+adata_prefix+'_split1_v4.h5ad') # 
 split2 = sc.read_h5ad(data_folder+adata_prefix+'_split2_v4.h5ad') # 

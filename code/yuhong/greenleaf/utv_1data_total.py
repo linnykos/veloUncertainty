@@ -30,4 +30,3 @@ velo_config.AGENES_R2 = 1  # default initialization
 os.environ["TF_USE_LEGACY_KERAS"]="1"
 
 utv_run_model_v4(data_version,dataset_short,method,velo_config,data_folder,split_seed,celltype_label)
-

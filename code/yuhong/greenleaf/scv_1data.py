@@ -41,4 +41,3 @@ split2.write_h5ad(data_folder+'seed'+str(split_seed)+'/scv/adata_'+dataset_short
 
 ######################
 
-

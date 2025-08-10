@@ -5,6 +5,7 @@ data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/
 import anndata as ad
 adata = ad.read_h5ad(data_folder+'v4_greenleaf/glf_total_allgenes.h5ad') 
 
+
 import scvelo as scv
 import scanpy as sc
 import numpy as np
@@ -58,6 +59,7 @@ U_mat = adata.layers['unspliced'].copy()
 split_seed = 317
 print_message_with_time("########### Starting countsplit "+str(split_seed))
 adata_split1,adata_split2 = countsplit_and_create_adata(S=S_mat,U=U_mat,total=adata,split_seed=split_seed,overdisp_S=overdisp_S,overdisp_U=overdisp_U)
+print_message_with_time("########### Countsplit "+str(split_seed)+" finished")
 
 adata_split1.write(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'_'+dataset_short+'_split1_allgenes.h5ad')
 adata_split2.write(data_folder+'v4_'+dataset_long+'/seed'+str(split_seed)+'_'+dataset_short+'_split2_allgenes.h5ad')
