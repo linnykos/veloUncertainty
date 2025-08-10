@@ -26,7 +26,7 @@ def sct_add_output(adata, tnode, timesteps):
     adata.layers['velocity'] = compute_sct_avg_velocity(tnode, timesteps)
     get_umap_sct(adata)
 
-def sct_create_plots(split_seed, grid_seed, sct_seed=615):
+def sct_add_velo(split_seed, grid_seed, sct_seed=615):
     gene_set_name = gene_set_prefix+str(grid_seed)
     method = 'sct_'+gene_set_name
     data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/'
@@ -51,6 +51,19 @@ def sct_create_plots(split_seed, grid_seed, sct_seed=615):
     total.write(data_folder+adata_prefix+'_total_v4_outputAdded.h5ad') # 
     split1.write(data_folder+adata_prefix+'_split1_v4_outputAdded.h5ad') # 
     split2.write(data_folder+adata_prefix+'_split2_v4_outputAdded.h5ad') # 
+
+def sct_create_plots(split_seed, grid_seed, sct_seed=615):
+    gene_set_name = gene_set_prefix+str(grid_seed)
+    method = 'sct_'+gene_set_name
+    data_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_'+dataset_long+'/seed'+str(split_seed)+'/'+method+'/'
+    fig_folder = '/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/fig/yuhong/v4_'+dataset_long+'/seed'+str(split_seed)+"/"+method+"/"
+    adata_prefix = 'adata_'+dataset_short+'_'+method
+    tnode_prefix = 'tnode_'+dataset_short+'_'+method
+    print('############# read data')
+    total = sc.read_h5ad(data_folder+'adata_'+dataset_short+'_'+method+'_'+'total'+'_v4_outputAdded.h5ad') # 
+    total.obsm['X_umapOriginal'] = total.obsm['X_umap_greenleaf']
+    split1 = sc.read_h5ad(data_folder+'adata_'+dataset_short+'_'+method+'_'+'split1'+'_v4_outputAdded.h5ad') # 
+    split2 = sc.read_h5ad(data_folder+'adata_'+dataset_short+'_'+method+'_'+'split2'+'_v4_outputAdded.h5ad') # 
     print('############# vector field')
     plot_vf_umap(adata_in=split1, data_version="split1",data=dataset_short,method=method,fig_folder=fig_folder)
     plot_vf_umap(adata_in=split2, data_version="split2",data=dataset_short,method=method,fig_folder=fig_folder)
@@ -81,11 +94,19 @@ def sct_create_plots(split_seed, grid_seed, sct_seed=615):
     sct_create_plots(split_seed=split_seed, grid_seed=grid_seed)
     print('################## seed'+str(split_seed)+' done')
 """
-
+"""
 for i in range(4):
     split_seed = [320,323,326,329][i]
     grid_seed = [230,233,236,239][i]
+    sct_add_velo(split_seed=split_seed, grid_seed=grid_seed)
+    print('################## seed'+str(split_seed)+' done')
+"""
+
+for i in range(5):
+    split_seed = [317,320,323,326,329][i]
+    grid_seed = [227,230,233,236,239][i]
     sct_create_plots(split_seed=split_seed, grid_seed=grid_seed)
     print('################## seed'+str(split_seed)+' done')
+
 
 print('################# all done')
