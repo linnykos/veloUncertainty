@@ -13,6 +13,7 @@ sys.path.append('FILEPATH-TO-veloUncertainty-FOLDER-INSIDE-GITHUB-REPO')
 from countsplit import *
 ```
 Afterwards, you can import the relevant functions for the specific RNA velocity method. (See the list of scripts in `https://github.com/linnykos/veloUncertainty/tree/main/veloUncertainty`. The file suffixes to `v4_functions` denote the helper functions for the corresponding RNA velocity method: sct = scTour, scv = scVelo, velovi = both versions of veloVI, and utv = UniTVelo. 
+Note that `v4_functions` contains functions applicable to any method, mainly involving producing plots.
 
 The analyses details and workflow are documented for the respective datasets under the `code` folder.
 
