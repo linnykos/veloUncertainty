@@ -1,16 +1,15 @@
 rm(list=ls())
 
 library(clusterProfiler)
-library(org.Hs.eg.db)
-library(tidyverse)
+library(org.Mm.eg.db)
 
 set.seed(10)
 
-plot_folder <- "~/kzlinlab/projects/veloUncertainty/git/veloUncertainty_kevin/fig/kevin/Writeup15/"
-out_folder <- "~/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15/"
+plot_folder <- "~/kzlinlab/projects/veloUncertainty/git/veloUncertainty_kevin/fig/kevin/Writeup15b/"
+out_folder <- "~/kzlinlab/projects/veloUncertainty/out/kevin/Writeup15b/"
 
 file_names <- c(
-  velovi = "Writeup15_greenleaf_gene_laplacian_scores_velovi-woprep_chung.csv"
+  scvelo = "Writeup15b_erythroid_gene_laplacian_scores_utv_chung.csv"
 )
 
 gsea_df_list <- vector("list", length = length(file_names))
@@ -25,7 +24,7 @@ for(kk in 1:length(file_names)){
   
   # Prepare input for GSEA
   teststat_vec <- 1/csv_results$score
-  names(teststat_vec) <- csv_results$symbol
+  names(teststat_vec) <- csv_results$gene
   teststat_vec <- teststat_vec[!is.na(teststat_vec)]
   teststat_vec <- sort(teststat_vec, decreasing = TRUE) # Sort in decreasing order
   
@@ -39,7 +38,7 @@ for(kk in 1:length(file_names)){
     teststat_vec,
     ont = "BP", # Biological Process
     keyType = "SYMBOL",
-    OrgDb = "org.Hs.eg.db",
+    OrgDb = "org.Mm.eg.db",
     minGSSize = 10,
     maxGSSize = 500,
     pvalueCutoff = 1,
@@ -88,10 +87,11 @@ plot1 <- clusterProfiler::dotplot(gsea_top20,                # still a gseaResul
                                   showCategory = 20,         # number of rows now in @result
                                   orderBy      = "pvalue",
                                   color = "pvalue") +
-  ggtitle("Top 20 filtered GSEA pathways\n(Brain, veloVI without prep.)")
+  ggtitle("Top 20 filtered GSEA pathways\n(Erythroid, UnitVelo)")
 
 ggplot2::ggsave(plot1, 
-                filename = paste0(plot_folder, "Writeup15_greenleaf_gsea_dotplot.png"),
+                filename = paste0(plot_folder, "Writeup15b_erythroid_gsea_dotplot.png"),
                 height = 12, 
                 width = 8)
+
 
