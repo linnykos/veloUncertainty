@@ -1,6 +1,20 @@
-This repository contains all the code used for the analyses in our paper, which involve five RNA velocity methods and three datasets. The 'code' folder is organized by dataset and method, and includes scripts for count splitting as well as for computing replicate coherence and signal-to-random coherence scores. The 'veloUncertainty' folder contains custom functions used in these analyses. The produced figures can be found in the 'fig' folder.
+This repository contains all the code used for the analyses in our paper, which involve five RNA velocity methods and three datasets. The `code` folder is organized by dataset and method, and includes scripts for count splitting as well as for computing replicate coherence and signal-to-random coherence scores. The `veloUncertainty` folder contains custom functions used in these analyses. The produced figures can be found in the `fig` folder.
 
 This code is accompanying the paper “Assessing RNA velocity stability across synthetic replicates using count splitting” (https://www.biorxiv.org/content/10.1101/2024.11.23.625009).
+
+# Instructions for reproducing results
+
+1. Install the appropriate RNA velocity method into a virtual environment.
+2. Download our GitHub using `git clone https://github.com/linnykos/veloUncertainty/` 
+3. After setting up the filepaths to your environment appropriately, you can run the following lines in your script
+```
+import sys
+sys.path.append('FILEPATH-TO-veloUncertainty-FOLDER-INSIDE-GITHUB-REPO')
+from countsplit import *
+```
+Afterwards, you can import the relevant functions for the specific RNA velocity method. (See the list of scripts in `https://github.com/linnykos/veloUncertainty/tree/main/veloUncertainty`. The file suffixes to `v4_functions` denote the helper functions for the corresponding RNA velocity method: sct = scTour, scv = scVelo, velovi = both versions of veloVI, and utv = UniTVelo. 
+
+The analyses details and workflow are documented for the respective datasets under the `code` folder.
 
 # Details for the virtual environments
 
