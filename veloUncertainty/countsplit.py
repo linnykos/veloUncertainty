@@ -245,7 +245,7 @@ def estimate_overdisps(X):
         df = pd.DataFrame(data)
         model = smf.negativebinomial('counts ~ 1', data=df)
         result = model.fit()
-        res.append(result.params['alpha'])
+        res.append(1/result.params['alpha'])
     if X.ndim==2:
         p = X.shape[1]
         for col in range(p):
