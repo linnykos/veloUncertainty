@@ -49,25 +49,6 @@ def utv_panINC_plots(split_seed):
     plot_veloConf_hist(total,dataset_short,method,fig_folder,split_seed)
     plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed)
     print('correlation of velocity confidence between splits ='+str(np.round(np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence']),5)) )
-    ## ptime
-    print('seed='+str(split_seed)+': velocity pseudotime')
-    scv.tl.velocity_pseudotime(total,use_velocity_graph=False)
-    scv.tl.velocity_pseudotime(split1,use_velocity_graph=False)
-    scv.tl.velocity_pseudotime(split2,use_velocity_graph=False)
-    plot_pseudotime(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-    plot_pseudotime(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-    ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,time_label='velocity_pseudotime',split_seed=split_seed)
-    ## latent time
-    print('seed='+str(split_seed)+': latent time')
-    scv.tl.recover_dynamics(split1,n_jobs=8)
-    scv.tl.velocity_graph(split1,n_jobs=8)
-    scv.tl.latent_time(split1)
-    scv.tl.recover_dynamics(split2,n_jobs=8)
-    scv.tl.velocity_graph(split2,n_jobs=8)
-    scv.tl.latent_time(split2)
-    plot_latent_time(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
-    plot_latent_time(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
-    latent_time_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,split_seed=split_seed)
     # shuffled cosine similarity
     print('seed='+str(split_seed)+': shuffled cosine similarity')
     v2s_mean,v2s_median = compute_cosine_similarity_shuffled(split1,split2,method=method,seed=1508)
@@ -84,13 +65,6 @@ def utv_panINC_plots(split_seed):
     np.quantile(c2, [0.,.25,.5,.75,1.]) 
     print(' ######################### seed='+str(split_seed)+': all done! ######################### ')
 
-
 utv_panINC_plots(323)
 utv_panINC_plots(326)
 utv_panINC_plots(329)
-
-
-
-#total = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='total',allgenes=False,outputAdded=True)
-#split1 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split1',allgenes=False,outputAdded=True)
-#split2 = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version='split2',allgenes=False,outputAdded=True)
