@@ -1,6 +1,6 @@
 This repository contains all the code used for the analyses in our paper, which involve five RNA velocity methods and three datasets. The `code` folder is organized by dataset and method, and includes scripts for count splitting as well as for computing replicate coherence and signal-to-random coherence scores. The `veloUncertainty` folder contains custom functions used in these analyses. The produced figures can be found in the `fig` folder.
 
-This code is accompanying the paper “Quantifying stability via count splitting to guide model selection in RNA velocity analyses” (https://www.biorxiv.org/content/10.1101/2024.11.23.625009).
+This code is accompanying the paper “Quantifying stability via count splitting to guide model selection in RNA velocity analyses” [https://www.biorxiv.org/content/10.1101/2024.11.23.625009](https://www.biorxiv.org/content/10.1101/2024.11.23.625009).
 
 # Instructions for reproducing results
 
@@ -16,6 +16,8 @@ Afterwards, you can import the relevant functions for the specific RNA velocity 
 Note that `v4_functions` contains functions applicable to any method, mainly involving producing plots.
 
 The analyses details and workflow are documented for the respective datasets under the `code` folder.
+
+See [https://github.com/linnykos/veloUncertainty/blob/main/tutorial/tutorial.ipynb](https://github.com/linnykos/veloUncertainty/blob/main/tutorial/tutorial.ipynb) for a tutorial of the minimal workflow using scVelo in `stochastic` mode on the Pancreas dataset, using only the annotated highly variable genes, where the overdispersions are already provided.
 
 # Details for the R and Python environments
 
