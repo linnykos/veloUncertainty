@@ -144,23 +144,3 @@ def plot_sct_velocity(adata_in,data_version,dataset,fig_folder,recompute=True,me
                                      save=fig_folder+"velocity/"+data_method+"_"+data_version+"_umapCompute.png")
 
 
-def ptime_sct_correlation_scatter_spearman(s1,s2,method,dataset,name,xlab,ylab,fig_folder,split_seed,celltype_label=None,alpha=.3):
-    time_label='ptime'
-    from scipy.stats import spearmanr
-    if celltype_label==None: celltype_label=get_celltype_label(dataset)
-    cell_types = s1.obs[celltype_label]
-    colors = dict(zip(s1.obs[celltype_label].cat.categories, s1.uns[celltype_label+'_colors']))
-    df = pd.DataFrame({'split1':s1.obs[time_label],'split2':s2.obs[time_label],'cell_types':cell_types})
-    corr = np.round(spearmanr(s1.obs[time_label], s2.obs[time_label]).correlation,3)
-    print(corr)
-    plt.figure(figsize=(7, 5))
-    for category, color in colors.items(): plt.scatter([], [], color=color, label=category)
-    plt.scatter(df['split1'], df['split2'], c=df['cell_types'].map(colors), alpha=alpha)
-    plt.legend()
-    plt.xlabel(xlab)
-    plt.ylabel(ylab)
-    plt.title('sct ptime correlation '+name+', '+dataset+'+'+method+', split_seed='+str(split_seed)+' (corr='+str(corr)+')')
-    plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+'_ptimesct_SpearmanCorr_'+name+'.png')
-    plt.close()
-
-
