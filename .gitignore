@@ -3,6 +3,9 @@ code/yuhong/data/*
 *code/yuhong/data/
 *code/yuhong/data/*
 
+.h5ad
+*.h5ad
+
 .DS_Store
 *.DS_Store
 .nfs

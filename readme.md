@@ -17,9 +17,11 @@ Note that `v4_functions` contains functions applicable to any method, mainly inv
 
 The analyses details and workflow are documented for the respective datasets under the `code` folder.
 
-# Details for the virtual environments
+# Details for the R and Python environments
 
-## Pyhton: scVelo
+To estimate the overdispersion of the spliced and unspliced counts, we had the most success using the `glmGamPoi::glm_gp` (`glmGamPoi` package v1.14.3) in R.
+
+## Python: scVelo
 
 The following are the dependencies for the scVelo virtual environment:
 ```
@@ -433,7 +435,7 @@ zipp                      3.17.0                   pypi_0    pypi
 zlib                      1.2.13               h5eee18b_0  
 ```
 
-## Pyhton: scTour 
+## Python: scTour 
 
 The following are the dependencies for the scTour virtual environment:
 ```
