@@ -13,13 +13,8 @@ def compute_deseq2_dispersion_inputs(X, gene_names):
     ----------
     X : scipy.sparse._csr.csr_matrix
         Raw counts (cells x genes).
-    alpha_hat : array-like, shape (n_genes,)
-        Per-gene overdispersion estimates in DESeq2 parameterization
-        (Var = mu + alpha * mu^2). Convert before calling if needed.
-    design_rank : int, default=1
-        Rank of the design matrix used when fitting dispersions.
-        For an intercept-only model, design_rank = 1.
-        Degrees of freedom will be n_cells - design_rank.
+    gene_names : array-like, shape (n_genes,)
+        Gene names corresponding to X
     
     Returns
     -------
@@ -58,15 +53,15 @@ def compute_deseq2_dispersion_inputs(X, gene_names):
 data_folder = "/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/yuhong/data/"
 
 adata = ad.read_h5ad(data_folder+'Gastrulation/erythroid_lineage.h5ad')
+gene_names = adata.var_names
+
 spliced_matrix = adata.layers['spliced']
 unspliced_matrix = adata.layers['unspliced']
 
 ###################
 
+df_spliced = compute_deseq2_dispersion_inputs(X = spliced_matrix, gene_names = gene_names)
+df_unspliced = compute_deseq2_dispersion_inputs(X = unspliced_matrix, gene_names = gene_names)
 
-df_spliced = compute_deseq2_dispersion_inputs(X = spliced_matrix, )
-
-df_out.to_csv("gene_dispersion_inputs.csv", index=False)
-
-with open("df_for_dispersion.txt", "w") as f:
-    f.write(str(df))
+df_spliced.to_csv("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/erythroid_replicate_coherence/spliced_depth.csv", index=False)
+df_unspliced.to_csv("/home/users/kzlin/kzlinlab/projects/veloUncertainty/out/kevin/erythroid_replicate_coherence/unspliced_depth.csv", index=False)
