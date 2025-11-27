@@ -53,44 +53,6 @@ plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_s
 
 np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence']) # 0.34453984
 
-"""
->>> np.corrcoef([c2,total.obs['velocity_pseudotime'],total.obs['velocity_confidence']])
-array([[ 1.        ,  0.29698886,  0.27629766],
-       [ 0.29698886,  1.        , -0.33615143],
-       [ 0.27629766, -0.33615143,  1.        ]])
-"""
-## pseudotime
-plot_pseudotime(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,celltype_label=celltype_label,ptime_label='velocity_pseudotime')
-plot_pseudotime(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,celltype_label=celltype_label,ptime_label='velocity_pseudotime')
-plot_pseudotime(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,celltype_label=celltype_label,ptime_label='velocity_pseudotime')
-
-ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,time_label='velocity_pseudotime',split_seed=split_seed,celltype_label=celltype_label)
-
-
-plot_pseudotime_diffusion(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-plot_pseudotime_diffusion(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-#plot_pseudotime_diffusion(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-
-ptime_diffusion_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,time_label='velocity_pseudotime',split_seed=split_seed)
-
-print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='velocity_pseudotime')
-"""
-Blood progenitors 1 0.4334
-Blood progenitors 2 0.768
-Erythroid1 0.2148
-Erythroid2 0.2571
-Erythroid3 0.0835
-"""
-print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='latent_time')
-
-
-## latent time
-plot_latent_time(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,celltype_label=celltype_label)
-plot_latent_time(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,celltype_label=celltype_label)
-plot_latent_time(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,celltype_label=celltype_label)
-
-latent_time_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,split_seed=split_seed,celltype_label=celltype_label)
-
 # gene correlation
 plot_method_gene_corr(split1, split2, method, dataset_short, fig_folder, split_seed)
 

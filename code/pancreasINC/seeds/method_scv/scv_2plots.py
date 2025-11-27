@@ -1,4 +1,3 @@
-
 import scvelo as scv
 import scanpy as sc
 from scipy.sparse import csr_matrix
@@ -9,7 +8,6 @@ import sys
 sys.path.append('/home/users/y2564li/kzlinlab/projects/veloUncertainty/git/veloUncertainty/veloUncertainty')
 from v4_functions_scv import *
 from v4_functions import *
-
 
 def scv_panINC_plots(split_seed):
        print('############### seed='+str(split_seed)+' starts! ###############')
@@ -45,24 +43,6 @@ def scv_panINC_plots(split_seed):
        plot_veloConf_hist(total,dataset_short,method,fig_folder,split_seed)
        plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed,celltype_label=None)
        print('correlation of confidence between splits ='+str(np.round(np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence']),5))) # 0.28853776
-       ## ptime
-       print(str(split_seed)+': velocity pseudotime')
-       scv.tl.velocity_pseudotime(total,use_velocity_graph=False)
-       scv.tl.velocity_pseudotime(split1,use_velocity_graph=False)
-       scv.tl.velocity_pseudotime(split2,use_velocity_graph=False)
-       plot_pseudotime(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-       plot_pseudotime(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-       plot_pseudotime(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-       ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,time_label='velocity_pseudotime',split_seed=split_seed)
-       # latent time
-       print(str(split_seed)+': latent time')
-       scv.tl.latent_time(total)
-       plot_latent_time(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
-       scv.tl.latent_time(split1)
-       plot_latent_time(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
-       scv.tl.latent_time(split2)
-       plot_latent_time(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
-       latent_time_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,split_seed=split_seed)
        # shuffled cosine similarity
        print(str(split_seed)+': shuffled cosine similarity')
        v2s_mean,v2s_median = compute_cosine_similarity_shuffled(split1,split2,method=method,seed=1508)
@@ -83,9 +63,7 @@ def scv_panINC_plots(split_seed):
        np.round(np.var(c2),4) 
        print('############### seed='+str(split_seed)+' all done! ###############')
 
-
 scv_panINC_plots(320)
 scv_panINC_plots(323)
 scv_panINC_plots(326)
 scv_panINC_plots(329)
-

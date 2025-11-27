@@ -54,10 +54,8 @@ plot_cosine_similarity_boxplot_by_celltype(adata_split1=split1,adata_split2=spli
 
 c1,n1 = compute_cosine_similarity_intersect(split1,split2,method)
 c2,n2 = compute_cosine_similarity_union(split1,split2,method)
-
 np.quantile(c1, [0.,.25,.5,.75,1.]) # [-0.88574982, -0.72829843, -0.65245295, -0.54237738, -0.05003589]
 np.quantile(c2, [0.,.25,.5,.75,1.]) # [-0.87986282, -0.72390282, -0.64901759, -0.5395418 , -0.04971655]
-
 
 ## confidence
 if (not 'velocity_confidence' in split1.obs.columns):
@@ -69,49 +67,7 @@ plot_veloConf_and_cosSim(adata_total=total,adata_split1=split1,adata_split2=spli
 plot_veloConf_hist(total,dataset_short,method,fig_folder,split_seed)
 plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed)
 
-np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence']) # 0.15731716
-
-
 ######################################################
-## ptime
-if not 'velocity_pseudotime' in split1.obs.columns:
-    scv.tl.velocity_pseudotime(total,use_velocity_graph=False)
-    scv.tl.velocity_pseudotime(split1,use_velocity_graph=False)
-    scv.tl.velocity_pseudotime(split2,use_velocity_graph=False)
-
-plot_pseudotime(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-plot_pseudotime(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-plot_pseudotime(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-
-ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,time_label='velocity_pseudotime',split_seed=split_seed)
-# -0.908
-
-if not 'latent_time' in split1.obs.columns:
-    scv.tl.recover_dynamics(total,n_jobs=8)
-    scv.tl.velocity_graph(total,n_jobs=8)
-    scv.tl.latent_time(total)
-    scv.tl.recover_dynamics(split1,n_jobs=8)
-    scv.tl.velocity_graph(split1,n_jobs=8)
-    scv.tl.latent_time(split1)
-    scv.tl.recover_dynamics(split2,n_jobs=8)
-    scv.tl.velocity_graph(split2,n_jobs=8)
-    scv.tl.latent_time(split2)
-
-plot_latent_time(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
-plot_latent_time(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
-plot_latent_time(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
-
-latent_time_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,split_seed=split_seed)
-# -0.866
-
-np.corrcoef([c2,total.obs['velocity_confidence'],total.obs['velocity_pseudotime'],total.obs['latent_time']])
-"""
-array([[1.        , 0.16793564, 0.23003076, 0.18569409],
-       [0.16793564, 1.        , 0.47805072, 0.54313432],
-       [0.23003076, 0.47805072, 1.        , 0.77345141],
-       [0.18569409, 0.54313432, 0.77345141, 1.        ]])
-"""
-
 # shuffled cosine similarity
 v2s_mean,v2s_median = compute_cosine_similarity_shuffled(split1,split2,method=method,seed=1508)
 ( np.round(np.mean(v2s_mean),4) , np.round(np.mean(v2s_median),4) )
@@ -123,69 +79,3 @@ np.round(np.var(v2s_median),4) # 0.0007
 
 # paired: -0.6241 -0.649
 # shuffled: -0.1358, -0.2556
-
-######################################
-## random, cosine similarity by cells and neighborhoods
-def is_symmetric(matrix):
-    return np.allclose(matrix, matrix.T)
-
-is_symmetric(total.obsp['connectivities'].todense())
-
-total.obs['clusters']
-
-#
-import collections
-celltype_label = 'clusters'
-idx_mix = []
-idx_mid = []
-for i in range(total.shape[0]):
-    idx = np.where(total.obsp['connectivities'][i].todense()>0)[1]
-    celltype_i = total.obs[celltype_label][i]
-    celltype_nb = total.obs[celltype_label][idx]
-    counter = collections.Counter(total.obs[celltype_label][idx])
-    if len(counter)==1 and counter[celltype_i]>0:
-        idx_mid.append(i)
-    else:
-        idx_mix.append(i)
-
-[ len(idx_mid),len(idx_mix) ] # [1239, 1865]
-# cell index
-idx_low_cos = np.where(c2 < np.quantile(c2,[.25])[0])[0]
-
-len(np.intersect1d(idx_low_cos,idx_mid)) # 163
-len(np.intersect1d(idx_low_cos,idx_mix)) # 613
-
-np.min(c2[idx_low_cos])
-np.min(c2[idx_mid])
-np.min(c2[idx_mix])
-
-collections.Counter(total.obs[celltype_label][np.where(c2 < -0.833)[0]])
-#Counter({'Ductal': 31, 'Ngn3 low EP': 22, 'Epsilon': 6, 'Ngn3 high EP': 5, 'Delta': 3, 'Beta': 2, 'Alpha': 1})
-
-i = 0
-j = np.where(c2 < -0.833)[0][i]
-total.obs[celltype_label][j]
-collections.Counter(total.obs[celltype_label][np.where(total.obsp['connectivities'][j].todense()>0)[0]])
-
-for i in np.where(c2 < -0.833)[0]:
-    counter_nb = collections.Counter(total.obs[celltype_label][np.where(total.obsp['connectivities'][i].todense()>0)[0]])
-    print(total.obs[celltype_label][i],counter_nb[total.obs[celltype_label][i]],len(counter_nb))
-
-for i in np.where(c2 > -0.833)[0]:
-    if c2[i] > -0.7: continue
-    else:
-        counter_nb = collections.Counter(total.obs[celltype_label][np.where(total.obsp['connectivities'][i].todense()>0)[0]])
-        print(total.obs[celltype_label][i],
-            counter_nb[total.obs[celltype_label][i]],len(counter_nb))
-
-np.quantile(c2[idx_mid],[0.,.25,.5,.75,1.])
-np.quantile(c2[idx_mix],[0.,.25,.5,.75,1.])
-np.quantile(c2,[0.,.25,.5,.75,1.])
-"""
->>> np.quantile(c2[idx_mix],[0.,.25,.5,.75,1.])
-array([-0.87986282, -0.7477591 , -0.66975087, -0.5713319 , -0.04971655])
->>> np.quantile(c2,[0.,.25,.5,.75,1.])
-array([-0.87986282, -0.72390282, -0.64901759, -0.5395418 , -0.04971655])
->>> np.quantile(c2[idx_mid],[0.,.25,.5,.75,1.])
-array([-0.83304802, -0.69120913, -0.61152746, -0.48994667, -0.0855588 ])
-"""

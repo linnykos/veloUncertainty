@@ -28,10 +28,6 @@ def read_raw_adata(dataset):
         return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v2_pancreasINC/pancreasINC_total_allgenes.h5ad')
     elif ('pan' in dataset) and (not 'INC' in dataset):
         return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/Pancreas/endocrinogenesis_day15.h5ad')
-    elif dataset=='larry':
-        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_larry/larry.h5ad')
-    elif dataset=='larryMult':
-        return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_larryMult/larry_multilineage.h5ad')
     elif dataset=='greenleaf' or dataset=='glf':
         return sc.read_h5ad('/home/users/y2564li/kzlinlab/projects/veloUncertainty/out/yuhong/data/v4_greenleaf/glf_total_allgenes.h5ad')
     
@@ -266,20 +262,6 @@ def plot_cosine_similarity(adata_split1,adata_split2,adata_total,dataset,method,
     plt.title('Histogram of cosine similarity, '+dataset+'+'+method+'\n Ngenes='+str(Ngenes)+', split_seed='+str(split_seed))
     plt.savefig(fig_folder+'metric/'+dataset_method+'_cos_sim_hist.png')
     plt.clf()
-    """
-    # umapCompute
-    print('Plot umapCompute')
-    adata_total_plot = adata_total.copy()
-    plot_metric(adata=adata_total_plot,metric='cos',plot_type='emb',fig_folder=fig_folder,dataset=dataset,method=method,Ngenes=Ngenes,split_seed=split_seed,basis_type='Compute',basis='umap',recompute=recompute)
-    plot_metric(adata=adata_total_plot,metric='cos',plot_type='scat',fig_folder=fig_folder,dataset=dataset,method=method,Ngenes=Ngenes,split_seed=split_seed,basis_type='Compute',basis='umap',recompute=recompute)
-    # umapOriginal
-    adata_total_plot = adata_total.copy()
-    adata_total_plot.obsm['X_umap'] = adata_total_plot.obsm['X_umapOriginal']
-    scv.tl.velocity_graph(adata_total_plot,n_jobs=8)
-    print('Plot umapOriginal')
-    plot_metric(adata=adata_total_plot,metric='cos',plot_type='emb',fig_folder=fig_folder,dataset=dataset,method=method,basis_type='Orig',basis='umap',Ngenes=Ngenes,split_seed=split_seed)
-    plot_metric(adata=adata_total_plot,metric='cos',plot_type='scat',fig_folder=fig_folder,dataset=dataset,method=method,basis_type='Orig',basis='umap',Ngenes=Ngenes,split_seed=split_seed)
-    """
 
 ### helper
 def plot_metric_withRef(adata,metric,dataset,method,fig_folder,basis_type,split_seed,celltype_label=None,Ngenes=None,recompute=True,basis='umap'):
@@ -378,100 +360,6 @@ def plot_veloConf_hist(adata_total,dataset,method,fig_folder,split_seed,text_x=N
 
 
 
-######################################################
-# plot pseudotime
-def plot_pseudotime(adata_in,data_version,dataset,method,fig_folder,split_seed,recompute=True,celltype_label=None,ptime_label='velocity_pseudotime'):
-    fig_title = data_version+', split_seed='+str(split_seed)
-    if not ptime_label in adata_in.obs.columns: raise ValueError('No pseudotime information')
-    if celltype_label == None: celltype_label = get_celltype_label(dataset)
-    # umapCompute
-    adata = adata_in.copy()
-    fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
-                                     recompute=recompute,frameon=False,size=100,alpha=0.5)
-    scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='pseudotime, '+dataset+'+'+method+'\n'+fig_title)
-    plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+'_ptime_withRef_'+data_version+'_umapCompute.png')
-    plt.clf()
-    plt.clf()
-    # umapOriginal
-    adata = adata_in.copy()
-    adata.obsm['X_umap'] = adata.obsm['X_umapOriginal'].copy()
-    scv.tl.velocity_graph(adata,n_jobs=8)
-    fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
-                                     recompute=recompute,frameon=False,size=100,alpha=0.5)
-    scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='pseudotime, '+dataset+'+'+method+'\n'+fig_title)
-    plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+'_ptime_withRef_'+data_version+'_umapOriginal.png')
-    plt.clf()
-
-
-# plot pseudotime correlation
-def ptime_correlation_scatter_spearman(s1,s2,method,dataset,name,xlab,ylab,fig_folder,time_label,split_seed,celltype_label=None,alpha=.3):
-    from scipy.stats import spearmanr
-    if celltype_label==None: celltype_label=get_celltype_label(dataset)
-    cell_types = s1.obs[celltype_label]
-    colors = dict(zip(s1.obs[celltype_label].cat.categories, s1.uns[celltype_label+'_colors']))
-    time_type = 'pseudotime'
-    df = pd.DataFrame({'split1':s1.obs[time_label],'split2':s2.obs[time_label],'cell_types':cell_types})
-    corr = np.round(spearmanr(s1.obs[time_label], s2.obs[time_label]).correlation,3)
-    print(corr)
-    plt.figure(figsize=(7, 5))
-    for category, color in colors.items(): plt.scatter([], [], color=color, label=category)
-    plt.scatter(df['split1'], df['split2'], c=df['cell_types'].map(colors),alpha=alpha)
-    plt.legend()
-    plt.xlabel(xlab)
-    plt.ylabel(ylab)
-    plt.title('Pseudotime correlation '+name+', '+dataset+'+'+method+'\n split_seed='+str(split_seed)+', corr='+str(corr))
-    plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+'_ptime_SpearmanCorr_'+name+'.png')
-    plt.close()
-
-# plot latent time
-def plot_latent_time(adata_in,data_version,dataset,method,fig_folder,split_seed,recompute=True,celltype_label=None,time_label='latent_time'):
-    data_method = dataset+'_'+method
-    fig_title = data_version+', split_seed='+str(split_seed)
-    data_version = data_method+'_'+data_version
-    if not time_label in adata_in.obs.columns: raise ValueError('No latent_time information')
-    if celltype_label == None: celltype_label = get_celltype_label(dataset)
-    # umapCompute
-    adata = adata_in.copy()
-    fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
-                                     recompute=recompute,frameon=False,size=100,alpha=0.5)
-    scv.pl.scatter(adata,ax=axs[1], color=time_label, color_map="gnuplot",title='Latent time, '+dataset+'+'+method+'\n'+fig_title)
-    plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+"_lattime_withRef_"+data_version+'_umapCompute.png')
-    plt.clf()
-    # umapOriginal
-    adata = adata_in.copy()
-    adata.obsm['X_umap'] = adata.obsm['X_umapOriginal'].copy()
-    scv.tl.velocity_graph(adata,n_jobs=8)
-    fig, axs = plt.subplots(ncols=2, nrows=1, figsize=(12, 5))
-    scv.pl.velocity_embedding_stream(adata, basis='umap',color=celltype_label,ax=axs[0],legend_loc='on data',
-                                     recompute=recompute,frameon=False,size=100,alpha=0.5)
-    scv.pl.scatter(adata,ax=axs[1], color=time_label, color_map="gnuplot",title='Latent time, '+dataset+'+'+method+'\n'+fig_title)
-    plt.savefig(fig_folder+"ptime/"+dataset+'_'+method+"_lattime_withRef_"+data_version+'_umapOriginal.png')
-    plt.clf()
-
-def latent_time_correlation_scatter_spearman(s1,s2,method,dataset,name,xlab,ylab,fig_folder,split_seed,celltype_label=None,alpha=.3):
-    from scipy.stats import spearmanr
-    time_label='latent_time'
-    if celltype_label==None: celltype_label=get_celltype_label(dataset)
-    cell_types = s1.obs[celltype_label]
-    colors = dict(zip(s1.obs[celltype_label].cat.categories, s1.uns[celltype_label+'_colors']))
-    df = pd.DataFrame({'split1':s1.obs[time_label],'split2':s2.obs[time_label],'cell_types':cell_types})
-    corr = np.round(spearmanr(s1.obs[time_label], s2.obs[time_label]).correlation,3)
-    print(corr)
-    plt.figure(figsize=(7, 5))
-    for category, color in colors.items(): plt.scatter([], [], color=color, label=category)
-    plt.scatter(df['split1'], df['split2'], c=df['cell_types'].map(colors),alpha=alpha)
-    plt.legend()
-    plt.xlabel(xlab)
-    plt.ylabel(ylab)
-    plt.title('Latent time correlation '+name+', '+dataset+'+'+method+'\n split_seed='+str(split_seed)+', corr='+str(corr))
-    plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+"_latentSpearmanCorr_"+name+".png")
-    plt.close()
-
-
-
 ################
 ## cosine similarity by celltype
 def plot_cosine_similarity_hist_by_celltype_pancreas(adata_split1,adata_split2,adata_total,dataset,method,fig_folder):
@@ -500,46 +388,6 @@ def plot_cosine_similarity_hist_by_celltype_pancreas(adata_split1,adata_split2,a
         ax.set_title(celltype+' (Ncells='+str(Ncells)+')\n'+dataset+'+'+method)
     plt.savefig(fig_folder+'metric/'+dataset_method+'_cos_sim_hist_byCelltype.png')
     plt.clf()
-"""
-def plot_cosine_similarity_hist_by_celltype_pancreasINC(adata_split1,adata_split2,adata_total,dataset,method,fig_folder):
-    cos_sim, Ngenes = compute_cosine_similarity_union(adata_split1,adata_split2,method)
-    adata_total.obs['cos_sim'] = cos_sim
-    dataset_method = dataset+'_'+method
-    celltype_label = 'clusters' # 7 labels
-    plt.clf()
-    cell_cat = adata_total.obs[celltype_label].cat.categories
-    fig,axs = plt.subplots(ncols=4, nrows=2, figsize=(25,10))
-    axs = axs.ravel()
-    for idx,ax in enumerate(axs):
-        if idx==7: break
-        celltype = cell_cat[idx]
-        cos_sim_celltype = cos_sim[adata_total.obs[celltype_label].array==celltype]
-        Ncells = cos_sim_celltype.shape[0]
-        counts, bins, patches = ax.hist(cos_sim_celltype, bins=20, edgecolor='gainsboro',color='powderblue') 
-        max_frequency = np.max(counts)
-        ax.axvline(np.mean(cos_sim_celltype), color='brown', linestyle='dashed', linewidth=1.5)
-        ax.axvline(np.median(cos_sim_celltype), color='peru', linestyle='dashed', linewidth=1.5)
-        text_x = np.quantile(cos_sim_celltype,[.0])[0]
-        text_y = max_frequency/5
-        ax.text(text_x,text_y*3,'mean='+str(np.round(np.mean(cos_sim_celltype),4)), color='firebrick', fontsize=11)
-        ax.text(text_x,text_y*2,'median='+str(np.round(np.median(cos_sim_celltype),4)), color='sienna', fontsize=11)
-        ax.set_xlabel('cosine similarity')
-        ax.set_ylabel('Frequency')
-        ax.set_title(celltype+' (Ncells='+str(Ncells)+')\n'+dataset+'+'+method)
-    plt.savefig(fig_folder+'metric/'+dataset_method+'_cos_sim_hist_byCelltype.png')
-    plt.clf()
-
-
-def plot_cosine_similarity_hist_by_celltype(adata_split1,adata_split2,adata_total,dataset,method,fig_folder,celltype_label_larry='state_info'):
-    if dataset=='ery':
-        return plot_cosine_similarity_hist_by_celltype_erythroid(adata_split1,adata_split2,adata_total,dataset,method,fig_folder)
-    elif dataset=='pan':
-        return plot_cosine_similarity_hist_by_celltype_pancreas(adata_split1,adata_split2,adata_total,dataset,method,fig_folder)
-    elif dataset=='panINC':
-        return plot_cosine_similarity_hist_by_celltype_pancreasINC(adata_split1,adata_split2,adata_total,dataset,method,fig_folder)
-    elif dataset=='larry':
-        return plot_cosine_similarity_hist_by_celltype_larry(adata_split1,adata_split2,adata_total,dataset,method,fig_folder,celltype_label=celltype_label_larry)
-"""
 
 def plot_cosine_similarity_hist_by_celltype(adata_split1,adata_split2,adata_total,dataset,method,fig_folder,celltype_label=None):
     cos_sim, Ngenes = compute_cosine_similarity_union(adata_split1,adata_split2,method)
@@ -624,7 +472,6 @@ def plot_cosine_similarity_boxplot_by_celltype(adata_split1, adata_split2, adata
     plt.savefig(fig_folder+'metric/'+dataset_method+'_cos_sim_byCelltype_boxplot.png')
     plt.clf()
 
-
 def plot_velo_conf_boxplot_by_celltype(adata_plot,dataset,method,fig_folder,split_seed,celltype_label=None):
     if celltype_label==None: celltype_label = get_celltype_label(dataset)
     if (not method=='sct') and (not 'velocity_confidence' in adata_plot.obs.columns):
@@ -650,8 +497,6 @@ def plot_velo_conf_boxplot_by_celltype(adata_plot,dataset,method,fig_folder,spli
     plt.tight_layout()
     plt.savefig(fig_folder+'metric/'+dataset_method+'_veloConf_byCelltype_boxplot.png')
     plt.clf()
-
-
 
 def compute_cosine_similarity_shuffled(split1,split2,method,seed=1514,Niter=100):
     from sklearn.metrics.pairwise import cosine_similarity
@@ -707,31 +552,3 @@ def plot_pseudotime_diffusion(adata_in,data_version,dataset,method,fig_folder,sp
     scv.pl.scatter(adata,ax=axs[1], color=ptime_label, color_map="gnuplot",title='pseudotime, '+dataset+'+'+method+' '+fig_title)
     plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+'_ptime_withRef_diffusion_'+data_version+'_umapOriginal.png')
     plt.clf()
-
-def ptime_diffusion_correlation_scatter_spearman(s1,s2,method,dataset,name,xlab,ylab,fig_folder,time_label,split_seed,celltype_label=None,alpha=.3):
-    scv.tl.velocity_pseudotime(s1,use_velocity_graph=False)
-    scv.tl.velocity_pseudotime(s2,use_velocity_graph=False)
-    from scipy.stats import spearmanr
-    if celltype_label==None: celltype_label=get_celltype_label(dataset)
-    cell_types = s1.obs[celltype_label]
-    colors = dict(zip(s1.obs[celltype_label].cat.categories, s1.uns[celltype_label+'_colors']))
-    time_type = 'pseudotime'
-    df = pd.DataFrame({'split1':s1.obs[time_label],'split2':s2.obs[time_label],'cell_types':cell_types})
-    corr = np.round(spearmanr(s1.obs[time_label], s2.obs[time_label]).correlation,3)
-    print(corr)
-    plt.figure(figsize=(7, 5))
-    for category, color in colors.items(): plt.scatter([], [], color=color, label=category)
-    plt.scatter(df['split1'], df['split2'], c=df['cell_types'].map(colors),alpha=alpha)
-    plt.legend()
-    plt.xlabel(xlab)
-    plt.ylabel(ylab)
-    plt.title('Pseudotime correlation '+name+', '+dataset+'+'+method+', split_seed='+str(split_seed)+' (corr='+str(corr)+')')
-    plt.savefig(fig_folder+'ptime/'+dataset+'_'+method+'_ptime_SpearmanCorr_diffusion_'+name+'.png')
-    plt.close()
-
-def print_ptime_corr_by_celltype(split1,split2,total,dataset,ptime_label='velocity_pseudotime'):
-    celltype_label = get_celltype_label(dataset)
-    for i in range(len(total.obs[celltype_label].cat.categories)):
-        ct = total.obs[celltype_label].cat.categories[i]
-        print(ct, np.round(np.corrcoef(split1[split1.obs[celltype_label]==ct].obs[ptime_label],
-                            split2[split2.obs[celltype_label]==ct].obs[ptime_label])[0,1],4))

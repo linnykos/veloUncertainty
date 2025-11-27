@@ -96,69 +96,9 @@ plot_veloConf_and_cosSim(total,split1,split2,dataset_short,method,fig_folder,spl
 plot_veloConf_hist(total,dataset_short,method,fig_folder,split_seed)
 plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed)
 
-print(np.corrcoef(split1.obs['velocity_confidence'],split2.obs['velocity_confidence'])) # 0.13712638 (t=0.19) -> 0.13777226 (avg)
-
-"""
-c2,n2 = compute_cosine_similarity_union(split1,split2,method)
->>> np.corrcoef([c2,total.obs['ptime'],total.obs['velocity_confidence']])
-array([[ 1.        ,  0.39571204,  0.39549537],
-       [ 0.39571204,  1.        , -0.2266979 ],
-       [ 0.39549537, -0.2266979 ,  1.        ]])
->>> np.corrcoef([c2,total.obs['velocity_pseudotime'],total.obs['velocity_confidence']])
-array([[ 1.        ,  0.40089462,  0.39549537],
-       [ 0.40089462,  1.        , -0.140205  ],
-       [ 0.39549537, -0.140205  ,  1.        ]])
-"""
-######################################################
-## ptime
-scv.tl.velocity_pseudotime(total,use_velocity_graph=False)
-scv.tl.velocity_pseudotime(split1,use_velocity_graph=False)
-scv.tl.velocity_pseudotime(split2,use_velocity_graph=False)
-
-plot_pseudotime(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-plot_pseudotime(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-plot_pseudotime(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-
-ptime_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,time_label='velocity_pseudotime',split_seed=split_seed)
-
-"""
-plot_pseudotime_diffusion(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-plot_pseudotime_diffusion(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-plot_pseudotime_diffusion(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,ptime_label='velocity_pseudotime')
-
-ptime_diffusion_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,time_label='velocity_pseudotime',split_seed=split_seed)
-"""
-
-print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='velocity_pseudotime')
-print_ptime_corr_by_celltype(split1,split2,total,dataset_short,ptime_label='ptime')
-
-np.corrcoef(total.obs['ptime'],total.obs['velocity_pseudotime'])[0,1]
-# 0.7796424950753456
-np.corrcoef(total.obs['ptime'],total.obs['latent_time'])[0,1]
-# 0.6727866730850607
-
-if not 'latent_time' in split1.obs.columns:
-    scv.tl.recover_dynamics(total,n_jobs=8)
-    scv.tl.latent_time(total)
-    plot_latent_time(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
-    scv.tl.recover_dynamics(split1,n_jobs=8)
-    scv.tl.latent_time(split1)
-    plot_latent_time(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
-    scv.tl.recover_dynamics(split2,n_jobs=8)
-    scv.tl.latent_time(split2)
-    plot_latent_time(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed)
-
-latent_time_correlation_scatter_spearman(s1=split1,s2=split2,method=method,dataset=dataset_short,name='split1vs2',xlab='split1',ylab='split2',fig_folder=fig_folder,split_seed=split_seed)
-
-
-#plot_latent_time(adata_in=split1,data_version='split1',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,celltype_label='state_info')
-#plot_latent_time(adata_in=split2,data_version='split2',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,celltype_label='state_info')
-#plot_latent_time(adata_in=total,data_version='total',dataset=dataset_short,method=method,fig_folder=fig_folder,split_seed=split_seed,celltype_label='state_info')
-
 ###################################
 # method-selected gene corr
 plot_method_gene_corr(split1, split2, method, dataset_short, fig_folder, split_seed)
-
 
 ####################################
 # shuffled cosine similarity
@@ -174,10 +114,3 @@ np.round(np.mean(v2s_median),5) # 0.47913
 # paired: 0.7154 0.7661
 # 0.48041
 # 0.49335
-
-####################################
-cos_sim_vf = np.diag(cosine_similarity(split1.obsm['X_VF'],split2.obsm['X_VF']))
-[np.round(np.median(cos_sim_vf),4), np.round(np.mean(cos_sim_vf),4)]
-# [0.0999, 0.1337]
-np.quantile(cos_sim_vf,[0.,.25,.5,.75,1.])
-# array([-0.58408761, -0.15341007,  0.09990515,  0.41382927,  0.87315518])
