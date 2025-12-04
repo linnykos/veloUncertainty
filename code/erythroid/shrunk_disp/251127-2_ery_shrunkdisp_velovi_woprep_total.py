@@ -28,9 +28,9 @@ from v4_functions_velovi import *
 
 def velovi_run_model_shrunk_disp(adata, data_version,dataset_long,dataset_short,method,data_folder,split_seed):
     from velovi import preprocess_data, VELOVI
-    adata = None
-    print_message_with_time("#################### "+dataset_long+'_'+method+'_'+data_version+": Read data ")
-    adata = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version,allgenes=True,outputAdded=False)
+    #adata = None
+    #print_message_with_time("#################### "+dataset_long+'_'+method+'_'+data_version+": Read data ")
+    #adata = read_data_v4(dataset_long,dataset_short,method,split_seed,data_version,allgenes=True,outputAdded=False)
     gene_names = adata.var.index.copy()
     adata.layers['spliced_original'] = adata.layers['spliced'].copy()
     adata.layers['unspliced_original'] = adata.layers['unspliced'].copy()
