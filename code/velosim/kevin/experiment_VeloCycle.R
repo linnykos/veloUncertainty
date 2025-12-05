@@ -67,11 +67,10 @@ write.csv(result$counts_s, file = paste0(data_dir,"velosim_counts_s.csv"), row.n
 write.csv(result$cell_time, file = paste0(data_dir,"velosim_pseudo_time.csv"), row.names=F)
 write.csv(result$velocity, file = paste0(data_dir,"velosim_velocity.csv"), row.names=F)
 
-setwd(data_dir)
 # Plot with cell developmental time(pseudo-time), default PCA
-plotPseudotime(filename = "pseudotime.pdf", result, width = 6, height = 5)
+plotPseudotime(filename = paste0(data_dir, "pseudotime.pdf"), result, width = 6, height = 5)
 # Plot with RNA velocity
-plotVelo(filename = "velocity.pdf", result, arrow.length = 5, width = 6, height = 5)
+plotVelo(filename = paste0(data_dir, "velocity.pdf"), result, arrow.length = 5, width = 6, height = 5)
 # Plot with cell developmental time(pseudo-time), using UMAP
-plotPseudotime(filename = "pseudotime_umap.pdf", result, dr = "umap", width = 6, height = 5)
+plotPseudotime(filename = paste0(data_dir, "pseudotime_umap.pdf"), result, dr = "umap", width = 6, height = 5)
 
