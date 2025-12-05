@@ -1,0 +1,79 @@
+MGI Gene/Marker ID	Symbol	Name	Chr	Qualifier	Annotated Term	Context	Proteoform	Evidence	Inferred From	Reference(s)
+MGI:1860508	Abcb10	ATP-binding cassette, sub-family B member 10	8		erythrocyte development			ISO	Q9NRK6 	J:164563 	
+MGI:1860508	Abcb10	ATP-binding cassette, sub-family B member 10	8		erythrocyte development			ISS	Q9NRK6 	J:342587 	
+MGI:1925499	Adgrf4	adhesion G protein-coupled receptor F4	17		erythrocyte development			IGI	MGI:2182928 	J:245698 	
+MGI:2182928	Adgrf5	adhesion G protein-coupled receptor F5	17		erythrocyte development			IGI	MGI:1925499 	J:245698 	
+MGI:87989	Alas1	aminolevulinic acid synthase 1	9		erythrocyte development			IBA	PTN000343740 	J:161428 	
+MGI:87990	Alas2	aminolevulinic acid synthase 2, erythroid	X		erythrocyte development			IBA	PTN000343740 	J:161428 	
+MGI:88024	Ank1	ankyrin 1, erythroid	8		erythrocyte development	results in the development of erythrocyte		IMP	MGI:1856298 	J:10432 	
+MGI:88024	Ank1	ankyrin 1, erythroid	8		erythrocyte development			IMP	MGI:5502651 	J:199427 	
+MGI:1918775	Ankle1	ankyrin repeat and LEM domain containing 1	8	NOT	erythrocyte maturation			IMP		J:235782 	
+MGI:2444354	Arid4a	AT-rich interaction domain 4A	12		erythrocyte development			IMP	MGI:3687004 	J:141004 	
+MGI:1206586	Bap1	Brca1 associated protein 1	14		erythrocyte maturation			IMP	MGI:5439652 	J:187380 	
+MGI:107187	Bcl6	B cell leukemia/lymphoma 6	16		erythrocyte development	happens in spleen,results in the development of reticulocyte		IMP	MGI:2158436 	J:105042 	
+MGI:3650929	Bloodlinc	Bloodlinc, erythroid developmental long intergenic non-protein coding transcript	11		erythrocyte enucleation			IDA		J:326412 	
+MGI:1098242	Bpgm	2,3-bisphosphoglycerate mutase	6		erythrocyte development	happens in bone marrow,happens in spleen		IMP	MGI:6506869 	J:301620 	
+MGI:1098242	Bpgm	2,3-bisphosphoglycerate mutase	6		erythrocyte development			ISO	RGD:735018 	J:155856 	
+MGI:1924161	Brd1	bromodomain containing 1	15		erythrocyte maturation			IEA	KW-0265 	J:60000 	
+MGI:1306784	Cited2	Cbp/p300-interacting transactivator, with Glu/Asp-rich carboxy-terminal domain, 2	10		erythrocyte development	happens in liver		IMP	MGI:2385355 	J:149124 	
+MGI:1927222	Diaph3	diaphanous related formin 3	14		erythrocyte enucleation			IMP		J:132566 	
+MGI:1927222	Diaph3	diaphanous related formin 3	14		erythrocyte enucleation			IMP		J:315605 	
+MGI:99670	Dmtn	dematin actin binding protein	14		erythrocyte development			IMP		J:76575 	
+MGI:95402	Epb42	erythrocyte membrane protein band 4.2	2		erythrocyte maturation			IEA	KW-0265 	J:60000 	
+MGI:95407	Epo	erythropoietin	5		erythrocyte maturation			IEA	KW-0265 	J:60000 	
+MGI:95413	Ercc2	excision repair cross-complementing rodent repair deficiency, complementation group 2	7		erythrocyte maturation			IMP	MGI:2183949 	J:116054 	
+MGI:1914267	Fam210b	family with sequence similarity 210, member B	2		erythrocyte maturation			IEA	KW-0265 	J:60000 	
+MGI:2444881	Flvcr1	feline leukemia virus subgroup C cellular receptor 1	1		erythrocyte maturation			IEA	KW-0265 	J:60000 	
+MGI:105977	G6pd2	glucose-6-phosphate dehydrogenase 2	5		erythrocyte maturation			ISO	P11413 	J:164563 	
+MGI:105979	G6pdx	glucose-6-phosphate dehydrogenase X-linked	X		erythrocyte development			IMP	MGI:2182739 	J:95754 	
+MGI:105979	G6pdx	glucose-6-phosphate dehydrogenase X-linked	X		erythrocyte development			IMP		J:94894 	
+MGI:105979	G6pdx	glucose-6-phosphate dehydrogenase X-linked	X		erythrocyte maturation			ISO	P11413 	J:164563 	
+MGI:95661	Gata1	GATA binding protein 1	X		erythrocyte development			IEA	ENSP00000365858 P15976 	J:342605 	
+MGI:95661	Gata1	GATA binding protein 1	X		erythrocyte development			ISO	P15976 	J:164563 	
+MGI:3801763	Gm15915	predicted gene 15915	10		erythrocyte maturation			IMP		J:340249 	
+MGI:96015	Hba-a1	hemoglobin alpha, adult chain 1	11		erythrocyte development	results in the development of erythrocyte		IGI	MGI:96016 	J:28392 	
+MGI:96016	Hba-a2	hemoglobin alpha, adult chain 2	11		erythrocyte development	results in the development of erythrocyte		IGI	MGI:96015 	J:28392 	
+MGI:96019	Hba-x	hemoglobin X, alpha-like embryonic chain in Hba complex	11		erythrocyte maturation	results in the maturation of erythroid progenitor cell,results in the maturation of erythrocyte		IMP		J:19573 	
+MGI:96021	Hbb-b1	hemoglobin, beta adult major chain	7		erythrocyte development	results in the development of erythrocyte		IGI	MGI:96022 	J:30155 	
+MGI:96022	Hbb-b2	hemoglobin, beta adult minor chain	7		erythrocyte development	results in the development of erythrocyte		IGI	MGI:96021 	J:30155 	
+MGI:1333752	Hdac6	histone deacetylase 6	X		erythrocyte enucleation			IMP		J:315605 	
+MGI:2444491	Heatr3	HEAT repeat containing 3	8		erythrocyte maturation			ISO	Q7Z4Q2 	J:164563 	
+MGI:2444491	Heatr3	HEAT repeat containing 3	8		erythrocyte maturation			ISS	Q7Z4Q2 	J:342587 	
+MGI:1858910	Jmjd6	jumonji domain containing 6	11		erythrocyte development	happens in liver,results in the development of erythroblast		IMP	MGI:3043930 	J:90288 	
+MGI:1858910	Jmjd6	jumonji domain containing 6	11		erythrocyte development	happens in liver,results in the development of erythroblast		IMP	MGI:3580706 	J:98905 	
+MGI:1342771	Klf1	Kruppel-like transcription factor 1 (erythroid)	8		erythrocyte development			IMP	MGI:1857162 	J:99174 	
+MGI:1342771	Klf1	Kruppel-like transcription factor 1 (erythroid)	8		erythrocyte development			IMP	MGI:1857557 	J:25650 	
+MGI:1342771	Klf1	Kruppel-like transcription factor 1 (erythroid)	8		erythrocyte maturation	happens in blood,results in the maturation of erythrocyte		IMP		J:25651 	
+MGI:1342772	Klf2	Kruppel-like transcription factor 2 (lung)	8		erythrocyte maturation			IMP	MGI:3047647 	J:119377 	
+MGI:2143628	L3mbtl3	L3MBTL3 histone methyl-lysine binding protein	10		erythrocyte maturation			IDA		J:98498 	
+MGI:107470	Lyar	Ly1 antibody reactive clone	5		erythrocyte development			ISO	Q9NX58 	J:164563 	
+MGI:107470	Lyar	Ly1 antibody reactive clone	5		erythrocyte development			ISS	Q9NX58 	J:342587 	
+MGI:1891748	Maea	macrophage erythroblast attacher	5		enucleate erythrocyte development			IMP	MGI:3691058 	J:114865 	
+MGI:1891748	Maea	macrophage erythroblast attacher	5		erythrocyte development			IMP	MGI:3691058 	J:114865 	
+MGI:1891748	Maea	macrophage erythroblast attacher	5		erythrocyte maturation			IEA	KW-0265 	J:60000 	
+MGI:1100846	Med1	mediator complex subunit 1	11		enucleate erythrocyte development			IMP	MGI:2176073 MGI:3511276 	J:167145 	
+MGI:1100846	Med1	mediator complex subunit 1	11		erythrocyte development			IMP	MGI:1861125 	J:118300 	
+MGI:1100846	Med1	mediator complex subunit 1	11		erythrocyte development			IMP		J:74328 	
+MGI:1926063	Nckap1l	NCK associated protein 1 like	15		erythrocyte development			IEA	P55160 ENSP00000293373 	J:342605 	
+MGI:2446113	Nemp1	nuclear envelope integral membrane protein 1	10		erythrocyte enucleation			IMP		J:330921 	
+MGI:2446113	Nemp1	nuclear envelope integral membrane protein 1	10		erythrocyte maturation			IMP		J:330921 	
+MGI:1347522	Pla2g10	phospholipase A2, group X	16		erythrocyte maturation			IMP	MGI:4412409 	J:232433 	
+MGI:1923334	Ptbp3	polypyrimidine tract binding protein 3	4		erythrocyte maturation			IEA	KW-0265 	J:60000 	
+MGI:97845	Rac1	Rac family small GTPase 1	5		erythrocyte enucleation			IMP		J:132566 	
+MGI:97846	Rac2	Rac family small GTPase 2	15		erythrocyte enucleation			IMP		J:132566 	
+MGI:1202713	Rhag	Rhesus blood group-associated A glycoprotein	17		erythrocyte development			IMP	MGI:5318589 	J:182122 	
+MGI:1202882	Rhd	Rh blood group, D antigen	4		erythrocyte development			IMP	MGI:5318588 	J:182122 	
+MGI:98159	Rps6	ribosomal protein S6	4		erythrocyte development			IMP	MGI:2387471 	J:117590 	
+MGI:893598	Sh2b3	SH2B adaptor protein 3	5		erythrocyte development			IEA	ENSP00000345492 Q9UQQ2 	J:342605 	
+MGI:893598	Sh2b3	SH2B adaptor protein 3	5		erythrocyte development			ISO	Q9UQQ2 	J:164563 	
+MGI:109393	Slc4a1	solute carrier family 4 (anion exchanger), member 1	11		erythrocyte development			IMP	MGI:3834176 	J:145243 	
+MGI:1345279	Slc11a2	solute carrier family 11 (proton-coupled divalent metal ion transporters), member 2	15		erythrocyte development			IMP	MGI:3577914 	J:98088 	
+MGI:2442486	Slc25a40	solute carrier family 25, member 40	5		erythrocyte development			IMP		J:319863 	
+MGI:98368	Sox6	SRY (sex determining region Y)-box 6	7		erythrocyte development	happens in liver		IMP	MGI:2681117 	J:115753 	
+MGI:106658	Srf	serum response factor	17		erythrocyte development			IMP	MGI:2176073 MGI:3046779 	J:166639 	
+MGI:98480	Tal1	T cell acute lymphocytic leukemia 1	4		erythrocyte maturation	happens in spleen,results in the maturation of erythrocyte,results in the maturation of erythrocyte,happens in blood,results in the maturation of erythrocyte		IMP	MGI:3808120 	J:139179 	
+MGI:1355315	Tmod3	tropomodulin 3	9		erythrocyte development			IMP	MGI:4127953 	J:208725 	
+MGI:2684862	Trim58	tripartite motif-containing 58	11		positive regulation of erythrocyte enucleation			IMP		J:243477 	
+MGI:1335091	Zbtb7a	zinc finger and BTB domain containing 7a	10		erythrocyte maturation			IMP		J:245247 	
+MGI:1335091	Zbtb7a	zinc finger and BTB domain containing 7a	10		erythrocyte maturation			ISO	O95365 	J:164563 	
+
