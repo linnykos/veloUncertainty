@@ -92,7 +92,13 @@ plotPseudotime <- function(filename, result, dr = "pca", width = 15, height = 15
 #' @return None
 #' @import umap ggplot2
 #' @export
-plotVelo <- function(filename, result, width = 15, height = 15, units = "in", dpi = 1000, arrow.length = 0.01){
+plotVelo <- function(filename, result, 
+                     width = 15, 
+                     height = 15, 
+                     units = "in", 
+                     dpi = 1000, 
+                     time.increment = 0.01,
+                     arrow.length = 5){
   library(ggplot2)
   
   counts_u <- result$counts_u
@@ -103,13 +109,18 @@ plotVelo <- function(filename, result, width = 15, height = 15, units = "in", dp
   velocity <- result$velocity
   
   pca <- prcomp(log1p(t(counts_s)), scale. = F)
-  new_mat <- counts_s + arrow.length * velocity; new_mat[which(new_mat<0)] <- 0
+  new_mat <- counts_s + time.increment * velocity; new_mat[which(new_mat<0)] <- 0
   pca.pred <- predict(pca, newdata = log1p(t(new_mat)))
   
   pca_df <- as.data.frame(pca$x)
   pca_df$cell_time <- cell_time
   pca.pred_df <- as.data.frame(pca.pred)
   colnames(pca.pred_df) <- lapply(colnames(pca.pred_df), function(x){paste0(x,".pred")})
+  diff_mat <- pca.pred_df[,c("PC1.pred", "PC2.pred")] - pca_df[,c("PC1", "PC2")]
+  norm_vec <- apply(diff_mat, 1, function(x){sqrt(sum(x^2))})
+  for(i in 1:nrow(pca.pred_df)){
+    pca.pred_df[i,c("PC1.pred", "PC2.pred")] <-  pca_df[i,c("PC1", "PC2")] + arrow.length*diff_mat[i,]/norm_vec[i]
+  }
   pca_res <- cbind(pca_df, pca.pred_df)
   
   theme<-theme(panel.background = element_blank(),
@@ -122,8 +133,12 @@ plotVelo <- function(filename, result, width = 15, height = 15, units = "in", dp
                axis.ticks=element_line(colour="black"),
                plot.margin=unit(c(1,1,1,1),"line"))
   
-  plt <- ggplot(data = pca_res) + geom_point(mapping = aes(x = PC1, y = PC2, color = cell_time)) + theme + scale_color_gradient(low = "orange", high = "purple") +
-    geom_segment(aes(x = PC1, y = PC2, xend = PC1.pred, yend =  PC2.pred), arrow = arrow(length = unit(0.1, "cm")), color = "black", alpha = 0.5)
+  plt <- ggplot(data = pca_res) + 
+    geom_point(mapping = aes(x = PC1, y = PC2, color = cell_time)) + 
+    theme + scale_color_gradient(low = "orange", high = "purple") +
+    geom_segment(aes(x = PC1, y = PC2, xend = PC1.pred, yend =  PC2.pred), 
+                 arrow = arrow(length = unit(0.1, "cm")), color = "black", 
+                 alpha = 0.5)
   
   ggsave(filename = filename, plot = plt, device = "pdf", path = "./", height = height, width = width, units = units, dpi = dpi)
 }
