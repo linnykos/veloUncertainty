@@ -15,5 +15,8 @@ overdisp_U <- sapply(1:ncol(U), function(i) {
   1/res$overdispersions
 })
 
+quantile(overdisp_S)
+quantile(overdisp_U)
+
 write.csv(overdisp_S, file=paste0(data_folder,'overdisp_S.csv'))
 write.csv(overdisp_U, file=paste0(data_folder,'overdisp_U.csv'))
