@@ -55,10 +55,10 @@ def velovi_run_model_glf_mark(adata, data_version,dataset_long,dataset_short,met
     print('#################### Data saved at: '+savedata_folder+'adata_'+dataset_short+'_'+method+'_'+data_version+'_'+file_suffix+'.h5ad')
 
 
-velovi_run_model_glf_mark(adata=total_mark, data_version='total', dataset_short=dataset_short, dataset_long=dataset_long, method=method,
-						  data_folder=data_folder, split_seed=split_seed)
-velovi_run_model_glf_mark(adata=split1_mark, data_version='split1', dataset_short=dataset_short, dataset_long=dataset_long, method=method,
-						  data_folder=data_folder, split_seed=split_seed)
+#velovi_run_model_glf_mark(adata=total_mark, data_version='total', dataset_short=dataset_short, dataset_long=dataset_long, method=method,
+#						  data_folder=data_folder, split_seed=split_seed)
+#velovi_run_model_glf_mark(adata=split1_mark, data_version='split1', dataset_short=dataset_short, dataset_long=dataset_long, method=method,
+#						  data_folder=data_folder, split_seed=split_seed)
 velovi_run_model_glf_mark(adata=split2_mark, data_version='split2', dataset_short=dataset_short, dataset_long=dataset_long, method=method,
 						  data_folder=data_folder, split_seed=split_seed)
 

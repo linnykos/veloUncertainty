@@ -81,10 +81,10 @@ def glf_mark_velovi_create_plots(split_seed, method, data_suffix):
     plot_velo_conf_boxplot_by_celltype(total,dataset_short,method,fig_folder,split_seed)
 
 
-glf_mark_velovi_create_plots(split_seed=317, method=method, data_suffix='markctrl227')
-print('####################### 317 done')
-glf_mark_velovi_create_plots(split_seed=320, method=method, data_suffix='markctrl230')
-print('####################### 320 done')
+#glf_mark_velovi_create_plots(split_seed=317, method=method, data_suffix='markctrl227')
+#print('####################### 317 done')
+#glf_mark_velovi_create_plots(split_seed=320, method=method, data_suffix='markctrl230')
+#print('####################### 320 done')
 glf_mark_velovi_create_plots(split_seed=323, method=method, data_suffix='markctrl233')
 print('####################### 323 done')
 glf_mark_velovi_create_plots(split_seed=326, method=method, data_suffix='markctrl236')
